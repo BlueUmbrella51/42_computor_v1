@@ -11,9 +11,9 @@ double		get_coefficient(std::string &str, size_t *i, operationSide side) {
 	if (coeff == 0 && str[*i] != '0') {
 		coeff = 1;
 	}
-	if (*i == '-' || *i == '+')
+	if (str[*i] == '-' || str[*i] == '+')
 		(*i)++;
-	if (coeff == 0 && *i != '0') {
+	if (coeff == 0 && str[*i] != '0') {
 		coeff = 1;
 	}
 	while (*i < str.length() && 
@@ -24,7 +24,7 @@ double		get_coefficient(std::string &str, size_t *i, operationSide side) {
 		(*i)++;
 	}
 	// Not safe yet
-	printf("SIDE %u", side);
+	printf("SIDE %u\n", side);
 	return side == right ? -coeff : coeff;
 }
 
@@ -63,8 +63,10 @@ operationSide side) {
 	token_info->getVar();
 	try {
 		double	coeff = get_coefficient(str, i, side);
-		int		degree = get_degree(str, i);
+		printf("After get coeff %s\n", &str[*i]);
 		std::cout << "Coeff: " << coeff << std::endl;
+		int		degree = get_degree(str, i);
+		printf("After get degree %s\n", &str[*i]);
 		std::cout << "Degree: " << degree << std::endl;
 		std::cout << "Rest: " << &str[*i] << std::endl;
 				token_info->add(coeff, degree);
@@ -103,10 +105,13 @@ Tokens	parse_tokens(std::string &equation) {
 	equation.end());
 	// std::string::iterator iter = equation.begin();
 	std::cout << equation << std::endl;
-	for (size_t i = 0; i < equation.length(); i++)
+	size_t i = 0;
+	while (i < equation.length())
 	{
 		try {
+			printf("character %c\n", equation[i]);
 			if (equation[i] == '=') {
+				printf("EQUALS FOUND\n\n");
 				if (token_info.getTokens().empty()) {
 					throw std::invalid_argument("Starting with equals sign is illegal.");
 				}
@@ -125,6 +130,7 @@ Tokens	parse_tokens(std::string &equation) {
 		}
 		// exit(1);
 	}
+	token_info.sort();
 	token_info.print();
 	return token_info;
 	// exit (0);
