@@ -3,12 +3,59 @@
 # include "../headers/computor.h"
 # include <optional> 
 # include <list>
+# include <map>
+
+enum operationSide {
+	left,
+	right
+};
+// class Parser {
+// 	private:
+// 		typedef int (*boolFunctionType)(int);
+// 		int		 isplusormin(int c) {
+// 			return (c == '+' || c == '-');
+// 		};
+// 		int		ismatch(int c) {
+// 			if (_var == '0') {
+// 				setVar(c);
+// 				return (true);
+// 			}
+// 			if (_var == c) {
+// 				return true;
+// 			}
+// 			return false;
+// 		}
+// 		enum operationSide {
+// 			left,
+// 			right
+// 		};
+// 		enum	expectedType {
+// 			digit,
+// 			sign,
+// 			var
+// 		};
+// 		std::map<expectedType, boolFunctionType>	expectedChecker = {
+// 			{ sign, isplusormin },
+// 			{ digit, isdigit },
+// 			{ var, ismatch }
+// 		};
+// 		operationSide			_side;
+// 		char					_var;
+// 		bool				 	(*isExpected)(char);
+
+// 	public:
+// 		Parser();
+// 		~Parser();
+// 		void	setVar(char c);
+// 		char	getVar();
+// 		bool	varIsSet();
+// };
 
 class Token
 {
 	private:
 		// char	_sign;
-		float	_coeff;
+		double	_coeff;
 		int		_degree;
 		// std::optional<Variable> _var;
 
@@ -17,22 +64,26 @@ class Token
 		~Token();
 		void	print();
 		int		getDegree() const;
-		float	getCoeff()	const;
+		double	getCoeff()	const;
+		void	setCoeff(double c);
 };
 
 class Tokens {
 	private:
-		char				_variable;
+		std::optional<char>	_variable;
 		std::list<Token>	_tokens;
+		Token				*has_degree(int degree);
 	
 	public:
-		Tokens(char var);
+		Tokens();
 		~Tokens();
+		std::list<Token>	getTokens();
 		void	setVar(char var);
+		std::optional<char>	getVar();
 		void	print();
-		void	add(Token);
+		void	add(double coeff, int degree);
 		void	sort();
-		void	combine();
+		// void	combine();
 };
 
 #endif
