@@ -49,43 +49,33 @@ void	Token::setCoeff(double c) {
 Tokens::Tokens() {
 	_variable = std::nullopt;
 	_tokens = {};
+	_highest_degree = 0;
 }
 
 Tokens::~Tokens() {
-
 }
 
 std::list<Token>	Tokens::getTokens() {
 	return _tokens;
 }
 
+int		Tokens::getHighestDegree() {
+	return _highest_degree;
+}
+
+void	Tokens::setHighestDegree(int n) {
+	_highest_degree = n;
+}
+
 void	Tokens::print() {
 	std::list<Token>::iterator it;
+	printf("Highest degree: %d\n", _highest_degree);
 	for (it = _tokens.begin(); it != _tokens.end(); ++it) {
     	it->print();
 	}
 }
 
-// Token	*find_token(std::list<Token> &tokens, int degree) {
-// 	for( std::list<Token>::iterator iter= tokens.begin(); iter != tokens.end(); iter++ )
-// 	{
-// 		if (iter->getDegree() == degree) {
-// 			return iter;
-// 		}
-// 	}
-// 	return NULL;
-// }
-
 Token	*Tokens::has_degree(int degree) {
-	// auto iter = std::find_if(_tokens.begin(),
-    //                      _tokens.end(),
-    //                      [degree](Token s) -> bool { return (s.getDegree() == degree); });
-	// if (iter != _tokens.end()) {
-	// 	return &iter;
-	// }
-	// else {
-	// 	return nullptr;
-	// }
 	for (std::list<Token>::iterator iter= _tokens.begin(); iter != _tokens.end(); iter++)
 	{
 		if (iter->getDegree() == degree) {
@@ -97,9 +87,12 @@ Token	*Tokens::has_degree(int degree) {
 
 void	Tokens::add(double coeff, int degree) {
 	Token *found = has_degree(degree);
-	printf("%p %f %i\n", (void *)found, coeff, degree);
+	if (degree > _highest_degree) {
+		_highest_degree = degree;
+	}
+	// printf("%p %f %i\n", (void *)found, coeff, degree);
 	if (found == NULL) {
-		printf("Not found\n");
+		// printf("Not found\n");
 		_tokens.push_back(Token(coeff, degree));
 	}
 	else {
@@ -120,35 +113,3 @@ void	Tokens::sort() {
 		return (t1.getDegree() > t2.getDegree());
 	});
 }
-
-// void	Tokens::combine() {
-// 	/* 
-// 	Combine all elements sharing a degree into a new list
-// 	*/
-// 	std::list<Token> combined = {};
-// 	std::list<Token>::iterator curr = _tokens.begin();
-// 	int degree = curr->getDegree();
-// 	float total = curr->getCoeff();
-// 	// std::cout << "Degree: " << degree << std::endl;
-// 	// std::cout << "Coeff: " << total << std::endl;
-// 	while (curr != _tokens.end()) {
-// 		std::cout << "Degree: " << degree << std::endl;
-// 		std::cout << "Coeff: " << total << std::endl;
-// 		if (curr->getDegree() == degree) {
-// 			total += curr->getCoeff();
-// 		}
-// 		else {
-// 			// char sign = total > 0 ? '+' : '-';
-// 			combined.push_back(Token(total, degree));
-// 			degree = curr->getDegree();
-// 			total = curr->getCoeff();
-// 		}
-// 		curr++;
-// 	}
-// 	std::list<Token>::iterator it;
-// 	std::cout << "AFTER COMBINE" << std::endl;
-// 	for (it = combined.begin(); it != combined.end(); ++it) {
-//     	it->print();
-// 	}
-// 	_tokens = combined;
-// }

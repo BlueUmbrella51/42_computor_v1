@@ -9,47 +9,6 @@ enum operationSide {
 	left,
 	right
 };
-// class Parser {
-// 	private:
-// 		typedef int (*boolFunctionType)(int);
-// 		int		 isplusormin(int c) {
-// 			return (c == '+' || c == '-');
-// 		};
-// 		int		ismatch(int c) {
-// 			if (_var == '0') {
-// 				setVar(c);
-// 				return (true);
-// 			}
-// 			if (_var == c) {
-// 				return true;
-// 			}
-// 			return false;
-// 		}
-// 		enum operationSide {
-// 			left,
-// 			right
-// 		};
-// 		enum	expectedType {
-// 			digit,
-// 			sign,
-// 			var
-// 		};
-// 		std::map<expectedType, boolFunctionType>	expectedChecker = {
-// 			{ sign, isplusormin },
-// 			{ digit, isdigit },
-// 			{ var, ismatch }
-// 		};
-// 		operationSide			_side;
-// 		char					_var;
-// 		bool				 	(*isExpected)(char);
-
-// 	public:
-// 		Parser();
-// 		~Parser();
-// 		void	setVar(char c);
-// 		char	getVar();
-// 		bool	varIsSet();
-// };
 
 class Token
 {
@@ -72,6 +31,7 @@ class Tokens {
 	private:
 		std::optional<char>	_variable;
 		std::list<Token>	_tokens;
+		int					_highest_degree;
 		Token				*has_degree(int degree);
 	
 	public:
@@ -83,6 +43,8 @@ class Tokens {
 		void	print();
 		void	add(double coeff, int degree);
 		void	sort();
+		int		getHighestDegree();
+		void	setHighestDegree(int n);
 		// void	combine();
 };
 
