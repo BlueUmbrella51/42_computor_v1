@@ -1,6 +1,6 @@
 #ifndef RATIONAL_NUMBER_HPP
 # define RATIONAL_NUMBER_HPP
-#include "../../math/headers/math_helpers.hpp"
+#include <numeric>
 
 class Rational {
     private:

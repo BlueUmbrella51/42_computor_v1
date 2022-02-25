@@ -46,37 +46,37 @@
 // 	_coeff = c;
 // }
 
-// Tokens::Tokens() {
+// Equation::Equation() {
 // 	_variable = std::nullopt;
-// 	_tokens = {};
+// 	_Equation = {};
 // 	_highest_degree = 0;
 // }
 
-// Tokens::~Tokens() {
+// Equation::~Equation() {
 // }
 
-// std::list<Token>	Tokens::getTokens() {
-// 	return _tokens;
+// std::list<Token>	Equation::getEquation() {
+// 	return _Equation;
 // }
 
-// int		Tokens::getHighestDegree() {
+// int		Equation::getHighestDegree() {
 // 	return _highest_degree;
 // }
 
-// void	Tokens::setHighestDegree(int n) {
+// void	Equation::setHighestDegree(int n) {
 // 	_highest_degree = n;
 // }
 
-// void	Tokens::print() {
+// void	Equation::print() {
 // 	std::list<Token>::iterator it;
 // 	printf("Highest degree: %d\n", _highest_degree);
-// 	for (it = _tokens.begin(); it != _tokens.end(); ++it) {
+// 	for (it = _Equation.begin(); it != _Equation.end(); ++it) {
 //     	it->print();
 // 	}
 // }
 
-// Token	*Tokens::has_degree(int degree) {
-// 	for (std::list<Token>::iterator iter= _tokens.begin(); iter != _tokens.end(); iter++)
+// Token	*Equation::has_degree(int degree) {
+// 	for (std::list<Token>::iterator iter= _Equation.begin(); iter != _Equation.end(); iter++)
 // 	{
 // 		if (iter->getDegree() == degree) {
 // 			return &*iter;
@@ -85,7 +85,7 @@
 // 	return NULL;
 // }
 
-// void	Tokens::add(double coeff, int degree) {
+// void	Equation::add(double coeff, int degree) {
 // 	Token *found = has_degree(degree);
 // 	if (degree > _highest_degree) {
 // 		_highest_degree = degree;
@@ -93,23 +93,23 @@
 // 	// printf("%p %f %i\n", (void *)found, coeff, degree);
 // 	if (found == NULL) {
 // 		// printf("Not found\n");
-// 		_tokens.push_back(Token(coeff, degree));
+// 		_Equation.push_back(Token(coeff, degree));
 // 	}
 // 	else {
 // 		found->setCoeff(found->getCoeff() + coeff);
 // 	}
 // }
 
-// void	Tokens::setVar(char var) {
+// void	Equation::setVar(char var) {
 // 	_variable = var;
 // }
 
-// std::optional<char>	Tokens::getVar() {
+// std::optional<char>	Equation::getVar() {
 // 	return (_variable);
 // }
 
-// void	Tokens::sort() {
-// 	_tokens.sort([](const Token & t1, const Token & t2) {
+// void	Equation::sort() {
+// 	_Equation.sort([](const Token & t1, const Token & t2) {
 // 		return (t1.getDegree() > t2.getDegree());
 // 	});
 // }

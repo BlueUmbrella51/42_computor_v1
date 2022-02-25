@@ -1,40 +1,39 @@
 
 
-#ifndef TOKENS_HPP
-# define TOKENS_HPP
+#ifndef EQUATION_HPP
+# define EQUATION_HPP
 #include <list>
 #include <stdio.h>
 #include <iostream>
 #include <optional>
+#include <numeric>
 #include "Token.hpp"
 
-enum operationSide {
-	left,
-	right
-};
-
-class Tokens {	
+class Equation {	
 	public:
 		enum operationSide {
 			left,
 			right
 		};
-		Tokens();
-		~Tokens();
-		std::list<Token>	getTokens();
+		Equation();
+		~Equation();
+		std::list<Token>	&getTokens();
 		std::optional<char>	getVar();
 		void	print();
 		void	add(double coeff, int degree);
 		void	sort();
+		void	simplify();
 		int		getHighestDegree();
 		void	setHighestDegree(int n);
-		Tokens::operationSide	getSide();
+		double	findCoefficientOfDegree(int degree);
+		Equation::operationSide	getSide();
+		void	setSide(Equation::operationSide s);
 
 	private:
 		std::list<Token>		_tokens;
 		int						_highest_degree;
-		Tokens::operationSide	_side;
-		Token					*has_degree(int degree);
+		Equation::operationSide	_side;
+		Token					*findTokenByDegree(int degree);
 };
 
 #endif

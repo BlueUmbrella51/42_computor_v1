@@ -17,7 +17,7 @@ void    Rational::reduce(void) {
     long int n = getNumerator();
     long int d = getDenominator();
 
-    long int    GCD = gcd(n, d);
+    long int    GCD = std::gcd(n, d);
     printf("GCD %ld\n", GCD);
 
     setNumerator(getNumerator() / GCD);

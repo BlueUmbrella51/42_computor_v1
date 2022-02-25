@@ -45,8 +45,12 @@
 
 //TODO: handle inf/nan
 Rational        doubleToRational(double num, double accuracy) {
+	if (std::isinf(num) || std::isnan(num)) {
+		printf("Throwing error\n");
+		throw std::invalid_argument("Argument to convert to rational cannot be NaN or INF");
+	}
 	if (accuracy <= 0.0 || accuracy >= 1.0) {
-        throw new std::invalid_argument("Accuracy must be > 0 and < 1.");
+        throw std::invalid_argument("Accuracy must be > 0 and < 1.");
     }
 	int sign = num > 0 ? 1: -1;
 	num = abs(num);
