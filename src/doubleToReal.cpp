@@ -1,3 +1,0 @@
-void        doubleToReal(double n) {
-    
-}

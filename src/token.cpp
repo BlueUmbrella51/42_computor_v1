@@ -1,115 +1,115 @@
-#include "../headers/token.hpp"
+// #include "../headers/token.hpp"
 
-// Parser::Parser() {
-// 	_side = left;
-// 	_var = '0';
-// 	isExpected = NULL;
+// // Parser::Parser() {
+// // 	_side = left;
+// // 	_var = '0';
+// // 	isExpected = NULL;
+// // }
+
+// // void	Parser::setVar(char c) {
+// // 	_var = c;
+// // }
+
+// // char	Parser::getVar() {
+// // 	return _var;
+// // }
+
+// // bool	Parser::varIsSet() {
+// // 	return (_var != '0');
+// // }
+
+// Token::~Token() {
+
 // }
 
-// void	Parser::setVar(char c) {
-// 	_var = c;
+// Token::Token(float coeff, int degree) {
+// 	_coeff = coeff;
+// 	_degree = degree;
 // }
 
-// char	Parser::getVar() {
-// 	return _var;
+// void	Token::print() {
+// 	std::cout << "TOKEN" << std::endl
+// 	<< "Coefficient: " << _coeff << std::endl
+// 	<< "Degree: " << _degree << std::endl;
+// 	std::cout << std::endl;
 // }
 
-// bool	Parser::varIsSet() {
-// 	return (_var != '0');
+// int		Token::getDegree() const {
+// 	return _degree;
 // }
 
-Token::~Token() {
+// double	Token::getCoeff() const {
+// 	return _coeff;
+// }
 
-}
+// void	Token::setCoeff(double c) {
+// 	_coeff = c;
+// }
 
-Token::Token(float coeff, int degree) {
-	_coeff = coeff;
-	_degree = degree;
-}
+// Tokens::Tokens() {
+// 	_variable = std::nullopt;
+// 	_tokens = {};
+// 	_highest_degree = 0;
+// }
 
-void	Token::print() {
-	std::cout << "TOKEN" << std::endl
-	<< "Coefficient: " << _coeff << std::endl
-	<< "Degree: " << _degree << std::endl;
-	std::cout << std::endl;
-}
+// Tokens::~Tokens() {
+// }
 
-int		Token::getDegree() const {
-	return _degree;
-}
+// std::list<Token>	Tokens::getTokens() {
+// 	return _tokens;
+// }
 
-double	Token::getCoeff() const {
-	return _coeff;
-}
+// int		Tokens::getHighestDegree() {
+// 	return _highest_degree;
+// }
 
-void	Token::setCoeff(double c) {
-	_coeff = c;
-}
+// void	Tokens::setHighestDegree(int n) {
+// 	_highest_degree = n;
+// }
 
-Tokens::Tokens() {
-	_variable = std::nullopt;
-	_tokens = {};
-	_highest_degree = 0;
-}
+// void	Tokens::print() {
+// 	std::list<Token>::iterator it;
+// 	printf("Highest degree: %d\n", _highest_degree);
+// 	for (it = _tokens.begin(); it != _tokens.end(); ++it) {
+//     	it->print();
+// 	}
+// }
 
-Tokens::~Tokens() {
-}
+// Token	*Tokens::has_degree(int degree) {
+// 	for (std::list<Token>::iterator iter= _tokens.begin(); iter != _tokens.end(); iter++)
+// 	{
+// 		if (iter->getDegree() == degree) {
+// 			return &*iter;
+// 		}
+// 	}
+// 	return NULL;
+// }
 
-std::list<Token>	Tokens::getTokens() {
-	return _tokens;
-}
+// void	Tokens::add(double coeff, int degree) {
+// 	Token *found = has_degree(degree);
+// 	if (degree > _highest_degree) {
+// 		_highest_degree = degree;
+// 	}
+// 	// printf("%p %f %i\n", (void *)found, coeff, degree);
+// 	if (found == NULL) {
+// 		// printf("Not found\n");
+// 		_tokens.push_back(Token(coeff, degree));
+// 	}
+// 	else {
+// 		found->setCoeff(found->getCoeff() + coeff);
+// 	}
+// }
 
-int		Tokens::getHighestDegree() {
-	return _highest_degree;
-}
+// void	Tokens::setVar(char var) {
+// 	_variable = var;
+// }
 
-void	Tokens::setHighestDegree(int n) {
-	_highest_degree = n;
-}
+// std::optional<char>	Tokens::getVar() {
+// 	return (_variable);
+// }
 
-void	Tokens::print() {
-	std::list<Token>::iterator it;
-	printf("Highest degree: %d\n", _highest_degree);
-	for (it = _tokens.begin(); it != _tokens.end(); ++it) {
-    	it->print();
-	}
-}
-
-Token	*Tokens::has_degree(int degree) {
-	for (std::list<Token>::iterator iter= _tokens.begin(); iter != _tokens.end(); iter++)
-	{
-		if (iter->getDegree() == degree) {
-			return &*iter;
-		}
-	}
-	return NULL;
-}
-
-void	Tokens::add(double coeff, int degree) {
-	Token *found = has_degree(degree);
-	if (degree > _highest_degree) {
-		_highest_degree = degree;
-	}
-	// printf("%p %f %i\n", (void *)found, coeff, degree);
-	if (found == NULL) {
-		// printf("Not found\n");
-		_tokens.push_back(Token(coeff, degree));
-	}
-	else {
-		found->setCoeff(found->getCoeff() + coeff);
-	}
-}
-
-void	Tokens::setVar(char var) {
-	_variable = var;
-}
-
-std::optional<char>	Tokens::getVar() {
-	return (_variable);
-}
-
-void	Tokens::sort() {
-	_tokens.sort([](const Token & t1, const Token & t2) {
-		return (t1.getDegree() > t2.getDegree());
-	});
-}
+// void	Tokens::sort() {
+// 	_tokens.sort([](const Token & t1, const Token & t2) {
+// 		return (t1.getDegree() > t2.getDegree());
+// 	});
+// }

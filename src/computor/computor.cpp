@@ -1,19 +1,6 @@
-#include "../headers/computor.h"
-#include "../headers/token.hpp"
+#include "headers/computor.h"
 
-/* Handle atof error? 
-WE NEED TO KNOW SIDE OF EQUATION!!
-*/
-
-// int		findGCD(std::vector<int> numbers) {
-// 	int result = numbers[0];
-// 	for (int i = 1; i < numbers.length; i++) {
-// 		result = gcd(result, numbers[i]);
-// 	}
-// 	return result;
-// }
-
-double		get_coefficient(std::string &str, size_t *i, operationSide side) {
+double		get_coefficient(std::string &str, size_t *i, Tokens::operationSide side) {
 	bool	dotFound = false;
 	double 	coeff = atof(&(str[*i]));
 
@@ -33,7 +20,7 @@ double		get_coefficient(std::string &str, size_t *i, operationSide side) {
 		(*i)++;
 	}
 	// Not safe yet
-	return side == right ? -coeff : coeff;
+	return side == Tokens::operationSide::right ? -coeff : coeff;
 }
 
 /* Make sure if strlen check is neccessary */
@@ -65,11 +52,9 @@ int		get_degree(std::string &str, size_t *i) {
 }
 
 /* Assumes format of a * x ^ p where a is a number, x a character in the al*/
-void	parse_token(Tokens *token_info, std::string &str, size_t *i,
-operationSide side) {
-	token_info->getVar();
+void	parse_token(Tokens *token_info, std::string &str, size_t *i) {
 	try {
-		double	coeff = get_coefficient(str, i, side);
+		double	coeff = get_coefficient(str, i, token_info->getSide());
 		int		degree = get_degree(str, i);
 		token_info->add(coeff, degree);
 	}
@@ -97,7 +82,7 @@ Tokens	parse_tokens(std::string &equation) {
 				i++;
 				side = right;
 			}
-			parse_token(&token_info, equation, &i, side);
+			parse_token(&token_info, equation, &i);
 		}
 		catch (std::invalid_argument &e) {
 			throw;
@@ -112,6 +97,20 @@ Tokens	parse_tokens(std::string &equation) {
 }
 
 int main(int argc, char *argv[]) {
+// 	printf("GCD of (0, 0) %ld\nGCD of (21, 4) %ld\nGCD of (2, 2) %ld\n\
+// GCD of (9, 36) %ld\n", gcd(0,0), gcd(21, 4), gcd(2,2), gcd(9, 36));
+	Rational n = Rational(-1, -2);
+	n.print();
+	try {
+		double n = (double)-4/8;
+		Rational v = doubleToRational(n);
+		printf("\n\nRATIONAL FROM DOUBLE:\n");
+		v.print();
+	}
+	catch (std::invalid_argument &e) {
+		std::cerr << e.what() << std::endl;
+	}
+	// n.print();
 	if (argc != 2) {
 		std::cerr << "Invalid number of arguments: expected one.";
 		return (-1);
