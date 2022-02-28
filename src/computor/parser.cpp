@@ -54,8 +54,8 @@ int		get_degree(std::string &str, size_t *i) {
 /* Assumes format of a * x ^ p where a is a number, x a character in the al*/
 void	parse_token(Equation *token_info, std::string &str, size_t *i) {
 	try {
-		double	coeff = get_coefficient(str, i, token_info->getSide());
-		int		degree = get_degree(str, i);
+		double		coeff = get_coefficient(str, i, token_info->getSide());
+		int			degree = get_degree(str, i);
 		token_info->add(coeff, degree);
 	}
 	catch (std::invalid_argument& e) {

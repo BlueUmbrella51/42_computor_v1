@@ -30,9 +30,18 @@ void	Equation::setHighestDegree(int n) {
 	_highest_degree = n;
 }
 
+Rational		&Equation::getGcf() {
+	return (_gcf);
+}
+
+void			Equation::setGcf(Rational &x) {
+	_gcf = x;
+}
+
 void	Equation::print() {
-	// std::list<Token>::iterator it;
-	printf("EQUATION:\nHighest degree: %i\n\n", _highest_degree);
+	printf("EQUATION\nhoghest degree: %d\n", _highest_degree);
+	printf("GCF:\n");
+	_gcf.print();
 	for (std::list<Token>::iterator it = _tokens.begin(); it != _tokens.end(); ++it) {
     	it->print();
 	}
@@ -49,10 +58,9 @@ Token	*Equation::findTokenByDegree(int degree) {
 }
 
 void	Equation::add(double coeff, int degree) {
-    // 0 coefficients means zero, so adding is meaningless
-	if (coeff == 0) {
-		return ;
-	}
+	// if (coeff == 0) {
+	// 	return ;
+	// }
 	Token *found = findTokenByDegree(degree);
 	if (degree > _highest_degree) {
 		_highest_degree = degree;
@@ -79,15 +87,50 @@ void	Equation::sort() {
 	});
 }
 
+void	Equation::findHighestDegree() {
+	_highest_degree = 0;
+	for (std::list<Token>::iterator iter = _tokens.begin(); iter != _tokens.end(); ++iter) {
+		if (iter->getDegree() > _highest_degree) {
+			_highest_degree = iter->getDegree();
+		}
+	}
+}
+
 void	Equation::simplify() {
-	// TODO: make own gcd which takes doubles and Rationals etc
-	// Divide everything by GCD if one can be found
-	// std::list<Token>::iterator it = _tokens.begin();
-	// long int result = (long int)it->getCoeff();
-	// for (; it != _tokens.end(); it++) {
-	// 	printf("HERE\n");
-	// 	it->print();
-	// 	result = std::gcd((long int)it->getCoeff(), result);
-	// }
-	// printf("GCD: %ld\n", result);
+	/* Takes all coefficients, turns them into rationals and finds gcd, 
+	which we then divide the terms by
+	==> make sure error margins don't fuck us up in this one */
+	// Remove coefficient = 0 items
+	for (std::list<Token>::iterator iter = _tokens.begin(); iter != _tokens.end();) {
+		if (iter->getCoeff() == 0) {
+			iter = _tokens.erase(iter);
+		}
+		else {
+			++iter;
+		}
+	}
+	/* find new highest degree */
+	findHighestDegree();
+	std::list<Token>::iterator 	it = _tokens.begin();
+	Rational					result = doubleToRational(it->getCoeff());
+
+	++it;
+	while (it != _tokens.end()) {
+		Rational	tmp = doubleToRational(it->getCoeff());
+		result = result.findGcd(tmp);
+		result.print();
+		++it;
+	}
+	setGcf(result);
+	for (std::list<Token>::iterator it = _tokens.begin(); it != _tokens.end(); it++) {
+		auto coeffAsRational = Rational((*it).getCoeff());
+		auto newVal = coeffAsRational / result;
+		
+		// Could this division lead to non-integer coefficients because of the division?
+		// There is a margin of error for conversion to rationals
+		// TODO: Nan / inf check?
+		if (newVal.getDenominator() != 0) {
+			(*it).setCoeff(std::round(newVal.getNumerator() / newVal.getDenominator()));
+		}
+	}
 }

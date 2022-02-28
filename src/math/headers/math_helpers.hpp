@@ -6,7 +6,7 @@
 #include <math.h>
 #include <cmath>
 #include "../../classes/headers/Rational.hpp"
-#define ACCURACY 0.0000001
+#define ACCURACY 0.000000001
 
 long int		gcd(long int a, long int b);
 Rational        doubleToRational(double num, double accuracy = ACCURACY);

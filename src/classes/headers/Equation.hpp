@@ -8,6 +8,8 @@
 #include <optional>
 #include <numeric>
 #include "Token.hpp"
+#include "Rational.hpp"
+#include "../../math/headers/math_helpers.hpp"
 
 class Equation {	
 	public:
@@ -19,20 +21,24 @@ class Equation {
 		~Equation();
 		std::list<Token>	&getTokens();
 		std::optional<char>	getVar();
-		void	print();
-		void	add(double coeff, int degree);
-		void	sort();
-		void	simplify();
-		int		getHighestDegree();
-		void	setHighestDegree(int n);
-		double	findCoefficientOfDegree(int degree);
+		Rational	&getGcf();
+		void		setGcf(Rational &x);
+		void		print();
+		void		add(double coeff, int degree);
+		void		sort();
+		void		simplify();
+		int			getHighestDegree();
+		void		setHighestDegree(int n);
+		void		findHighestDegree();
+		double		findCoefficientOfDegree(int degree);
 		Equation::operationSide	getSide();
-		void	setSide(Equation::operationSide s);
+		void		setSide(Equation::operationSide s);
 
 	private:
 		std::list<Token>		_tokens;
 		int						_highest_degree;
 		Equation::operationSide	_side;
+		Rational				_gcf;
 		Token					*findTokenByDegree(int degree);
 };
 

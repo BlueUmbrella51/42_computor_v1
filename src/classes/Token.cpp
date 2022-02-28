@@ -4,7 +4,7 @@ Token::~Token() {
 
 }
 
-Token::Token(float coeff, int degree) {
+Token::Token(double coeff, int degree) {
 	_coeff = coeff;
 	_degree = degree;
 }
@@ -24,6 +24,10 @@ double	Token::getCoeff() const {
 	return _coeff;
 }
 
-void	Token::setCoeff(double c) {
-	_coeff = c;
+void	Token::setCoeff(double n) {
+	_coeff = n;
+}
+
+bool	Token::operator==(const Token &x) {
+	return (getCoeff() == x.getCoeff() && getDegree() == x.getDegree());
 }

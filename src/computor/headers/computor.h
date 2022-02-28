@@ -10,4 +10,5 @@
 #include "../../classes/headers/Equation.hpp"
 
 Equation	parse_equation(std::string &equation);
+void		solve_equation(Equation &e);
 #endif

@@ -11,11 +11,16 @@ class Rational {
     
     public:
         Rational(long int numerator, long int denominator);
+        Rational(double n);
+        Rational();
         ~Rational();
         void        setDenominator(long int n);
-        long int    getDenominator(void);
+        long int    getDenominator(void)    const;
         void        setNumerator(long int n);
-        long int    getNumerator(void);
+        long int    getNumerator(void)  const;
+        Rational	findGcd(Rational r);
+        Rational&   operator/=(const Rational &x);
+        Rational    operator/(const Rational &x);
         // Rational    add(const Rational &r);
         // Rational    add(long int n);
         // Rational    subtract(const Rational &r);
@@ -27,7 +32,7 @@ class Rational {
         // Rational    exponentiate(long int power);
         // Decimal exponents HAVE to be turned into rationals
         Rational    exponentiate(const Rational &r);
-        void        print();
+        void        print() const;
 };
 
 #endif
