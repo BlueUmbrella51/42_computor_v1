@@ -26,6 +26,44 @@ void		solve_equation(Equation &token_info) {
 		}
 	}
 	else if (highest_degree == 2) {
-		
+		/* Check if coefficient of degree two is one, if so, find number where 
+		x1 * x2 = c and x1 + x2 =  b,
+		else magic x */
+		double a = token_info.findCoefficientOfDegree(2);
+		double b = token_info.findCoefficientOfDegree(1);
+		double c = token_info.findCoefficientOfDegree(0);
+
+		printf("A %lf B %lf C %lf\n", a, b, c);
+		// double top_x = a * c;
+		// double bot_x = b;
+		// find x1 and x2 where x1 * x2 = top_x and x1 + x2 = bot_x
+		// printf("Top x %lf, bot x %lf\n", top_x, bot_x);
+		// b^2 - 4ac
+		double	discriminant = std::pow(b, 2.0) - (4 * a * c);
+		printf("Discriminant: %lf\n", discriminant);
+		/*
+		A positive discriminant indicates that the quadratic has two distinct real number solutions.
+		A discriminant of zero indicates that the quadratic has a repeated real number solution.
+		A negative discriminant indicates that neither of the solutions are real numbers.
+
+		Square root of negative number n is sqrt(n) * sqrt(-1), sqrt(-1) = i (solve complex solutions)
+		*/
+		if (discriminant > 0) {
+			//TODO: simplify radical!
+			/*  */
+			printf("Discriminant is greater than zero, equation has two real solutions.\n");
+			double solution_one = (-b + std::sqrt(discriminant))/ (2 * a); // (-b + discriminant)/2a
+			double solution_two = (-b - std::sqrt(discriminant))/ (2 * a); // (-b + discriminant)/2a
+			printf("The solutions are: x = %lf and x = %lf.\n", solution_one, solution_two);
+		}
+		else if (discriminant == 0) {
+			printf("Discriminant is zero, equation has one real solution.\n");
+			double solution = (-b + std::sqrt(discriminant))/ (2 * a);
+			printf("The solution is: x = %lf.\n", solution);
+		}
+		else {
+			printf("Discriminant is smaller than zero, equation has two complex solutions.\n");
+			// -b +/- sqrt(-discriminant) * i (== sqrt(-1))
+		}
 	}
 }
