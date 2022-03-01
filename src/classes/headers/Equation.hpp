@@ -28,7 +28,7 @@ class Equation {
 		void		sort();
 		void		simplify();
 		int			getHighestDegree();
-		void		setHighestDegree(int n);
+		// void		setHighestDegree(int n);
 		void		findHighestDegree();
 		double		findCoefficientOfDegree(int degree);
 		Equation::operationSide	getSide();

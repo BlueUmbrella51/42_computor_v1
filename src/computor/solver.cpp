@@ -47,23 +47,31 @@ void		solve_equation(Equation &token_info) {
 		A negative discriminant indicates that neither of the solutions are real numbers.
 
 		Square root of negative number n is sqrt(n) * sqrt(-1), sqrt(-1) = i (solve complex solutions)
+
+		formula to solve: (-b +/- sqrt(discriminant)) / 2a
 		*/
 		if (discriminant > 0) {
 			//TODO: simplify radical!
-			/*  */
-			printf("Discriminant is greater than zero, equation has two real solutions.\n");
+			/* TODO: factor to solve? */
+			printf("Discriminant is greater than zero, equation has two real roots.\n");
 			double solution_one = (-b + std::sqrt(discriminant))/ (2 * a); // (-b + discriminant)/2a
 			double solution_two = (-b - std::sqrt(discriminant))/ (2 * a); // (-b + discriminant)/2a
 			printf("The solutions are: x = %lf and x = %lf.\n", solution_one, solution_two);
 		}
 		else if (discriminant == 0) {
-			printf("Discriminant is zero, equation has one real solution.\n");
+			printf("Discriminant is zero, equation has one real root.\n");
 			double solution = (-b + std::sqrt(discriminant))/ (2 * a);
 			printf("The solution is: x = %lf.\n", solution);
 		}
 		else {
-			printf("Discriminant is smaller than zero, equation has two complex solutions.\n");
+			printf("Discriminant is smaller than zero, equation has two complex roots.\n");
 			// -b +/- sqrt(-discriminant) * i (== sqrt(-1))
+			double real_sol1 = -b / (2 * a);
+			double imag_part = std::sqrt(-discriminant) / (2 * a);
+
+			// printing should be handled by class
+			printf("The solutions are: x = %1$lf + %2$lfi and x = %1$lf - %2$lfi.\n", 
+			real_sol1, imag_part);
 		}
 	}
 }

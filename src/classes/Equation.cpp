@@ -3,7 +3,7 @@
 
 Equation::Equation() : _side(Equation::operationSide::left) {
 	_tokens = {};
-	_highest_degree = 0;
+	_highest_degree = -1;
 }
 
 Equation::~Equation() {
@@ -23,12 +23,15 @@ void	Equation::setSide(Equation::operationSide s) {
 }
 
 int		Equation::getHighestDegree() {
+	if (_highest_degree == -1) {
+		findHighestDegree();
+	}
 	return _highest_degree;
 }
 
-void	Equation::setHighestDegree(int n) {
-	_highest_degree = n;
-}
+// void	Equation::setHighestDegree(int n) {
+// 	_highest_degree = n;
+// }
 
 Rational		&Equation::getGcf() {
 	return (_gcf);
@@ -58,13 +61,7 @@ Token	*Equation::findTokenByDegree(int degree) {
 }
 
 void	Equation::add(double coeff, int degree) {
-	// if (coeff == 0) {
-	// 	return ;
-	// }
 	Token *found = findTokenByDegree(degree);
-	if (degree > _highest_degree) {
-		_highest_degree = degree;
-	}
 	if (found == NULL) {
 		_tokens.push_back(Token(coeff, degree));
 	}
