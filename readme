@@ -4,4 +4,6 @@ ax^2 + bx + c = 0
 
 Where a cannot be 0 (b and c can be)
 
-Multiple indeterminates??
+Multiple indeterminates?
+Parser -> freeform?
+Error handling

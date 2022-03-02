@@ -92,5 +92,6 @@ Equation	parse_equation(std::string &equation) {
 		throw std::invalid_argument("No equals sign found, not a valid equation.");
 	}
 	token_info.sort();
+	token_info.simplify();
 	return token_info;
 }

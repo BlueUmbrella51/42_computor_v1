@@ -23,9 +23,6 @@ void	Equation::setSide(Equation::operationSide s) {
 }
 
 int		Equation::getHighestDegree() {
-	if (_highest_degree == -1) {
-		findHighestDegree();
-	}
 	return _highest_degree;
 }
 
@@ -62,6 +59,10 @@ Token	*Equation::findTokenByDegree(int degree) {
 
 void	Equation::add(double coeff, int degree) {
 	Token *found = findTokenByDegree(degree);
+
+	if (degree > getHighestDegree()) {
+		_highest_degree = degree;
+	}
 	if (found == NULL) {
 		_tokens.push_back(Token(coeff, degree));
 	}
@@ -85,12 +86,13 @@ void	Equation::sort() {
 }
 
 void	Equation::findHighestDegree() {
-	_highest_degree = 0;
+	printf("Find highest degree\n");
 	for (std::list<Token>::iterator iter = _tokens.begin(); iter != _tokens.end(); ++iter) {
 		if (iter->getDegree() > _highest_degree) {
 			_highest_degree = iter->getDegree();
 		}
 	}
+	printf("Highest: %d\n", _highest_degree);
 }
 
 void	Equation::simplify() {
@@ -98,16 +100,16 @@ void	Equation::simplify() {
 	which we then divide the terms by
 	==> make sure error margins don't fuck us up in this one */
 	// Remove coefficient = 0 items
-	for (std::list<Token>::iterator iter = _tokens.begin(); iter != _tokens.end();) {
-		if (iter->getCoeff() == 0) {
-			iter = _tokens.erase(iter);
-		}
-		else {
-			++iter;
-		}
-	}
+	// for (std::list<Token>::iterator iter = _tokens.begin(); iter != _tokens.end();) {
+	// 	if (iter->getCoeff() == 0) {
+	// 		iter = _tokens.erase(iter);
+	// 	}
+	// 	else {
+	// 		++iter;
+	// 	}
+	// }
 	/* find new highest degree */
-	findHighestDegree();
+	// findHighestDegree();
 	std::list<Token>::iterator 	it = _tokens.begin();
 	Rational					result = doubleToRational(it->getCoeff());
 
