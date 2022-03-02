@@ -1,6 +1,6 @@
 #define CONFIG_CATCH_MAIN
-#include "catch.hpp"
-#include "../src/headers/computor.hpp"
+#include "headers/catch2.hpp"
+// #include "../computor/headers/computor.h"
 
 TEST_CASE( "vectors can be sized and resized", "[vector]" ) {
 

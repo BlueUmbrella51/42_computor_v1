@@ -6,11 +6,9 @@ BUILDDIR := obj
 # Name of the final executable
 TARGET = computor
 
-# Decide whether the commands will be shwon or not
-VERBOSE = TRUE
-
 # Create the list of directories
-DIRS = classes math computor
+
+DIRS = classes math computor tests
 SOURCEDIRS = $(foreach dir, $(DIRS), $(addprefix $(SOURCEDIR)/, $(dir)))
 TARGETDIRS = $(foreach dir, $(DIRS), $(addprefix $(BUILDDIR)/, $(dir)))
 
@@ -27,11 +25,12 @@ SOURCES = $(foreach dir,$(SOURCEDIRS),$(wildcard $(dir)/*.cpp))
 OBJS := $(subst $(SOURCEDIR),$(BUILDDIR),$(SOURCES:.cpp=.o))
 
 # Define dependencies files for all objects
-# DEPS = $(OBJS:.o=.d)
+DEPS = $(OBJS:.o=.d)
 
 # Name the compiler
 CC = clang++
-FLAGS = -Wall -Wextra -Werror -pedantic -std=c++17
+CFLAGS ?= -Wall -Wextra -Werror -pedantic -std=c++17
+LDFLAGS ?= -g -fsanitize=address
 
 # OS specific part
 ifeq ($(OS),Windows_NT)
@@ -62,16 +61,16 @@ endif
 define generateRules
 $(1)/%.o: %.cpp
 	@echo Building $$@
-	$(HIDE)$(CC) -c $$(INCLUDES) $(FLAGS) -o $$(subst /,$$(PSEP),$$@) $$(subst /,$$(PSEP),$$<) -MMD
+	$(HIDE)$(CC) -c $$(INCLUDES) $(CFLAGS) -o $$(subst /,$$(PSEP),$$@) $$(subst /,$$(PSEP),$$<) -MMD
 endef
 
-.PHONY: all clean directories 
+.PHONY: all clean directories debug
 
 all: directories $(TARGET)
 
 $(TARGET): $(OBJS)
 	$(HIDE)echo Linking $@
-	$(HIDE)$(CC) $(FLAGS) $(OBJS) -o $(TARGET)
+	$(HIDE)$(CC) $(CFLAGS) $(OBJS) -o $(TARGET)
 
 # Include dependencies
 -include $(DEPS)
@@ -89,3 +88,8 @@ clean:
 	@echo Cleaning done !
 
 re: clean all
+
+debug: clean $(eval CFLAGS = $(CFLAGS) $(LDFLAGS)) all
+
+test: clean $(eval DIRS = $(DIRS) $(TEST_DIR)) all
+	echo $(DIRS)
