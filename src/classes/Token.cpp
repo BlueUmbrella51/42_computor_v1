@@ -1,4 +1,4 @@
-#include "headers/Token.hpp"
+#include "Token.h"
 
 Token::~Token() {
 

@@ -1,5 +1,5 @@
-#ifndef COMPLEX_HPP
-# define COMPLEX_HPP
+#ifndef COMPLEX_H
+# define COMPLEX_H
 # include <iostream>
 
 /* Holds complex number of form z = (x, iy) where x is the real part and y is the 

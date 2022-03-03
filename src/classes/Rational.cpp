@@ -1,5 +1,4 @@
-#include "headers/Rational.hpp"
-#include "../math/headers/math_helpers.hpp"
+#include "Rational.h"
 
 Rational::Rational(long int numerator, long int denominator) {
     // TODO: handle 0 denomionator ??

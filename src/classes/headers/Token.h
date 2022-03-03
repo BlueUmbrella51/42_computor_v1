@@ -1,9 +1,9 @@
-#ifndef TOKEN_HPP
-# define TOKEN_HPP
+#ifndef TOKEN_H
+# define TOKEN_H
 #include <stdio.h>
 #include <iostream>
-#include "Rational.hpp"
-#include "../../math/headers/math_helpers.hpp"
+#include "Rational.h"
+#include "math_helpers.h"
 
 class Token
 {

@@ -1,5 +1,4 @@
-#include "headers/Equation.hpp"
-#include <list>
+#include "Equation.h"
 
 Equation::Equation() : _side(Equation::operationSide::left) {
 	_tokens = {};

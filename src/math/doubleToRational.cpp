@@ -1,4 +1,4 @@
-#include "headers/math_helpers.hpp"
+#include "math_helpers.h"
 /* Stern-brocot algorithm for continued fractions
 TODO: handle possible overflow? */
 

@@ -1,15 +1,15 @@
 
 
-#ifndef EQUATION_HPP
-# define EQUATION_HPP
+#ifndef EQUATION_H
+# define EQUATION_H
 #include <list>
 #include <stdio.h>
 #include <iostream>
 #include <optional>
 #include <numeric>
-#include "Token.hpp"
-#include "Rational.hpp"
-#include "../../math/headers/math_helpers.hpp"
+#include "Token.h"
+#include "Rational.h"
+#include "math_helpers.h"
 
 class Equation {	
 	public:
