@@ -5,7 +5,8 @@
 #include <stdexcept>
 #include <math.h>
 #include <cmath>
-#include "Rational.h"
+#include <Rational.h>
+
 #define ACCURACY 0.000000001
 
 class Rational;

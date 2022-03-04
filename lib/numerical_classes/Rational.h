@@ -1,7 +1,7 @@
 #ifndef RATIONAL_NUMBER_H
 # define RATIONAL_NUMBER_H
 #include <numeric>
-#include "math_helpers.h"
+#include <math_helpers.h>
 
 class Rational {
     private:

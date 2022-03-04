@@ -20,7 +20,6 @@ class Equation {
 		Equation();
 		~Equation();
 		std::list<Token>	&getTokens();
-		std::optional<char>	getVar();
 		Rational	&getGcf();
 		void		setGcf(Rational &x);
 		void		print();

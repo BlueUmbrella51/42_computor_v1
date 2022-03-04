@@ -1,4 +1,4 @@
-#include "headers/computor.h"
+#include "computor.h"
 
 
 void		solve_first_degree(Equation &token_info) {
@@ -59,8 +59,8 @@ void		solve_second_degree(Equation &token_info) {
 		double imag_part = std::sqrt(-discriminant) / (2 * a);
 
 		// printing should be handled by class
-		printf("The solutions are: x = %1$lf + %2$lfi and x = %1$lf - %2$lfi.\n", 
-		real_sol1, imag_part);
+		printf("The solutions are: x = %lf + %lfi and x = %lf - %lfi.\n", 
+		real_sol1, imag_part, real_sol1, imag_part);
 	}
 }
 

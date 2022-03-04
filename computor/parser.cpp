@@ -1,4 +1,4 @@
-#include "headers/computor.h"
+#include "computor.h"
 
 double		get_coefficient(std::string &str, size_t *i, Equation::operationSide side) {
 	bool	dotFound = false;
