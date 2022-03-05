@@ -1,13 +1,10 @@
-add_library(math_helpers STATIC
-			math_helpers.h
+add_library(${mathName}
 			doubleToRational.cpp
 			greatestCommonDivisor.cpp
 )
 
-target_link_libraries(math_helpers PRIVATE numerical_classes)
+add_subdirectory(tests)
 
-target_include_directories(math_helpers 
-	PUBLIC  
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>  
-    $<INSTALL_INTERFACE:>  # <prefix>/include/mylib
-)
+target_include_directories(${mathName} PUBLIC ${headerDir})
+
+target_link_libraries(${mathName} PRIVATE ${numerName})

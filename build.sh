@@ -1,3 +1,3 @@
 cd build
-make VERBOSE=1
+make
 cd ..
