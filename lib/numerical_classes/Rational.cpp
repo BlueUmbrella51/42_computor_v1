@@ -1,23 +1,26 @@
 #include "Rational.h"
+// TODO: division by zero and overflow protection
 
-Rational::Rational(long int numerator, long int denominator) {
+Rational::Rational(long long int numerator, long long int denominator) {
     // TODO: handle 0 denomionator ??
     _numerator = numerator;
     _denominator = denominator;
-    reduce();
-}
-
-Rational::Rational(double n) {
-    *this = doubleToRational(n);
+    // reduce();
 }
 
 Rational::Rational() {
     _numerator = 0;
-    _denominator = 0;
+    _denominator = 1;
 }
 
 Rational::~Rational() {
 
+}
+
+Rational    &Rational::operator=(Rational other) {
+    _numerator = other.getNumerator();
+    _denominator = other.getDenominator();
+    return *this;
 }
 
 Rational    &Rational::operator/=(const Rational &x) {
@@ -26,22 +29,39 @@ Rational    &Rational::operator/=(const Rational &x) {
     return *this;
 }
 
-Rational    Rational::operator/(const Rational &x) {
-    print();
-    x.print();
-    return Rational(getNumerator() * x.getDenominator(), getDenominator() * x.getNumerator());
+Rational        operator/(const Rational &lhs, const Rational &rhs) {
+    Rational r = Rational(lhs.getNumerator() * rhs.getDenominator(), 
+    lhs.getDenominator() * rhs.getNumerator());
+    r.reduce();
+    return (r);
+}
+
+std::ostream    &operator<<(std::ostream &os, const Rational &x)
+{
+    long long d = x.getDenominator();
+    long long n = x.getNumerator();
+    os << n;
+    if (n != 0 && d != 1) {
+        os << "/" << d;
+    }
+    return os;
+}
+
+bool        operator==(const Rational &lhs, const Rational &rhs) {
+    return (lhs.getNumerator() == rhs.getNumerator()
+    && lhs.getDenominator() == rhs.getDenominator());
 }
 
 void    Rational::reduce(void) {
     long int n = getNumerator();
     long int d = getDenominator();
 
-    long int    GCD = std::gcd(n, d);
+    long int    gcd = std::gcd(n, d);
 
     // TODO: better handling / exceptions for inf/nan/zero division
-    if (GCD != 0) {
-        setNumerator(getNumerator() / GCD);
-        setDenominator(getDenominator() / GCD);
+    if (gcd != 0 && gcd != 1) {
+        setNumerator(getNumerator() / gcd);
+        setDenominator(getDenominator() / gcd);
     }
 }
 
@@ -70,4 +90,18 @@ Rational    Rational::findGcd(Rational r) {
     // highest degree)
     return Rational(std::gcd(getNumerator(), r.getNumerator()), 
     std::lcm(getDenominator(), r.getDenominator()));
+}
+
+Rational    doubleToRational(long double n, long double accuracy) {
+    long long num, denum;
+    try {
+        std::tuple<long long int, long long int> ratio = doubleToRatio(n, accuracy);
+        num = std::get<0>(ratio);
+        denum = std::get<1>(ratio);
+    }
+    catch (std::overflow_error &e) {
+        std::cout << e.what();
+        throw (e);
+    }
+	return Rational(num, denum);
 }

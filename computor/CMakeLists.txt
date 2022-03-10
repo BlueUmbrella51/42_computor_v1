@@ -1,14 +1,13 @@
 add_executable(computor 
 	computor.cpp
-	computor.h
 	parser.cpp
 	solver.cpp
 )
 
-target_link_libraries(${PROJECT_NAME}
+target_compile_features(computor PUBLIC cxx_std_17)
+
+target_link_libraries(computor
 	PRIVATE polynomials
 )
 
-target_include_directories(computor 
-	PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}
-)
+target_include_directories(computor PUBLIC ${CMAKE_CURRENT_LIST_DIR}/include)

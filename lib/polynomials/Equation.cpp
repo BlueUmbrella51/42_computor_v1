@@ -1,16 +1,21 @@
 #include "Equation.h"
 
 Equation::Equation() : _side(Equation::operationSide::left) {
-	_tokens = {};
 	_highest_degree = -1;
+	// _tokensLeft = {};
+	// _tokensRight = {};
 }
 
 Equation::~Equation() {
 
 }
 
-std::list<Token>	&Equation::getTokens() {
-	return _tokens;
+std::list<Token>	&Equation::getEquationLeft() {
+	return _tokensLeft;
+}
+
+std::list<Token>	&Equation::getEquationRight() {
+	return _tokensRight;
 }
 
 Equation::operationSide	Equation::getSide() {
@@ -29,25 +34,29 @@ int		Equation::getHighestDegree() {
 // 	_highest_degree = n;
 // }
 
-Rational		&Equation::getGcf() {
-	return (_gcf);
-}
+// Rational		&Equation::getGcf() {
+// 	return (_gcf);
+// }
 
-void			Equation::setGcf(Rational &x) {
-	_gcf = x;
-}
+// void			Equation::setGcf(Rational &x) {
+// 	_gcf = x;
+// }
 
 void	Equation::print() {
-	printf("EQUATION\nhoghest degree: %d\n", _highest_degree);
-	printf("GCF:\n");
-	_gcf.print();
-	for (std::list<Token>::iterator it = _tokens.begin(); it != _tokens.end(); ++it) {
+	printf("EQUATION\nhighest degree: %d\n", getHighestDegree());
+	// printf("GCF:\n");
+	// _gcf.print();
+	for (std::list<Token>::iterator it = _tokensLeft.begin(); it != _tokensLeft.end(); ++it) {
+    	it->print();
+	}
+	printf(" = ");
+	for (std::list<Token>::iterator it = _tokensRight.begin(); it != _tokensRight.end(); ++it) {
     	it->print();
 	}
 }
 
-Token	*Equation::findTokenByDegree(int degree) {
-	for (std::list<Token>::iterator iter = _tokens.begin(); iter != _tokens.end(); iter++)
+Token	*Equation::findTokenByDegreeLeft(int degree) {
+	for (std::list<Token>::iterator iter = _tokensLeft.begin(); iter != _tokensLeft.end(); iter++)
 	{
 		if (iter->getDegree() == degree) {
 			return &*iter;
@@ -56,79 +65,87 @@ Token	*Equation::findTokenByDegree(int degree) {
 	return NULL;
 }
 
-void	Equation::add(double coeff, int degree) {
-	Token *found = findTokenByDegree(degree);
+Token	*Equation::findTokenByDegreeRight(int degree) {
+	for (std::list<Token>::iterator iter = _tokensRight.begin(); iter != _tokensLeft.end(); iter++)
+	{
+		if (iter->getDegree() == degree) {
+			return &*iter;
+		}
+	}
+	return NULL;
+}
 
-	if (degree > getHighestDegree()) {
+// template <typename T>
+void	Equation::add(coeffOpts coeff, int degree) {
+	if (degree > _highest_degree) {
 		_highest_degree = degree;
 	}
-	if (found == NULL) {
-		_tokens.push_back(Token(coeff, degree));
+	if (_side == operationSide::left) {
+		_tokensLeft.push_back(Token(coeff, degree));
 	}
 	else {
-		found->setCoeff(found->getCoeff() + coeff);
+		_tokensRight.push_back(Token(coeff, degree));
 	}
 }
 
-double	Equation::findCoefficientOfDegree(int degree) {
-	Token *found = findTokenByDegree(degree);
-	if (found == NULL) {
-		return 0.0;
-	}
-	return found->getCoeff();
-}
+// double	Equation::findCoefficientOfDegreeLeft(int degree) {
+// 	Token *found = findTokenByDegreeLeft(degree);
+// 	if (found == NULL) {
+// 		return 0.0;
+// 	}
+// 	return found->getCoeff();
+// }
+
+// double	Equation::findCoefficientOfDegreeLeft()
 
 void	Equation::sort() {
-	_tokens.sort([](const Token & t1, const Token & t2) {
+	_tokensLeft.sort([](const Token & t1, const Token & t2) {
+		return (t1.getDegree() > t2.getDegree());
+	});
+	_tokensRight.sort([](const Token & t1, const Token & t2) {
 		return (t1.getDegree() > t2.getDegree());
 	});
 }
 
-void	Equation::findHighestDegree() {
-	printf("Find highest degree\n");
-	for (std::list<Token>::iterator iter = _tokens.begin(); iter != _tokens.end(); ++iter) {
-		if (iter->getDegree() > _highest_degree) {
-			_highest_degree = iter->getDegree();
-		}
-	}
-	printf("Highest: %d\n", _highest_degree);
-}
+// int		Equation::findHighestDegree() {
+// 	int hd = -1;
+// 	printf("Find highest degree\n");
+// 	for (std::list<Token>::iterator iter = _tokens.begin(); iter != _tokens.end(); ++iter) {
+// 		if (iter->getDegree() > hd) {
+// 			hd = iter->getDegree();
+// 		}
+// 	}
+// 	printf("Highest: %d\n", hd);
+// 	return (hd);
+// }
 
 void	Equation::simplify() {
 	/* Takes all coefficients, turns them into rationals and finds gcd, 
 	which we then divide the terms by
 	==> make sure error margins don't fuck us up in this one */
 	// Remove coefficient = 0 items
-	// for (std::list<Token>::iterator iter = _tokens.begin(); iter != _tokens.end();) {
-	// 	if (iter->getCoeff() == 0) {
-	// 		iter = _tokens.erase(iter);
-	// 	}
-	// 	else {
-	// 		++iter;
+
+	/* find new highest degree */
+	// std::list<Token>::iterator 	it = _tokens.begin();
+	// Rational					result = doubleToRational(it->getCoeff());
+
+	// ++it;
+	// while (it != _tokens.end()) {
+	// 	Rational	tmp = doubleToRational(it->getCoeff());
+	// 	result = result.findGcd(tmp);
+	// 	result.print();
+	// 	++it;
+	// }
+	// setGcf(result);
+	// for (std::list<Token>::iterator it = _tokens.begin(); it != _tokens.end(); it++) {
+	// 	auto coeffAsRational = Rational((*it).getCoeff());
+	// 	auto newVal = coeffAsRational / result;
+		
+	// 	// Could this division lead to non-integer coefficients because of the division?
+	// 	// There is a margin of error for conversion to rationals
+	// 	// TODO: Nan / inf check?
+	// 	if (newVal.getDenominator() != 0) {
+	// 		(*it).setCoeff(std::round(newVal.getNumerator() / newVal.getDenominator()));
 	// 	}
 	// }
-	/* find new highest degree */
-	// findHighestDegree();
-	std::list<Token>::iterator 	it = _tokens.begin();
-	Rational					result = doubleToRational(it->getCoeff());
-
-	++it;
-	while (it != _tokens.end()) {
-		Rational	tmp = doubleToRational(it->getCoeff());
-		result = result.findGcd(tmp);
-		result.print();
-		++it;
-	}
-	setGcf(result);
-	for (std::list<Token>::iterator it = _tokens.begin(); it != _tokens.end(); it++) {
-		auto coeffAsRational = Rational((*it).getCoeff());
-		auto newVal = coeffAsRational / result;
-		
-		// Could this division lead to non-integer coefficients because of the division?
-		// There is a margin of error for conversion to rationals
-		// TODO: Nan / inf check?
-		if (newVal.getDenominator() != 0) {
-			(*it).setCoeff(std::round(newVal.getNumerator() / newVal.getDenominator()));
-		}
-	}
 }

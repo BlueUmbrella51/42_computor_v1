@@ -7,8 +7,12 @@
 #include <algorithm>
 #include <cmath>
 #include <Rational.h>
+#include <ParseToken.h>
 #include <math_helpers.h>
 #include <Equation.h>
+#include <cstdlib>
+#include <any>
+#include <regex>
 
 Equation	parse_equation(std::string &equation);
 void		solve_equation(Equation &e);

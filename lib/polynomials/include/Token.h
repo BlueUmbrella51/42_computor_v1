@@ -4,20 +4,25 @@
 #include <iostream>
 #include "Rational.h"
 #include "math_helpers.h"
+#include <variant>
+
+using coeffOpts = std::variant<long double, long long, Rational>;
 
 class Token
 {
 	private:
-		double		_coeff;
+		coeffOpts	_coeff;
 		int			_degree;
 
 	public:
-		Token(double coeff, int degree);
+		// template <typename T>
+		Token(coeffOpts coeff, int degree);
+		Token();
 		~Token();
 		void		print();
 		int			getDegree() const;
 		double		getCoeff()	const;
-		void		setCoeff(double n);
+		// void		setCoeff(double n);
 		bool   		operator==(const Token &x);
 		// Rational	coeffToRational();
 };

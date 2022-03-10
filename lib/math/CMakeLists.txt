@@ -1,10 +1,11 @@
 add_library(${mathName}
-			doubleToRational.cpp
+			doubleToRatio.cpp
 			greatestCommonDivisor.cpp
+
 )
+
+target_compile_features(${mathName} PUBLIC cxx_std_17)
 
 add_subdirectory(tests)
 
 target_include_directories(${mathName} PUBLIC ${headerDir})
-
-target_link_libraries(${mathName} PRIVATE ${numerName})
