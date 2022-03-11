@@ -1,35 +1,18 @@
-// #include <stdio.h>
+#include "math_helpers.h"
 
-// long int		gcd_inner(long int a, long int b, int sign) {
-// 	if (a == 0)
-// 		return b;
-// 	if (b == 0)
-// 		return a;
-// 	if (a == b)
-// 		return (sign * a);
-// 	if (a > b)
-// 		return gcd_inner(a % b, b, sign);
-// 	return gcd_inner(a, b % a, sign);
-// }
+long long		getGcd(long double lhs, long double rhs) {
+	/* Just to return one without compiler errors */
+	return 1;
+}
 
-// long int		gcd(long int a, long int b) {
-// 	printf("A: %ld\nB: %ld\n", a, b);
-// 	int sign = 1;
-// 	if (a < 0 && b < 0) {
-// 		a = -a;
-// 		b = -b;
-// 		sign = -1;
-// 	}
-// 	if (a == 0)
-// 		return b;
-// 	if (b == 0)
-// 		return a;
-// 	if (a == b)
-// 		return (sign * a);
-// 	if (a > b)
-// 		return gcd_inner(a % b, b, sign);
-// 	return gcd_inner(a, b % a, sign);
-// }
+long long		getGcd(long double lhs, long long rhs) {
+	return 1;
+}
 
-// Function to find gcd of array of
-// numbers
+long long		getGcd(long long lhs, long double rhs) {
+	return 1;
+}
+
+long long 		getGcd(long long lhs, long long rhs) {
+	return std::gcd(lhs, rhs);
+}

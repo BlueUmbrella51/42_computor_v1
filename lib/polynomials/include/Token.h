@@ -6,25 +6,27 @@
 #include "math_helpers.h"
 #include <variant>
 
-using coeffOpts = std::variant<long double, long long, Rational>;
-
 class Token
 {
-	private:
-		coeffOpts	_coeff;
-		int			_degree;
-
 	public:
+		typedef 	std::variant<long double, long long, Rational> coeffOpts; 
 		// template <typename T>
-		Token(coeffOpts coeff, int degree);
-		Token();
+		Token(coeffOpts coeff, int degree = 0);
+		// Token();
 		~Token();
-		void		print();
+		void		print()	const;
 		int			getDegree() const;
-		double		getCoeff()	const;
+		coeffOpts	getCoeff()	const;
 		// void		setCoeff(double n);
 		bool   		operator==(const Token &x);
 		// Rational	coeffToRational();
+	private:
+		coeffOpts	_coeff;
+		long int	_degree;
 };
+
+Token				operator*(const Token &t, long long n);
+Token				operator+(const Token &lhs, Token &rhs);
+Token::coeffOpts	getGcd(const Token::coeffOpts &lhs, const Token::coeffOpts &rhs);
 
 #endif

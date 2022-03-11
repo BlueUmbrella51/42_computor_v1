@@ -1,7 +1,7 @@
 add_library(${mathName}
 			doubleToRatio.cpp
 			greatestCommonDivisor.cpp
-
+			llFactorGcd.cpp
 )
 
 target_compile_features(${mathName} PUBLIC cxx_std_17)

@@ -9,6 +9,8 @@
 #include <tuple>
 #include <optional>
 #include <functional>
+#include <numeric>
+#include <limits.h>
 
 #define ACCURACY 0.00000000001
 
@@ -17,6 +19,12 @@ class Rational;
 // long int		gcd(long int a, long int b);
 // Rational        doubleToRational(double num, double accuracy = ACCURACY);
 std::tuple<long long int, long long int>   	doubleToRatio(long double num, long double accuracy = ACCURACY);
+void			ll_factor_gcd(long long *num, long long *denum);
+long long		getGcd(long double lhs, long double rhs);
+long long		getGcd(long double lhs, long long rhs);
+long long		getGcd(long long lhs, long double rhs);
+long long 		getGcd(long long lhs, long long rhs);
+
 template <typename T>
 std::optional<T>	abs_overflow(T n) {
 	if (n < 0) {

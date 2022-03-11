@@ -2,8 +2,8 @@
 
 Equation::Equation() : _side(Equation::operationSide::left) {
 	_highest_degree = -1;
-	// _tokensLeft = {};
-	// _tokensRight = {};
+	_tokensLeft = {};
+	_tokensRight = {};
 }
 
 Equation::~Equation() {
@@ -30,22 +30,9 @@ int		Equation::getHighestDegree() {
 	return _highest_degree;
 }
 
-// void	Equation::setHighestDegree(int n) {
-// 	_highest_degree = n;
-// }
-
-// Rational		&Equation::getGcf() {
-// 	return (_gcf);
-// }
-
-// void			Equation::setGcf(Rational &x) {
-// 	_gcf = x;
-// }
-
 void	Equation::print() {
+	printf("\n\n");
 	printf("EQUATION\nhighest degree: %d\n", getHighestDegree());
-	// printf("GCF:\n");
-	// _gcf.print();
 	for (std::list<Token>::iterator it = _tokensLeft.begin(); it != _tokensLeft.end(); ++it) {
     	it->print();
 	}
@@ -53,30 +40,31 @@ void	Equation::print() {
 	for (std::list<Token>::iterator it = _tokensRight.begin(); it != _tokensRight.end(); ++it) {
     	it->print();
 	}
+	printf("\n\n");
 }
 
-Token	*Equation::findTokenByDegreeLeft(int degree) {
+Token	&Equation::findTokenByDegreeLeft(long int degree) {
 	for (std::list<Token>::iterator iter = _tokensLeft.begin(); iter != _tokensLeft.end(); iter++)
 	{
 		if (iter->getDegree() == degree) {
-			return &*iter;
+			return *iter;
 		}
 	}
-	return NULL;
+	throw std::invalid_argument("Token of degree not found.");
 }
 
-Token	*Equation::findTokenByDegreeRight(int degree) {
+Token	&Equation::findTokenByDegreeRight(long int degree) {
 	for (std::list<Token>::iterator iter = _tokensRight.begin(); iter != _tokensLeft.end(); iter++)
 	{
 		if (iter->getDegree() == degree) {
-			return &*iter;
+			return *iter;
 		}
 	}
-	return NULL;
+	throw std::invalid_argument("Token of degree not found.");
 }
 
 // template <typename T>
-void	Equation::add(coeffOpts coeff, int degree) {
+void	Equation::add(Token::coeffOpts coeff, int degree) {
 	if (degree > _highest_degree) {
 		_highest_degree = degree;
 	}
@@ -98,11 +86,8 @@ void	Equation::add(coeffOpts coeff, int degree) {
 
 // double	Equation::findCoefficientOfDegreeLeft()
 
-void	Equation::sort() {
+void	Equation::sortLeft() {
 	_tokensLeft.sort([](const Token & t1, const Token & t2) {
-		return (t1.getDegree() > t2.getDegree());
-	});
-	_tokensRight.sort([](const Token & t1, const Token & t2) {
 		return (t1.getDegree() > t2.getDegree());
 	});
 }
@@ -119,33 +104,66 @@ void	Equation::sort() {
 // 	return (hd);
 // }
 
+void	Equation::combineTokensByDegreeLeft() {
+	/* Only works on SORTED list */
+	std::list<Token>::iterator it = _tokensLeft.begin();
+	std::list<Token>::iterator curr = it;
+	++it;
+	while (it != _tokensLeft.end()) {
+		if ((*it).getDegree() == (*curr).getDegree()) {
+			try {
+				*curr = *curr + *it;
+				it = _tokensLeft.erase(it);
+			}
+			catch (std::overflow_error &e) {
+				throw e;
+			}
+		}
+		else {
+			curr = it;
+			++it;
+		}
+	}
+}
+
+void	Equation::moveTokensLeft() {
+	std::list<Token>::iterator iter = _tokensRight.begin();
+	try {
+		while (iter != _tokensRight.end())
+		{
+			_tokensLeft.push_back(*iter * -1);
+			iter = _tokensRight.erase(iter);
+		}
+	}
+	catch (std::overflow_error &e) { throw (e); }
+}
+
+void	Equation::factorLeft() {
+	// There can never be less than two tokens so this should be safe
+	std::list<Token>::iterator 	it = _tokensLeft.begin();
+	Token::coeffOpts			gcd = (*it).getCoeff();
+
+	++it;
+	while (it != _tokensLeft.end()) {
+		gcd = getGcd(((*it).getCoeff()), gcd);
+	}
+}
+
 void	Equation::simplify() {
-	/* Takes all coefficients, turns them into rationals and finds gcd, 
-	which we then divide the terms by
-	==> make sure error margins don't fuck us up in this one */
-	// Remove coefficient = 0 items
-
-	/* find new highest degree */
-	// std::list<Token>::iterator 	it = _tokens.begin();
-	// Rational					result = doubleToRational(it->getCoeff());
-
-	// ++it;
-	// while (it != _tokens.end()) {
-	// 	Rational	tmp = doubleToRational(it->getCoeff());
-	// 	result = result.findGcd(tmp);
-	// 	result.print();
-	// 	++it;
-	// }
-	// setGcf(result);
-	// for (std::list<Token>::iterator it = _tokens.begin(); it != _tokens.end(); it++) {
-	// 	auto coeffAsRational = Rational((*it).getCoeff());
-	// 	auto newVal = coeffAsRational / result;
-		
-	// 	// Could this division lead to non-integer coefficients because of the division?
-	// 	// There is a margin of error for conversion to rationals
-	// 	// TODO: Nan / inf check?
-	// 	if (newVal.getDenominator() != 0) {
-	// 		(*it).setCoeff(std::round(newVal.getNumerator() / newVal.getDenominator()));
-	// 	}
-	// }
+	/* 	Moves all tokens to left of equation
+		Combines any tokens of same degree
+	 */
+	try {
+		moveTokensLeft();
+		printf("AFTER MOVE TOKENS LEFT\n");
+		sortLeft();
+		printf("AFTER SORT\n");
+		print();
+		combineTokensByDegreeLeft();
+		printf("AFTER COMBINE\n");
+		print();
+		printf("AFTER FACTOR OUT GCD\n");
+		factorLeft();
+	}
+	catch (std::overflow_error &e) { throw e; }
 }

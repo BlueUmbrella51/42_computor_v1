@@ -15,22 +15,25 @@ long long		get_base_ten(size_t	digits_read) {
 	return (bt.value());
 }
 
-long long		string_to_ll(const char *str, size_t *index) {
-	char 		*end;
-	long long 	whole;
-	whole = strtoll(&(str[*index]), &end, 10);
-	if (end == &(str[*index])) { throw std::invalid_argument("Could not parse whole part of number."); }
+long long		string_to_ll(std::string &str, size_t *i) {
+	char 					*end;
+	long long 				whole;
+
+	whole = strtoll(&(str[*i]), &end, 10);
+	if (end == str.c_str()) { throw std::invalid_argument("Could not parse whole part of number."); }
 	if (errno == ERANGE) { throw std::overflow_error("Whole part of number could not be represented as long long."); }
-	*index += end - str;
+	*i = end - str.c_str();
 	return whole;
 }
 
-void			factor_gcd(long long *num, long long *denum) {
-	long long gcd = std::gcd(*num, *denum);
-	if (gcd != 0) {
-		*num /= gcd;
-		*denum /= gcd;
-	}
+long long		string_to_ll(std::string &str) {
+	char 					*end;
+	long long 				whole;
+
+	whole = strtoll(str.c_str(), &end, 10);
+	if (end == str.c_str()) { throw std::invalid_argument("Could not parse whole part of number."); }
+	if (errno == ERANGE) { throw std::overflow_error("Whole part of number could not be represented as long long."); }
+	return whole;
 }
 
 void			combine_whole_numerator(long long *num, long long whole, long long denom) {
@@ -47,19 +50,18 @@ void			combine_whole_numerator(long long *num, long long whole, long long denom)
 	}
 }
 
-Rational		rational_string_to_rational(std::string &str, size_t *i) {
-	// TODO: denominator CANNOT be 0
-	size_t		start = *i;
-	long long 	numerator, denominator;
+Rational		rational_string_to_rational(std::string &str) {
+	long long 		numerator, denominator;
+	size_t			i = 0;
 
 	try {
-		numerator = string_to_ll(str.c_str(), &start);
-		++start;
-		denominator = string_to_ll(str.c_str(), &start);
+		numerator = string_to_ll(str, &i);
+		++i;
+		denominator = string_to_ll(str, &i);
 		if (denominator == 0) {
 			throw std::invalid_argument("Denominator of fraction cannot be zero.");
 		}
-		*i = start;
+		ll_factor_gcd(&numerator, &denominator);
 		return Rational(numerator, denominator);
 	}
 	catch (std::overflow_error &e) {
@@ -70,20 +72,23 @@ Rational		rational_string_to_rational(std::string &str, size_t *i) {
 	}
 }
 
-Rational		decimal_string_to_rational(std::string &str, size_t *i) {
-	size_t		start = *i;
-	long long 	whole, denominator, prev_read, numerator;
+Rational		decimal_string_to_rational(std::string &str) {
+	size_t		i = 0;
+	size_t		prev = 0;
+	long long 	whole, denominator, numerator;
 
 	try {
-		whole = string_to_ll(str.c_str(), &start);
-		if (str[start] == '.') { ++start; }
-		prev_read = start;
-		numerator = string_to_ll(str.c_str(), &start);
-		denominator = get_base_ten(start - prev_read);
+		whole = string_to_ll(str, &i);
+		/* skip '.' */
+		++i;
+		prev = i;
+		numerator = string_to_ll(str, &i);
+		denominator = get_base_ten(i - prev);
 		/* Factor out gcd of numerator and denominator */
-		factor_gcd(&numerator, &denominator);
+		ll_factor_gcd(&numerator, &denominator);
 		/* Combine whole part and numerator */
 		combine_whole_numerator(&numerator, whole, denominator);
+		return Rational(numerator, denominator);
 	}
 	catch (std::overflow_error &e) {
 		throw e;
@@ -91,142 +96,88 @@ Rational		decimal_string_to_rational(std::string &str, size_t *i) {
 	catch (std::invalid_argument &e) {
 		throw e;
 	}
-	printf("rational: %lld/%lld\n", numerator, denominator);
-	*i = start;
-	return Rational(numerator, denominator);
 }
 
-long double	decimal_string_to_double(std::string &str, size_t *i) {
+long double	decimal_string_to_double(std::string &str) {
 	char		*end;
-	long double res = strtold(&(str[*i]), &end);
+	long double res = strtold(str.c_str(), &end);
 
-	if (end == &(str[*i])) { throw std::invalid_argument("Could not parse whole part of number."); }
-	if (errno == ERANGE) { throw std::overflow_error("Whole part of number could not be represented as long long."); }
-	*i += (end - str.c_str());
-	printf("long double: %Lf\n", res);
+	if (end == str.c_str()) { throw std::invalid_argument("Could not parse whole part of number."); }
+	if (errno == ERANGE) { throw std::overflow_error("Whole part of number could not be represented as long double."); }
 	return res;
 }
 
-bool		is_decimal_string(std::string &str, size_t i) {
-	size_t start = i;
-	while (isdigit(str[i])) {
-		i++;
-	}
-	return (str[i] == '.' && isdigit(str[i + 1]) && start != i);
-}
-
-bool		is_rational_string(std::string &str, size_t i) {
-	/* Check whether form is n/m where n and m are whole numbers */
-	size_t start = i;
-	while (isdigit(str[i])) {
-		i++;
-	}
-	/* Has to have at least one digit before '/' and at least one after, 
-	possibly with +/- between */
-	return (str[i] == '/' && (isdigit(str[i + 1]) || 
-	((str[i + 1] == '+' || str[i + 1] == '-') && isdigit(str[i + 2])))
-	&& start != i);
-}
-
-coeffOpts		get_coefficient(std::string &str, size_t *i) {
-	// TODO: side for sign!!..
-	// TODO: HAS TO start with sign?
-	if (!(str[*i] == '-' || str[*i] == '+')) {
-		throw std::invalid_argument("Invalid token in equation, expected '+' or '-'.");
-	}
-	else {
-		++(*i);
-	}
-	if (is_rational_string(str, *i)) {
-		printf("Is rational string.");
+Token::coeffOpts		get_coefficient(std::string &str, ParseToken::coeffTypes type) {
+	if (type == ParseToken::coeffTypes::rational) {
 		try {
-			Rational r = rational_string_to_rational(str, i);
+			Rational r = rational_string_to_rational(str);
+			return r;
+		}
+		catch (std::overflow_error &e) { throw e; }
+		catch (std::invalid_argument &e) { throw e; }
+	}
+	else if (type == ParseToken::coeffTypes::decimal) {
+		try {
+			Rational r = decimal_string_to_rational(str);
 			return r;
 		}
 		catch (std::overflow_error &e) {
-			throw (e);
-		}
-		catch (std::invalid_argument &e) {
-			throw (e);
-		}
-	}
-	else if (is_decimal_string(str, *i))
-	{
-		printf("Is decimal string.");
-		try {
-			Rational r = decimal_string_to_rational(str, i);
-			return r;
-		}
-		catch (...) {
 			try {
-				long double n = decimal_string_to_double(str, i);
+				long double n = decimal_string_to_double(str);
 				return n;
 			}
-			catch (std::overflow_error &e) {
-				throw (e);
-			}
-			catch (std::invalid_argument &e) {
-				throw (e);
-			}
+			catch (std::overflow_error &e) { throw e; }
+			catch (std::invalid_argument &e) { throw e; }
 		}
 	}
 	else {
 		try {
-			long long n = string_to_ll(str.c_str(), i);
+			long long n = string_to_ll(str);
 			return n;
 		}
-		catch (std::overflow_error &e) {
-			throw (e);
-		}
-		catch (std::invalid_argument &e) {
-			throw (e);
-		}
+		catch (std::overflow_error &e) { throw (e); }
+		catch (std::invalid_argument &e) { throw e; }
 	}
 }
 
 /* Make sure if strlen check is neccessary */
-int		get_degree(std::string &str, size_t *i) {
-	int degree = 0;
-	if (str[*i] != '*') {
-		throw std::invalid_argument("Syntax error");
+long int		get_degree(std::string &str) {
+	std::string::iterator	it = str.begin();
+	char					*end;
+
+	while (it != str.end() && !isdigit(*it)) {
+		++it;
 	}
-	(*i)++;
-	if (str[*i] != 'X') {
-		throw std::invalid_argument("Syntax error");
+	/* If no digits are specified as power, we just assume ^1 was meant.
+	This allows input like: 2X rather than 2X^0 */
+	if (it == str.end()) {
+		return 1;
 	}
-	(*i)++;
-	if (str[*i] != '^') {
-		throw std::invalid_argument("Syntax error");
-	}
-	(*i)++;
-	if (!isdigit(str[*i]) && !(str[*i] == '+')) {
-		throw std::invalid_argument("Syntax error");
-	}
-	degree = atoi(&(str[*i]));
-	if (str[*i] == '+') {
-		(*i)++;
-	}
-	while (*i < str.length() && isdigit(str[*i])) {
-		(*i)++;
-	}
-	return (degree);
+	std::string		s{ *it };
+	long int		degree = strtol(s.c_str(), &end, 10);
+	if (end == s.c_str()) { throw std::invalid_argument("Could not parse degree."); }
+	if (errno == ERANGE) { throw std::overflow_error("Degreer could not be represented as long."); }
+	return degree;
 }
 
 /* Assumes format of a * x ^ p where a is a number, x a character in the al*/
-void	parse_token(Equation *token_info, std::string &str, size_t *i) {
-	printf("Parse token: %s\n", &(str[*i]));
+void	parse_token(Equation &token_info, ParseToken &pt) {
 	try {
-		coeffOpts		coeff = get_coefficient(str, i);
-		// TODO: safe get degree
-		int				degree = get_degree(str, i);
-		token_info->add(coeff, degree);
+		ParseToken::coeffTypes		type = pt.getType();
+		std::string					coeff_str = pt.getCoeff();
+		std::optional<std::string>	degree_str = pt.getDegree();
+
+		Token::coeffOpts 			coeff = get_coefficient(coeff_str, type);
+		/* If no discriminant was given we assume one with power 0, which
+		comes down to coefficient * 1. */
+		long int					degree = 0;
+		if (degree_str) {
+			degree = get_degree(degree_str.value());
+		}
+		token_info.add(coeff, degree);
 	}
-	catch (std::invalid_argument &e) {
-		throw (e);
-	}
-	catch (std::overflow_error &e) {
-		throw (e);
-	}
+	catch (std::invalid_argument &e) { throw (e); }
+	catch (std::overflow_error &e) { throw (e); }
 }
 
 std::pair<std::string, std::string>		getParsingHalves(std::string &eq) {
@@ -244,34 +195,53 @@ std::pair<ParseToken::coeffTypes, std::string> getParseCoeffAndTypeInner(std::st
 std::regex dec, std::regex rat, std::regex integ) {
 	ParseToken::coeffTypes	type;
 	std::string				coeff;
+	std::regex				only_x{R"(^[+-]?[Xx]{1})"};
+	int						len_mod = 0;
 
 	std::smatch m;
 	if (std::regex_search(str, m, dec)) {
 		type = ParseToken::coeffTypes::decimal;
+		coeff = m[0];
 	}
 	else if (std::regex_search(str, m, rat)) {
 		type = ParseToken::coeffTypes::rational;
+		coeff = m[0];
 	}
 	else if (std::regex_search(str, m, integ)) {
 		type = ParseToken::coeffTypes::integer;
+		std::smatch tmp;
+		if (std::regex_search(str, tmp, only_x)) {
+			/* if only optional +/- and then X or x, we just replace the x with 1.
+			we still need the X to parse the degree though, so we leave the
+			X in the source string (len_mod). This is so we can infer -1x and 1x
+			from -x and x. */
+			coeff = tmp[0];
+			std::replace(coeff.begin(), coeff.end(), 'X', '1');
+			std::replace(coeff.begin(), coeff.end(), 'x', '1');
+			len_mod = 1;
+		}
+		else {
+			coeff = m[0];
+		}
 	}
 	else { 
-		throw std::invalid_argument("Could not parse coefficient, invalid form."); 
+		throw std::invalid_argument("Could not parse coefficient, invalid form: " + str); 
 	}
-	coeff = m[0];
-	str.erase(0, m.length());
+	str.erase(0, coeff.length() - len_mod);
 	return std::make_pair(type, coeff);
 }
 
 std::pair<ParseToken::coeffTypes, std::string>	getParseCoeffAndType(std::string &str, bool first) {
 	std::regex					first_match_decimal{R"(^[+-]?\d+\.{1}\d+)"};
 	std::regex					first_match_rational{R"(^[+-]?\d+\/{1}[+-]?\d+)"};
-	std::regex					first_match_int{R"(^[+-]?\d+)"};
+	std::regex					first_match_int{R"(^[+-]?(\d+|[Xx]{1}))"};
 
 	std::regex					non_first_match_decimal{R"(^[+-]{1}\d+\.{1}\d+)"};
 	std::regex					non_first_match_rational{R"(^[+-]{1}\d+\/{1}[+-]?\d+)"};
-	std::regex					non_first_match_int{R"(^[+-]{1}\d+)"};
+	std::regex					non_first_match_int{R"(^[+-](\d+|[Xx]{1}))"};
 
+	printf("STRING TO PARSE AS COEFF/TYPE\n");
+	std::cout << str << "\n";
 	if (first) {
 		try {
 			return getParseCoeffAndTypeInner(str, first_match_decimal, 
@@ -288,16 +258,13 @@ std::pair<ParseToken::coeffTypes, std::string>	getParseCoeffAndType(std::string 
 	}
 }
 
-std::optional<std::string>	getParseDegree(std::string &str) {
-	std::regex					degree_regex{R"(^\*?[Xx]{1}(\^\d+)?)"};
+std::optional<std::string>		getParseDegree(std::string &str) {
+	std::regex					degree_regex{R"(^\*?[Xx]{1}(\^\+?\d+)?)"};
 
 	std::smatch m;
 	std::string degree;
-	std::cout << "STRING LEFT BEFORE PARSE DEGREE: " << str << "\n\n"; 
 	if (std::regex_search(str, m, degree_regex)) {
 		degree = m[0];
-		std::cout << m[0] << "\n" << m.length();
-		std::cout << "STRING LEFT AFTER PARSE DEGREE: " << str << "\n\n"; 
 		str.erase(0, m.length());
 		return degree;
 	}
@@ -311,9 +278,9 @@ std::vector<ParseToken>	parseHalf(std::string &half) {
 	std::vector<ParseToken> tokens = {};
 	bool first = true;
 	while (!half.empty()) {
-		std::cout << "STRING LEFT\n" << half << "\n";
 		try {
 			std::pair<ParseToken::coeffTypes, std::string> tc = getParseCoeffAndType(half, first);
+			first = false;
 			auto degree = getParseDegree(half);
 			if (degree)
 				tokens.push_back(ParseToken(tc.first, tc.second, degree.value()));
@@ -324,7 +291,6 @@ std::vector<ParseToken>	parseHalf(std::string &half) {
 			throw e;
 		}
 	}
-	std::cout << half;
 	return tokens;
 }
 
@@ -333,12 +299,6 @@ std::pair<std::vector<ParseToken>, std::vector<ParseToken>>	getParsingTokens(std
 		auto [left, right] = getParsingHalves(eq);
 		std::vector<ParseToken> leftParse = parseHalf(left);
 		std::vector<ParseToken> rightParse = parseHalf(right);
-		for (std::vector<ParseToken>::iterator it = leftParse.begin(); it != leftParse.end(); ++it) {
-			(*it).print();
-		}
-		for (std::vector<ParseToken>::iterator it = rightParse.begin(); it != rightParse.end(); ++it) {
-			(*it).print();
-		}
 		return std::make_pair(leftParse, rightParse);
 	}
 	catch (std::invalid_argument &e) {
@@ -346,43 +306,30 @@ std::pair<std::vector<ParseToken>, std::vector<ParseToken>>	getParsingTokens(std
 	}
 }
 
-Equation	parse_equation(std::string &equation) {
+Equation	parse_equation(std::string &input) {
 	// Equation::operationSide side = Equation::operationSide::left;
 	Equation token_info = Equation();
-	equation.erase(std::remove_if(equation.begin(), equation.end(), ::isspace),
-	equation.end());
-	getParsingTokens(equation);
-
-	// size_t i = 0;
-	// while (i < equation.length())
-	// {
-	// 	try {
-	// 		if (equation[i] == '=') {
-	// 			if (token_info.getEquationLeft().empty()) {
-	// 				throw std::invalid_argument("Starting with equals sign is illegal.");
-	// 			}
-	// 			if (token_info.getSide() != Equation::operationSide::left) {
-	// 				throw std::invalid_argument("Only one equals sign allowed per equation.");
-	// 			}
-	// 			i++;
-	// 			token_info.setSide(Equation::operationSide::right);
-	// 		}
-	// 		parse_token(&token_info, equation, &i);
-	// 	}
-	// 	catch (std::invalid_argument &e) {
-	// 		throw;
-	// 	}
-	// 	catch (std::overflow_error &e) {
-	// 		throw (e);
-	// 	}
-	// }
-	// if (token_info.getSide() == Equation::operationSide::left) {
-	// 	throw std::invalid_argument("No equals sign found, not a valid equation.");
-	// }
-	// token_info.print();
-	// token_info.sort();
-	// // TODO: Output what the equation looks like in reduced form
-	// token_info.simplify();
-	// // token_info.print();
+	input.erase(std::remove_if(input.begin(), input.end(), ::isspace),
+	input.end());
+	try {
+		auto [left, right] = getParsingTokens(input);
+		std::cout << "LEFT SIDE:\n";
+		for (std::vector<ParseToken>::iterator it = left.begin(); it != left.end(); ++it) {
+			parse_token(token_info, *it);
+		}
+		token_info.setSide(Equation::operationSide::right);
+		std::cout << "RIGHT SIDE:\n";
+		for (std::vector<ParseToken>::iterator it = right.begin(); it != right.end(); ++it) {
+			parse_token(token_info, *it);
+		}
+	}
+	catch (std::invalid_argument &e) {
+		throw e;
+	}
+	catch (std::overflow_error &e) {
+		throw e;
+	}
+	printf("AFTER PARSE TOKENS\n");
+	token_info.print();
 	return token_info;
 }

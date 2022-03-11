@@ -1,5 +1,3 @@
-
-
 #ifndef EQUATION_H
 # define EQUATION_H
 #include <list>
@@ -25,10 +23,9 @@ class Equation {
 		// void		setGcf(Rational &x);
 		void		print();
 		// template <typename T>
-		void		add(coeffOpts coeff, int degree);
+		void		add(Token::coeffOpts coeff, int degree);
 		// void		add(Rational coeff, int degree);
 		// void		add(long long int coeff, int degree);
-		void		sort();
 		void		simplify();
 		int			getHighestDegree();
 		// void		setHighestDegree(int n);
@@ -36,15 +33,19 @@ class Equation {
 		double		findCoefficientOfDegree(int degree);
 		Equation::operationSide	getSide();
 		void		setSide(Equation::operationSide s);
-
+		Token		&findTokenByDegreeRight(long int degree);
+		Token		&findTokenByDegreeLeft(long int degree);
+	
 	private:
 		std::list<Token>		_tokensLeft;
 		std::list<Token>		_tokensRight;
 		int						_highest_degree;
 		Equation::operationSide	_side;
 		// Rational				_gcf;
-		Token					*findTokenByDegreeRight(int degree);
-		Token					*findTokenByDegreeLeft(int degree);
+		void					moveTokensLeft();
+		void					sortLeft();
+		void					combineTokensByDegreeLeft();
+		void					factorLeft();
 };
 
 #endif
