@@ -40,13 +40,6 @@ Rational    &Rational::operator/=(const Rational &x) {
     return *this;
 }
 
-Rational        operator/(const Rational &lhs, const Rational &rhs) {
-    Rational r = Rational(lhs.getNumerator() * rhs.getDenominator(), 
-    lhs.getDenominator() * rhs.getNumerator());
-    r.reduce();
-    return (r);
-}
-
 std::ostream    &operator<<(std::ostream &os, const Rational &x)
 {
     long long d = x.getDenominator();
@@ -69,6 +62,8 @@ void    Rational::reduce(void) {
 
     try {
         ll_factor_gcd(&n, &d);
+        setNumerator(n);
+        setDenominator(d);
     }
     catch (std::overflow_error &e) {
         throw e;
@@ -169,6 +164,31 @@ long double     operator+(const Rational &r, long double n) {
 
 long double     operator+(long double n, const Rational &r) {
     return (r + n);
+}
+
+// TODO: check limits/ overflow
+
+Rational        operator/(const Rational &lhs, const Rational &rhs) {
+    Rational r = Rational(lhs.getNumerator() * rhs.getDenominator(), 
+    lhs.getDenominator() * rhs.getNumerator());
+    r.reduce();
+    return (r);
+}
+
+Rational        operator/(const Rational &r, long long n) {
+    return (r / Rational(n, 1));
+}
+
+Rational        operator/(long long n, const Rational &r) {
+    return (Rational(n, 1) / r);
+}
+
+long double     operator/(const Rational &r, long double n) {
+    return ((r.getNumerator() / r.getDenominator()) / n);
+}
+
+long double     operator/(long double n, const Rational &r) {
+    return (n / (r.getNumerator() / r.getDenominator()));
 }
 
 Rational        getGcd(Rational lhs, Rational rhs) {

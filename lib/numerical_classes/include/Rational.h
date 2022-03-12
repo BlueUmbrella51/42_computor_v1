@@ -39,7 +39,6 @@ class Rational {
 Rational        doubleToRational(long double n, long double accuracy = 0.0);
 bool            operator==(const Rational &lhs, const Rational &rhs);
 std::ostream    &operator<<(std::ostream &os, const Rational &x);
-Rational        operator/(const Rational &lhs, const Rational &rhs);
 
 Rational        operator*(const Rational &lhs, const Rational &rhs);
 Rational        operator*(const Rational &r, long long n);
@@ -49,6 +48,12 @@ Rational        operator+(const Rational &r, long long n);
 Rational        operator+(long long n, const Rational &r);
 long double     operator+(const Rational &r, long double n);
 long double     operator+(long double n, const Rational &r);
+
+Rational        operator/(const Rational &lhs, const Rational &rhs);
+Rational        operator/(const Rational &r, long long n);
+Rational        operator/(long long n, const Rational &r);
+long double     operator/(const Rational &r, long double n);
+long double     operator/(long double n, const Rational &r);
 
 Rational        getGcd(Rational lhs, Rational rhs);
 long long       getGcd(Rational r, long double n);

@@ -140,6 +140,8 @@ void	Equation::moveTokensLeft() {
 
 void	Equation::factorLeft() {
 	// There can never be less than two tokens so this should be safe
+	// TODO: wrap in try/ catch
+	// TODO: make gcd negative if first token is negative
 	std::list<Token>::iterator 	it = _tokensLeft.begin();
 	Token::coeffOpts			gcd = (*it).getCoeff();
 
@@ -150,6 +152,10 @@ void	Equation::factorLeft() {
 	while (it != _tokensLeft.end()) {
 		gcd = getGcd((*it).getCoeff(), gcd);
 		it++;
+	}
+	it = _tokensLeft.begin();
+	for (std::list<Token>::iterator i = _tokensLeft.begin(); i != _tokensLeft.end(); ++i) {
+		(*i).setCoeff((*i).getCoeff() / gcd);
 	}
 	printf("GCD\n");
 	if (std::holds_alternative<Rational>(gcd)) {
@@ -176,8 +182,9 @@ void	Equation::simplify() {
 		combineTokensByDegreeLeft();
 		printf("AFTER COMBINE\n");
 		print();
-		printf("AFTER FACTOR OUT GCD\n");
 		factorLeft();
+		printf("AFTER FACTOR OUT GCD\n");
+		print();
 	}
 	catch (std::overflow_error &e) { throw e; }
 }

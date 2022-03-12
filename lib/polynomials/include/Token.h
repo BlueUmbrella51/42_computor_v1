@@ -17,7 +17,7 @@ class Token
 		void		print()	const;
 		int			getDegree() const;
 		coeffOpts	getCoeff()	const;
-		// void		setCoeff(double n);
+		void		setCoeff(Token::coeffOpts coeff);
 		bool   		operator==(const Token &x);
 		// Rational	coeffToRational();
 	private:
@@ -28,5 +28,5 @@ class Token
 Token				operator*(const Token &t, long long n);
 Token				operator+(const Token &lhs, Token &rhs);
 Token::coeffOpts	getGcd(const Token::coeffOpts &lhs, const Token::coeffOpts &rhs);
-
+Token::coeffOpts		operator/(const Token::coeffOpts &lhs, const Token::coeffOpts &rhs);
 #endif
