@@ -22,16 +22,6 @@ class Rational {
         void        setNumerator(long long n);
         long long    getNumerator(void)  const;
         Rational    &operator/=(const Rational &x);
-        // Rational    add(const Rational &r);
-        // Rational    subtract(const Rational &r);
-        // Rational    subtract(long int n);
-        // Rational    multiply(const Rational &r);
-        // Rational    multiply(long int n);
-        // Rational    divide(const Rational &r);
-        // Rational    divide(long int n);
-        // // Rational    exponentiate(long int power);
-        // // Decimal exponents HAVE to be turned into rationals
-        Rational    exponentiate(const Rational &r);
         void        print() const;
         void        reduce(void);
 };

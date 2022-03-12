@@ -25,6 +25,7 @@ long long		getGcd(long double lhs, long long rhs);
 long long		getGcd(long long lhs, long double rhs);
 long long 		getGcd(long long lhs, long long rhs);
 
+// TODO: limit types
 template <typename T>
 std::optional<T>	abs_overflow(T n) {
 	if (n < 0) {
