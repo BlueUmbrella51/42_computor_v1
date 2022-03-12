@@ -65,7 +65,7 @@ void		solve_first_degree(Equation &token_info) {
 // }
 
 void		solve_equation(Equation &token_info) {
-	int		highest_degree = token_info.getHighestDegree();
+	// int		highest_degree = token_info.getHighestDegree();
 
 	// if (highest_degree == 0) {
 	// 	/* Only a constant is given, this is not an equation */

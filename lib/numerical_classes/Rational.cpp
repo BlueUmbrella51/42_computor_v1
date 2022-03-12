@@ -171,24 +171,25 @@ long double     operator+(long double n, const Rational &r) {
     return (r + n);
 }
 
-Rational        getGcd(const Rational &lhs, const Rational &rhs) {
+Rational        getGcd(Rational lhs, Rational rhs) {
     return Rational(std::gcd(lhs.getNumerator(), rhs.getNumerator()), 
     std::lcm(lhs.getDenominator(), rhs.getDenominator()));
 }
 
-long long        getGcd(const Rational &r, long double n) {
+long long        getGcd(Rational r, long double n) {
     return 1;
 }
 
-long long      getGcd(long double n, const Rational &r) {
+long long      getGcd(long double n, Rational r) {
     return getGcd(r, n);
 }
 
-Rational        getGcd(const Rational &r, long long n) {
+Rational        getGcd(Rational r, long long n) {
     Rational rn = Rational(n, 1);
     return getGcd(r, rn);
 }
 
-Rational        getGcd(long long n, const Rational &r) {
-    return getGcd(r, n);
+Rational        getGcd(long long n, Rational r) {
+    Rational rn = Rational(n, 1);
+    return getGcd(r, rn);
 }

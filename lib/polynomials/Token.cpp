@@ -54,8 +54,24 @@ Token		operator+(const Token &lhs, Token &rhs) {
 	}, lhs.getCoeff(), rhs.getCoeff());
 }
 
-Token::coeffOpts	getGcd(const Token::coeffOpts lhs, Token::coeffOpts &rhs) {
-	return std::visit([] (auto &&arg1, auto &&arg2) {
-		return getGcd(arg1, arg2);
+struct opts {
+	void operator() (Rational, Rational) { std::cout <<"Rational Rational"; }
+	void operator() (Rational, long double) { std::cout <<"Rational, long double"; }
+	void operator() (long double, Rational) { std::cout <<"Rational, long double"; }
+	void operator() (Rational, long long) { std::cout <<"Rational, long long"; }
+	void operator() (long long, Rational) { std::cout <<"Rational, long long"; }
+	void operator() (long long, long long) { std::cout <<"long long, long long"; }
+	void operator() (long long, long double) { std::cout <<"long long, long double"; }
+	void operator() (long double, long long) { std::cout <<"long double, long long"; }
+	void operator() (long double, long double) { std::cout <<"long double, long double";}
+};
+
+Token::coeffOpts	getGcd(const Token::coeffOpts &lhs, const Token::coeffOpts &rhs) {
+	// printf("GET GCD\n");
+	std::visit(opts(), lhs, rhs);
+	Token::coeffOpts res = std::visit([] (auto &&arg1, auto &&arg2) {
+		return Token::coeffOpts(getGcd(arg1, arg2));
 	}, lhs, rhs);
+	return res;
+	// return 1LL;
 }

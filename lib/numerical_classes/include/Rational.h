@@ -50,10 +50,10 @@ Rational        operator+(long long n, const Rational &r);
 long double     operator+(const Rational &r, long double n);
 long double     operator+(long double n, const Rational &r);
 
-Rational        getGcd(const Rational &lhs, const Rational &rhs);
-long long       getGcd(const Rational &r, long double n);
-long long       getGcd(long double n, const Rational &r);
-Rational        getGcd(const Rational &r, long long n);
-Rational        getGcd(long long n, const Rational &r);
+Rational        getGcd(Rational lhs, Rational rhs);
+long long       getGcd(Rational r, long double n);
+long long       getGcd(long double n, Rational r);
+Rational        getGcd(Rational r, long long n);
+Rational        getGcd(long long n, Rational r);
 
 #endif

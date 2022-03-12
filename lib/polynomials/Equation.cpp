@@ -144,8 +144,22 @@ void	Equation::factorLeft() {
 	Token::coeffOpts			gcd = (*it).getCoeff();
 
 	++it;
+	// Token::coeffOpts n = Rational(1, 2);
+	// Token::coeffOpts m = Rational(1, 4);
+	// getGcd(n, m);
 	while (it != _tokensLeft.end()) {
-		gcd = getGcd(((*it).getCoeff()), gcd);
+		gcd = getGcd((*it).getCoeff(), gcd);
+		it++;
+	}
+	printf("GCD\n");
+	if (std::holds_alternative<Rational>(gcd)) {
+		std::cout << std::get<Rational>(gcd);
+	}
+	if (std::holds_alternative<long long>(gcd)) {
+		std::cout << std::get<long long>(gcd);
+	}
+	if (std::holds_alternative<long double>(gcd)) {
+		std::cout << std::get<long double>(gcd);
 	}
 }
 
