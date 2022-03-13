@@ -5,7 +5,7 @@
 
 TEST_CASE("Conversion doubles to rationals", "[Rationals]") {
 	long double num = (double)1/3;
-	long double accuracy = 0.00000000001;
+	double accuracy = 0.00000000001;
 	REQUIRE(doubleToRational(num, accuracy) == Rational(1, 3));
 	REQUIRE(doubleToRational(1., accuracy) == Rational(1, 1));
 	REQUIRE(doubleToRational(0., accuracy) == Rational(0, 1));

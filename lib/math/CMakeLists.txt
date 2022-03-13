@@ -1,5 +1,4 @@
 add_library(${mathName}
-			doubleToRatio.cpp
 			greatestCommonDivisor.cpp
 			llFactorGcd.cpp
 )

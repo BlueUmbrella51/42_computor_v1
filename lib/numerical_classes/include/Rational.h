@@ -17,16 +17,18 @@ class Rational {
         Rational(long long numerator, long long denominator);
         ~Rational();
         Rational    &operator=(const Rational &other);
+        Rational    &operator/=(const Rational &x);
         void        setDenominator(long long n);
         long long   getDenominator(void)    const;
         void        setNumerator(long long n);
         long long    getNumerator(void)  const;
-        Rational    &operator/=(const Rational &x);
         void        print() const;
         void        reduce(void);
 };
 
-Rational        doubleToRational(long double n, long double accuracy = 0.0);
+template <typename T>
+Rational        doubleToRational(T n, long double accuracy = 0.0);
+
 bool            operator==(const Rational &lhs, const Rational &rhs);
 std::ostream    &operator<<(std::ostream &os, const Rational &x);
 

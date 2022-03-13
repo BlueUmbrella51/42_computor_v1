@@ -10,7 +10,7 @@ bool			all_digits_zero(std::string str) {
 }
 
 long long		get_base_ten(size_t	digits_read) {
-	std::optional<long long> bt = pow_overflow<long long>(10, digits_read);
+	std::optional<long long> bt = integral_pow_overflow<long long>(10, digits_read);
 	if (!bt) { throw std::overflow_error("Could not represent base 10 value large enough to represent Rational."); }
 	return (bt.value());
 }

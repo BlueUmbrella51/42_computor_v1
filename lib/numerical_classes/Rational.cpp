@@ -90,20 +90,6 @@ void        Rational::setNumerator(long long n) {
     _numerator = n;
 }
 
-Rational    doubleToRational(long double n, long double accuracy) {
-    long long num, denum;
-    try {
-        std::tuple<long long int, long long int> ratio = doubleToRatio(n, accuracy);
-        num = std::get<0>(ratio);
-        denum = std::get<1>(ratio);
-    }
-    catch (std::overflow_error &e) {
-        std::cout << e.what();
-        throw (e);
-    }
-	return Rational(num, denum);
-}
-
 Rational        operator*(const Rational &lhs, const Rational &rhs) {
     long long new_numerator = lhs.getNumerator() * rhs.getNumerator();
     long long new_denom = lhs.getDenominator() * rhs.getDenominator();
@@ -213,3 +199,23 @@ Rational        getGcd(long long n, Rational r) {
     Rational rn = Rational(n, 1);
     return getGcd(r, rn);
 }
+
+/* TEMPLATES WITH SPECIALIZATION SPECIFIERS */
+template <typename T>
+Rational        doubleToRational(T n, long double accuracy) {
+    long long num, denum;
+    try {
+        auto ratio = doubleToRatio<long double>(n, accuracy);
+        num = std::get<0>(ratio);
+        denum = std::get<1>(ratio);
+    }
+    catch (std::overflow_error &e) {
+        std::cout << e.what();
+        throw (e);
+    }
+	return Rational(num, denum);
+}
+
+template Rational   doubleToRational<float>(float n, long double accuracy);
+template Rational   doubleToRational<double>(double n, long double accuracy);
+template Rational   doubleToRational<long double>(long double n, long double accuracy);
