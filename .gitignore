@@ -47,3 +47,6 @@ _deps
 
 .vscode/
 external/
+
+numbers/
+lib2/

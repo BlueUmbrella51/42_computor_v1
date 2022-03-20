@@ -1,4 +1,5 @@
 #include "computor.h"
+#include "Number.h"
 
 bool			all_digits_zero(std::string str) {
 	size_t	i = 0;
@@ -10,9 +11,12 @@ bool			all_digits_zero(std::string str) {
 }
 
 long long		get_base_ten(size_t	digits_read) {
-	std::optional<long long> bt = integral_pow_overflow<long long>(10, digits_read);
-	if (!bt) { throw std::overflow_error("Could not represent base 10 value large enough to represent Rational."); }
-	return (bt.value());
+	// TODO: try catch
+	try {
+		long long bt = int_pow(10, digits_read);
+		return (bt);
+	}
+	catch (std::overflow_error &e) { throw; }
 }
 
 long long		string_to_ll(std::string &str, size_t *i) {
@@ -61,7 +65,7 @@ Rational		rational_string_to_rational(std::string &str) {
 		if (denominator == 0) {
 			throw std::invalid_argument("Denominator of fraction cannot be zero.");
 		}
-		ll_factor_gcd(&numerator, &denominator);
+		factorGcd(numerator, denominator);
 		return Rational(numerator, denominator);
 	}
 	catch (std::overflow_error &e) {
@@ -85,7 +89,7 @@ Rational		decimal_string_to_rational(std::string &str) {
 		numerator = string_to_ll(str, &i);
 		denominator = get_base_ten(i - prev);
 		/* Factor out gcd of numerator and denominator */
-		ll_factor_gcd(&numerator, &denominator);
+		factorGcd(numerator, denominator);
 		/* Combine whole part and numerator */
 		combine_whole_numerator(&numerator, whole, denominator);
 		return Rational(numerator, denominator);
@@ -107,11 +111,11 @@ long double	decimal_string_to_double(std::string &str) {
 	return res;
 }
 
-Token::coeffOpts		get_coefficient(std::string &str, ParseToken::coeffTypes type) {
+Number		get_coefficient(std::string &str, ParseToken::coeffTypes type) {
 	if (type == ParseToken::coeffTypes::rational) {
 		try {
 			Rational r = rational_string_to_rational(str);
-			return r;
+			return Number(r);
 		}
 		catch (std::overflow_error &e) { throw e; }
 		catch (std::invalid_argument &e) { throw e; }
@@ -119,12 +123,12 @@ Token::coeffOpts		get_coefficient(std::string &str, ParseToken::coeffTypes type)
 	else if (type == ParseToken::coeffTypes::decimal) {
 		try {
 			Rational r = decimal_string_to_rational(str);
-			return r;
+			return Number(r);
 		}
 		catch (std::overflow_error &e) {
 			try {
 				long double n = decimal_string_to_double(str);
-				return n;
+				return Number(n);
 			}
 			catch (std::overflow_error &e) { throw e; }
 			catch (std::invalid_argument &e) { throw e; }
@@ -133,7 +137,7 @@ Token::coeffOpts		get_coefficient(std::string &str, ParseToken::coeffTypes type)
 	else {
 		try {
 			long long n = string_to_ll(str);
-			return n;
+			return Number(n);
 		}
 		catch (std::overflow_error &e) { throw (e); }
 		catch (std::invalid_argument &e) { throw e; }
@@ -166,8 +170,7 @@ void	parse_token(Equation &token_info, ParseToken &pt) {
 		ParseToken::coeffTypes		type = pt.getType();
 		std::string					coeff_str = pt.getCoeff();
 		std::optional<std::string>	degree_str = pt.getDegree();
-
-		Token::coeffOpts 			coeff = get_coefficient(coeff_str, type);
+		Number			 			coeff = get_coefficient(coeff_str, type);
 		/* If no discriminant was given we assume one with power 0, which
 		comes down to coefficient * 1. */
 		long int					degree = 0;

@@ -8,6 +8,7 @@
 #include "Token.h"
 #include "Rational.h"
 #include "math_helpers.h"
+#include "Number.h"
 
 class Equation {	
 	public:
@@ -23,7 +24,7 @@ class Equation {
 		// void		setGcf(Rational &x);
 		void		print();
 		// template <typename T>
-		void		add(Token::coeffOpts coeff, int degree);
+		void		add(Number coeff, int degree);
 		// void		add(Rational coeff, int degree);
 		// void		add(long long int coeff, int degree);
 		void		simplify();

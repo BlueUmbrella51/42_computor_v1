@@ -34,11 +34,12 @@ void	Equation::print() {
 	printf("\n\n");
 	printf("EQUATION\nhighest degree: %d\n", getHighestDegree());
 	for (std::list<Token>::iterator it = _tokensLeft.begin(); it != _tokensLeft.end(); ++it) {
-    	it->print();
+    	// it->print();
+		std::cout << *it;
 	}
 	printf(" = ");
 	for (std::list<Token>::iterator it = _tokensRight.begin(); it != _tokensRight.end(); ++it) {
-    	it->print();
+    	std::cout << *it;
 	}
 	printf("\n\n");
 }
@@ -64,7 +65,7 @@ Token	&Equation::findTokenByDegreeRight(long int degree) {
 }
 
 // template <typename T>
-void	Equation::add(Token::coeffOpts coeff, int degree) {
+void	Equation::add(Number coeff, int degree) {
 	if (degree > _highest_degree) {
 		_highest_degree = degree;
 	}
@@ -112,7 +113,7 @@ void	Equation::combineTokensByDegreeLeft() {
 	while (it != _tokensLeft.end()) {
 		if ((*it).getDegree() == (*curr).getDegree()) {
 			try {
-				*curr = *curr + *it;
+				(*curr).setCoeff((*curr).getCoeff() + (*it).getCoeff());
 				it = _tokensLeft.erase(it);
 			}
 			catch (std::overflow_error &e) {
@@ -131,7 +132,7 @@ void	Equation::moveTokensLeft() {
 	try {
 		while (iter != _tokensRight.end())
 		{
-			_tokensLeft.push_back(*iter * -1);
+			_tokensLeft.push_back((*iter).getCoeff() * Number(number(-1)));
 			iter = _tokensRight.erase(iter);
 		}
 	}
@@ -143,30 +144,31 @@ void	Equation::factorLeft() {
 	// TODO: wrap in try/ catch
 	// TODO: make gcd negative if first token is negative
 	std::list<Token>::iterator 	it = _tokensLeft.begin();
-	Token::coeffOpts			gcd = (*it).getCoeff();
+	Number						gcd = (*it).getCoeff();
 
 	++it;
 	// Token::coeffOpts n = Rational(1, 2);
 	// Token::coeffOpts m = Rational(1, 4);
 	// getGcd(n, m);
 	while (it != _tokensLeft.end()) {
-		gcd = getGcd((*it).getCoeff(), gcd);
+		auto curr = (*it).getCoeff();
+		gcd = getGcd(curr, gcd);
 		it++;
 	}
 	it = _tokensLeft.begin();
 	for (std::list<Token>::iterator i = _tokensLeft.begin(); i != _tokensLeft.end(); ++i) {
 		(*i).setCoeff((*i).getCoeff() / gcd);
 	}
-	printf("GCD\n");
-	if (std::holds_alternative<Rational>(gcd)) {
-		std::cout << std::get<Rational>(gcd);
-	}
-	if (std::holds_alternative<long long>(gcd)) {
-		std::cout << std::get<long long>(gcd);
-	}
-	if (std::holds_alternative<long double>(gcd)) {
-		std::cout << std::get<long double>(gcd);
-	}
+	// printf("GCD\n");
+	// if (std::holds_alternative<Rational>(gcd)) {
+	// 	std::cout << std::get<Rational>(gcd);
+	// }
+	// if (std::holds_alternative<long long>(gcd)) {
+	// 	std::cout << std::get<long long>(gcd);
+	// }
+	// if (std::holds_alternative<long double>(gcd)) {
+	// 	std::cout << std::get<long double>(gcd);
+	// }
 }
 
 void	Equation::simplify() {

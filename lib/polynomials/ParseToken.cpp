@@ -13,6 +13,7 @@ ParseToken::ParseToken(coeffTypes type, std::string coeff, std::string degree) {
 }
 
 ParseToken::~ParseToken() {
+	
 }
 
 bool		operator==(const ParseToken &lhs, const ParseToken &rhs) {

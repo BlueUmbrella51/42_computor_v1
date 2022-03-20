@@ -1,6 +1,5 @@
 add_library(${mathName}
-			greatestCommonDivisor.cpp
-			llFactorGcd.cpp
+	getGcd.cpp	
 )
 
 target_compile_features(${mathName} PUBLIC cxx_std_17)

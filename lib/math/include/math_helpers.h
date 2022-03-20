@@ -1,119 +1,200 @@
 #ifndef MATH_HELPERS_H
 #define MATH_HELPERS_H
+#include <type_traits>
 #include <iostream>
-#include <stdio.h>
-#include <stdexcept>
-#include <math.h>
-#include <cmath>
-#include <vector>
-#include <tuple>
-#include <optional>
-#include <functional>
 #include <numeric>
+#include <limits>
+#include <tuple>
+#include <vector>
+#include <cmath>
+#include <assert.h>
 #include <limits.h>
 
 #define ACCURACY 0.00000000001
 
-class Rational;
+/* Default implementation of getGcd: if either parameter is floating point, return 1 */
+template<typename T, typename U, 
+			typename std::enable_if<
+            std::is_floating_point<T>{} ||
+            std::is_floating_point<U>{}, bool>::type = true
+		>
+long long 	getGcd(T &a, U &b) { return 1; }
 
-// long int		gcd(long int a, long int b);
-// Rational        doubleToRational(double num, double accuracy = ACCURACY);
-std::tuple<long long int, long long int>   	doubleToRatio(long double num, long double accuracy = ACCURACY);
-void			ll_factor_gcd(long long *num, long long *denum);
-long long		getGcd(long double lhs, long double rhs);
-long long		getGcd(long double lhs, long long rhs);
-long long		getGcd(long long lhs, long double rhs);
-long long 		getGcd(long long lhs, long long rhs);
+/* getGcd for all combinations of integral types */
+template<typename T, typename U, 
+			typename std::enable_if<
+            std::is_integral<T>{} &&
+            std::is_integral<U>{}, bool>::type = true
+		>
+long long	getGcd(T &a, U &b) { return std::gcd(a, b); }
 
-// TODO: limit types
-template <typename T, typename = std::enable_if<std::is_arithmetic<T>::value>>
-std::optional<T>	abs_overflow(T n) {
-	if (n < 0) {
-		T prev = n;
-		n *= -1;
-		if (n * -1 != prev) { return std::nullopt; }
-		return n;
-	}
-	return n;
+template<typename T, typename U, typename V,
+			typename std::enable_if<
+            std::is_integral<T>{} &&
+            std::is_integral<U>{} &&
+			std::is_integral<V>{}, bool>::type = true
+		>
+long long	getGcd(T &a, U &b, V &c) {
+	long long tmp = std::gcd(a, b);
+	return std::gcd(tmp, c);
 }
 
-template <typename T, typename = std::enable_if<std::is_integral<T>::value>>
-std::optional<T>	integral_pow_overflow(T base, T exp) {
-	T	result = 1;
-	T	prev = 0;
-	T	tmp = 0;
+/* Get lcm for making denominators equal */
+template<typename T, typename U, 
+			typename std::enable_if<
+            std::is_integral<T>{} &&
+            std::is_integral<U>{}, bool>::type = true
+		>
+long long	getLcm(T &a, U &b) { return std::lcm(a, b); }
 
-	if (exp < 0) { return std::nullopt; }
-	if (exp == 0) { return result; }
-	if (base == 0) { return 0; }
-    for (;;)
-    {
-        if (exp & 1) {
-			prev = result;
-            result *= base;
-			if (result / base != prev) { return std::nullopt; }
+/* Factor out GCD when GCD and number are integral */
+template<typename T, typename U, 
+			typename std::enable_if<
+            std::is_integral<T>{} &&
+            std::is_integral<U>{}, bool>::type = true
+		>
+void		factorGcd(T &a, U &b) {
+	long long gcd = getGcd(a, b);
+	if (gcd >= 1) {
+		// Factor out a negative 1
+		if (a < 0 && b < 0) {
+			gcd = -gcd;
 		}
-        exp >>= 1;
-        if (!exp)
-            break;
-		prev = base;
-		tmp = base * base;
-		if (tmp / base != prev) { return std::nullopt; }
-		base = tmp;
-    }
-    return result;
+		a /= gcd;
+		b /= gcd;
+	}
 }
 
-template <typename T, typename = std::enable_if<std::is_floating_point<T>::value>>
-std::tuple<long long int, long long int>	doubleToRatio(T value, long double accuracy) {
-	if (std::isinf(value) || std::isnan(value)) {
-		throw std::invalid_argument("Argument to covert cannot be NaN or INF.");
+/* Overflow checks for arithmetic operations */
+template<typename T, 
+			typename std::enable_if<
+            std::is_arithmetic<T>{}, bool>::type = true
+		>
+bool	additionExceedsLimits(T lhs, T rhs) {
+	/* Check for over- and underflow */
+	if (rhs >= 0) {
+		return (lhs > std::numeric_limits<T>::max() - rhs);
 	}
-	if (accuracy < 0.0 || accuracy > 1.0) {
-		throw std::invalid_argument("Accuracy must be number between 0.0 and 1.0.");
+	else {
+		return (lhs < std::numeric_limits<T>::min() - rhs);
 	}
-	int	sign = value >= 0.0 ? 1 : -1;
-	// TODO: abs value
-	long double abs_val = std::abs(value);
-	long double dec_part = abs_val - floor(abs_val);
+}
 
-	// Handles integer numbers including 0.0
-	if (abs_val == (long long)abs_val) {
-		return std::make_tuple(sign * (long long)abs_val, 1);
+template<typename T, 
+			typename std::enable_if<
+            std::is_arithmetic<T>{}, bool>::type = true
+		>
+bool	subtractionExceedsLimits(T lhs, T rhs) {
+	/* Check for over- and underflow */
+	if (rhs < 0) {
+		return (lhs > std::numeric_limits<T>::max() + rhs);
 	}
+	else {
+		return (lhs < std::numeric_limits<T>::min() + rhs);
+	}
+}
+
+template<typename T, 
+			typename std::enable_if<
+            std::is_arithmetic<T>{}, bool>::type = true
+		>
+bool	multiplicationExceedsLimits(T lhs, T rhs) {
+	/* Check for over- and underflow */
+	if (rhs == 0) return false;
+	return ((lhs > 0 && rhs > 0 && (lhs > std::numeric_limits<T>::max() / rhs))
+	|| (lhs < 0 && rhs < 0 && (lhs < std::numeric_limits<T>::max() / rhs))
+	|| (rhs > 0 && lhs < 0 && (lhs < std::numeric_limits<T>::min() / rhs))
+	|| (rhs < 0 && lhs > 0 && (lhs > std::numeric_limits<T>::min() / rhs)));
+}
+
+template<typename T, 
+			typename std::enable_if<
+            std::is_arithmetic<T>{}, bool>::type = true
+		>
+bool	divisionExceedsLimits(T lhs, T rhs) {
+	return (lhs == std::numeric_limits<T>::min() && rhs == -1);
+}
+
+// Returns whole part, numerator and denominator
+template <typename T, typename = std::enable_if<std::is_floating_point<T>::value>>
+std::tuple<long long, long long, long long>	doubleToRatio(T value, long double accuracy = ACCURACY) {
+	if (std::isinf(value)) { 
+		throw std::invalid_argument("Decimal to convert to ratio cannot be infinite.");}
+	if (std::isnan(value)) { 
+		throw std::invalid_argument("Decimal to convert to ratio cannot be nan.");}
+	if (accuracy < 0.0 || accuracy > 1.0) { 
+		throw std::invalid_argument("Accuracy for conversion to ratio must be between 0 and 1.");}
+	if (floor(value) <= LONG_LONG_MIN || floor(value) >= LONG_LONG_MAX) {
+		throw std::overflow_error("Whole part of decimal is too large to fit integer type\n");}
+	
+	int				sign = value >= 0.0 ? 1 : -1;
+	value = std::abs(value);
+	long long 		int_part = (long long)value;
+	value -= int_part;
+
+	// check if decimal part is withing permitted error range from 0.0 or equal to 0.0
+	if (value - accuracy < 0.0 || value == 0.0) {
+		return std::make_tuple(sign * int_part, 0, 1);
+	}
+	// check if decimal part is withing permitted error range from 1.0
+	if (value - accuracy < 0.0) {
+		return std::make_tuple(sign * (int_part + 1), 0, 1);
+	}
+
 	std::vector<long long> a = {1, 0};
 	std::vector<long long> b = {0, 1};
 
-	long double 		x = 1 / (abs_val - floor(abs_val));
-	long double 		z;
-	size_t		i = 2;
-	long long 	a_term, b_term = 0;
-	double chk = 1.0;
+	long double 		x = value;
+	size_t				i = 1;
 	do {
-		z = floor(x);
-		long long next_a = a[i - 2] + floor(z) * a[i - 1];
-		long long next_b = b[i - 2] + floor(z) * b[i - 1];
-		if ((floor(z) != 0 && a[i - 1] != (next_a - a[i - 2]) / floor(z))
-		|| (b[i - 1] != 0 && b[i - 1] != (next_b - b[i - 2]) / floor(z))) {
-			throw std::overflow_error("Could not find rational approximation of value with given accuracy without overflow.");
-		}
-		a.push_back(a[i - 2] + floor(z) * a[i - 1]);
-		b.push_back(b[i - 2] + floor(z) * b[i - 1]);
-		a_term = a[i];
-		b_term = b[i];
+		++i;
 		x = 1 / (x - floor(x));
-		chk = abs(((double)a_term / (double)b_term) - dec_part);
-		i++;
+		if (multiplicationExceedsLimits((long long)x, a[i - 1])
+		|| additionExceedsLimits(a[i - 2], (long long)x * a[i - 1])) {
+			throw std::overflow_error("Could not find rational approximation \
+of decimal within given precision.");
+		}
+		long long next_a = a[i - 2] + floor(x) * a[i - 1];
+		if (multiplicationExceedsLimits((long long)x, b[i - 1])
+		|| additionExceedsLimits(b[i - 2], (long long)x * b[i - 1])) {
+			throw std::overflow_error("Could not find rational approximation \
+of decimal within given precision.");
+		}
+		long long next_b = b[i - 2] + floor(x) * b[i - 1];
+		a.push_back(next_a);
+		b.push_back(next_b);
 	}
-	while (chk > accuracy);
-	// TODO: handle overflow and put "whole" part back in
-	long long numerator = sign * (a_term + ((abs_val - dec_part) * b_term));
-	if (a_term != sign * (numerator - ((abs_val - dec_part) * b_term))) {
-		throw std::overflow_error("Could not find rational approximation of value with given accuracy without overflow.");
+	while (std::abs(((long double)a[i] / (long double)b[i]) - value) > accuracy);
+
+	if (a[i] == LONG_LONG_MIN && sign == -1){
+		throw std::overflow_error("Could not find rational approximation \
+of decimal within given precision.");
 	}
-	return	std::make_tuple(numerator, b_term);
+	long long whole = sign * int_part;
+	long long denominator = b[i];
+	long long numerator = sign * a[i];
+	return	std::make_tuple(whole, numerator, denominator);
 }
 
+template<typename T, typename U, 
+			typename std::enable_if<
+            std::is_integral<T>{} &&
+            std::is_integral<U>{}, bool>::type = true
+		>
+long long	int_pow(T base, U exp) {
+	long long result = 1;
 
+	if (exp < 0) { throw std::invalid_argument("Cannot raise integer to negative power."); }
+	if (exp == 0) { return result; }
+	if (base == 0) { return 0; }
+	while (exp) {
+		if (multiplicationExceedsLimits(result, (long long)base)) {
+			throw std::overflow_error("Could not perform exponentiation of integer without overflow.");
+		}
+		result *= base;
+		exp--;
+	}
+	return result;
+}
 
 #endif
