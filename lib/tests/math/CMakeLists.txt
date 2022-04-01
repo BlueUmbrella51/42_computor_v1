@@ -2,11 +2,10 @@ add_executable(math_tests
 	tests.cpp
 )
 
-
 target_compile_features(math_tests PUBLIC cxx_std_17)
 
 target_include_directories(math_tests 
-	PRIVATE ../${headerDir}
+	PRIVATE ${mathHeaderDir}
 	PRIVATE ${catchFilePath}
 )
 

@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.10)
 add_library(${numerName} STATIC
 			Complex.cpp
 			Rational.cpp
-			Number.cpp
+			Real.cpp
 )
 
 target_include_directories(${numerName} PUBLIC ${headerDir})

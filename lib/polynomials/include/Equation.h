@@ -8,7 +8,8 @@
 #include "Token.h"
 #include "Rational.h"
 #include "math_helpers.h"
-#include "Number.h"
+#include "Real.h"
+#include "ParseToken.h"
 
 class Equation {	
 	public:
@@ -17,36 +18,48 @@ class Equation {
 			right
 		};
 		Equation();
-		~Equation();
-		std::list<Token>	&getEquationLeft();
-		std::list<Token>	&getEquationRight();
-		// Rational	&getGcf();
-		// void		setGcf(Rational &x);
-		void		print();
-		// template <typename T>
-		void		add(Number coeff, int degree);
-		// void		add(Rational coeff, int degree);
-		// void		add(long long int coeff, int degree);
-		void		simplify();
-		int			getHighestDegree();
-		// void		setHighestDegree(int n);
-		int			findHighestDegree();
-		double		findCoefficientOfDegree(int degree);
+		~Equation() = default;
+		operator				std::string() const;
+		Equation				&operator-=(const Token &t);
+		Equation				&operator+=(const Token &t);
+		Equation				&operator/=(const Token &t);
+		template<typename T, 
+			typename std::enable_if_t<std::is_integral<T>::value, bool> = true
+		>
+		Equation				&operator/=(T rhs) {
+			for (auto it = _tokensLeft.begin(); it != _tokensLeft.end(); ++it) {
+				(*it).setCoeff((*it).getCoeff() / rhs);
+			}
+			for (auto it = _tokensRight.begin(); it != _tokensRight.end(); ++it) {
+				(*it).setCoeff((*it).getCoeff() / rhs);
+			}
+			return *this;
+		}
+		// Equation				&operator*=(const Token &t);
+		std::list<Token>		&getEquationLeft();
+		std::list<Token>		&getEquationRight();
+		void					add(Token token);
+		void					simplify();
+		int						getHighestDegree();
+		std::optional<Token>	findTokenOfDegree(std::list<Token> &tokens, int degree);
 		Equation::operationSide	getSide();
-		void		setSide(Equation::operationSide s);
-		Token		&findTokenByDegreeRight(long int degree);
-		Token		&findTokenByDegreeLeft(long int degree);
+		void					setSide(Equation::operationSide s);
+		void					factor(std::list<Token> &lst);
 	
 	private:
 		std::list<Token>		_tokensLeft;
 		std::list<Token>		_tokensRight;
 		int						_highest_degree;
 		Equation::operationSide	_side;
-		// Rational				_gcf;
+		void					findHighestDegreeLeft();
 		void					moveTokensLeft();
-		void					sortLeft();
-		void					combineTokensByDegreeLeft();
-		void					factorLeft();
+		void					sortTokens(std::list<Token> &lst);
+		void					combineTokensByDegree(std::list<Token> &lst);
+		void					removeZeroCoeff(std::list<Token> &lst);
+
+		friend std::ostream		&operator<<(std::ostream &os, const Equation &eq);
 };
+Token			parse_token(ParseToken &pt);
+Equation		parse_equation(std::string &input);
 
 #endif

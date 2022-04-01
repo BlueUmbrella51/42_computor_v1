@@ -8,21 +8,27 @@
 
 class	Rational {
 	private:
+		long long	_w;
+		long long	_n;
+		long long	_d;
 		void							simplify();
 		void							fixSigns();
 		Rational						invert() const;
-		std::tuple<long long, long long, long long>	getDenomFactors(long long d_left, long long d_right);
 		
 	public:
 		Rational();
+		Rational(long long whole);
 		Rational(long long n, long long d);
 		Rational(long long whole, long long n, long long d);
 		~Rational() = default;
 		Rational(const Rational &rhs);
+		long long	getWhole() const;
+		long long	getNum() const;
+		long long	getDenom() const;
+		std::tuple<long long, long long, long long> getValue();
 		operator long double () const;
 		operator long long () const;
-		
-		Rational 	&operator-();
+		operator std::string () const;
 		
 		Rational	&operator=(const Rational &rhs);
 		template<typename T,
@@ -35,84 +41,15 @@ class	Rational {
 			return *this;
 		}
 
-		bool		operator==(const Rational &rhs) const;
-		template<typename T,
-			typename std::enable_if_t<std::is_integral<T>::value, bool> = true
-		>
-		bool		operator==(T n) const {
-			return (_w == n && _n == 0);
-		}
-
-		bool		operator!=(const Rational &rhs) const;
-		template<typename T,
-			typename std::enable_if_t<std::is_integral<T>::value, bool> = true
-		>
-		bool		operator!=(T n) const {
-			return !(*this == n);
-		}
-
-		bool		operator>(const Rational &rhs) const;
-		template<typename T,
-			typename std::enable_if_t<std::is_integral<T>::value, bool> = true
-		>
-		bool		operator>(T n) const {
-			if (_w > n) { return true; }
-			if (_w < n) { return false; }
-			long long tmp_n = _w < 0 ? -_n: _n;
-			return (tmp_n > 0);
-		}
-
-		bool		operator>=(const Rational &rhs) const;
-		template<typename T,
-			typename std::enable_if_t<std::is_integral<T>::value, bool> = true
-		>
-		bool		operator>=(T n) const {
-			return (*this > n || *this == n);
-		}
-
-		bool		operator<(const Rational &rhs) const;
-		template<typename T,
-			typename std::enable_if_t<std::is_integral<T>::value, bool> = true
-		>
-		bool		operator<(T n) const {
-			// If whole part < n, this is true. if n == _w, we have to check 
-			// fractional part
-			if (_w < n) { return true; }
-			if (_w > n) { return false; }
-			long long tmp_n = _w < 0 ? -_n: _n;
-			return (tmp_n < 0);
-		}
-
-		bool		operator<=(const Rational &rhs) const;
-		template<typename T,
-			typename std::enable_if_t<std::is_integral<T>::value, bool> = true
-		>
-		bool		operator<=(T n) const {
-			return (*this < n || *this == n);
-		}
+		Rational 	operator-() const;
 
 		Rational	&operator+=(const Rational &rhs);
 		template<typename T,
 			typename std::enable_if_t<std::is_integral<T>::value, bool> = true
 		>
 		Rational	&operator+=(T rhs) {
-			// a += b
-			if (*this == 0) {
-				*this = rhs;
-			}
-			else if (*this < 0 && rhs >= 0) {
-				/* 	If a < 0 and b >= 0: -a + b == b - abs(a) */
-				*this = rhs - *this;
-			}
-			else if (rhs < 0) {
-				/* a + - b == a - abs(b)*/
-				*this -= llabs(rhs);
-			}
-			else {
-				/* Both a and b >= 0 */
-				// Calculate new whole part
-				 _w += rhs;
-			}
+			Rational tmp = Rational(rhs);
+			*this += tmp;
 			return *this;
 		}
 
@@ -121,27 +58,8 @@ class	Rational {
 			typename std::enable_if_t<std::is_integral<T>::value, bool> = true
 		>
 		Rational	&operator-=(T rhs) {
-			if (*this == 0) {
-				*this = -rhs;
-			}
-			else if (rhs < 0) {
-				/* a -(-b) == a + b */
-				*this -= llabs(rhs);
-			}
-			else if (*this < 0) {
-				/* a < 0 && b >= 0 => -a -b == -(abs(a) + b)*/
-				*this = -(abs(*this) + rhs);
-			}
-			else if (*this < rhs) {
-				/* if a and b both >= 0 and b > a, calculate -(b - a) */
-				*this = -(rhs - *this);
-			}
-			else {
-				/* Both a and b >= 0 AND b is guaranteed to be >= a
-				Therefore, we can never go below 0 so no need to adjust 
-				fraction ever. */
-				_w -= rhs;
-			}
+			Rational tmp = Rational(rhs);
+			*this -= tmp;
 			return *this;
 		}
 		
@@ -150,7 +68,8 @@ class	Rational {
 			typename std::enable_if_t<std::is_integral<T>::value, bool> = true
 		>
 		Rational	&operator/=(T rhs) {
-			// TODO
+			Rational tmp = Rational(rhs);
+			*this /= tmp;
 			return *this;
 		}
 
@@ -159,34 +78,13 @@ class	Rational {
 			typename std::enable_if_t<std::is_integral<T>::value, bool> = true
 		>
 		Rational	&operator*=(T rhs) {
-			if (*this == 0 || rhs == 0) {
-				*this = 0;
-			}
-			else if (*this < 0 || rhs < 0) {
-				/* If both terms < 0, discard the -1 */
-				if (*this == 0 && rhs == 0) {
-					*this = abs(*this) * llabs(rhs);
-				}
-				else {
-					/* If either term is < 0, we take out the - and add it 
-					back in after calculation. */
-					*this = -(abs(*this) * llabs(rhs));
-				}
-			}
-			else {
-				_w *= rhs;
-				_n *= rhs;
-				// Takes whole parts out of numerator and simplifies fraction
-				simplify();
-			}
+			Rational tmp = Rational(rhs);
+			*this *= tmp;
 			return *this;
 		}
-
-		long long	_n;
-		long long	_d;
-		long long	_w;
 		Rational 	getGcd() const;
 
+	friend Rational		simplify_radical(Rational &r, int degree);
 	friend Rational		abs(const Rational &rhs);
 	friend Rational		getGcd(const Rational &lhs, const Rational &rhs);
 	friend Rational		operator*(const Rational &lhs, const Rational &rhs);
@@ -196,6 +94,149 @@ class	Rational {
 	friend std::ostream	&operator<<(std::ostream &os, const Rational &r);
 };
 
+/* EQUALS */
+bool		operator==(const Rational &lhs, const Rational &rhs);
+
+template<typename T, typename std::enable_if_t<std::is_integral<T>::value, bool> = true>
+bool		operator==(const T &n, const Rational &r) {
+	return (r.getWhole() == n && r.getNum() == 0);
+}
+
+template<typename T, typename std::enable_if_t<std::is_integral<T>::value, bool> = true>
+bool		operator==(const Rational &r, const T &n) {
+	return (n == r);
+}
+
+template<typename T, typename std::enable_if_t<std::is_floating_point<T>::value, bool> = true>
+bool		operator==(const T &n, const Rational &r) {
+	return ((long double)r == n);
+}
+
+template<typename T, typename std::enable_if_t<std::is_floating_point<T>::value, bool> = true>
+bool		operator==(const Rational &r, const T &n) {
+	return (n == r);
+}
+
+/* NOT EQUAL */
+bool		operator!=(const Rational &lhs, const Rational &rhs);
+
+template<typename T, typename std::enable_if_t<std::is_integral<T>::value, bool> = true>
+bool		operator!=(const T &n, const Rational &r) {
+	return !(n == r);
+}
+
+template<typename T, typename std::enable_if_t<std::is_integral<T>::value, bool> = true>
+bool		operator!=(const Rational &r, const T &n) {
+	return !(r == n);
+}
+
+template<typename T, typename std::enable_if_t<std::is_floating_point<T>::value, bool> = true>
+bool		operator!=(const T &n, const Rational &r) {
+	return !(n == r);
+}
+
+template<typename T, typename std::enable_if_t<std::is_floating_point<T>::value, bool> = true>
+bool		operator!=(const Rational &r, const T &n) {
+	return !(r == n);
+}
+
+/* GREATER THAN */
+bool		operator>(const Rational &lhs, const Rational &rhs);
+
+template<typename T, typename std::enable_if_t<std::is_integral<T>::value, bool> = true>
+bool		operator>(const T &n, const Rational &r) {
+	if (n > r.getWhole()) { return true; }
+	if (n < r.getWhole()) { return false; }
+	long long tmp_n = r.getWhole() < 0 ? -r.getNum(): r.getNum();
+	return (tmp_n < 0);
+}
+
+template<typename T, typename std::enable_if_t<std::is_integral<T>::value, bool> = true>
+bool		operator>(const Rational &r, const T &n) {
+	return !(n > r || r == n);
+}
+
+template<typename T, typename std::enable_if_t<std::is_floating_point<T>::value, bool> = true>
+bool		operator>(const T &n, const Rational &r) {
+	return (n > (long double)r);
+}
+
+template<typename T, typename std::enable_if_t<std::is_floating_point<T>::value, bool> = true>
+bool		operator>(const Rational &r, const T &n) {
+	return !(n > r || n == r);
+}
+
+/* GREATER OR EQUAL */
+bool		operator>=(const Rational &lhs, const Rational &rhs);
+
+template<typename T, typename std::enable_if_t<std::is_integral<T>::value, bool> = true>
+bool		operator>=(const T &n, const Rational &r) {
+	return (n > r || n == r);
+}
+
+template<typename T, typename std::enable_if_t<std::is_integral<T>::value, bool> = true>
+bool		operator>=(const Rational &r, const T &n) {
+	return (r > n || r == n);
+}
+
+template<typename T, typename std::enable_if_t<std::is_floating_point<T>::value, bool> = true>
+bool		operator>=(const T &n, const Rational &r) {
+	return (n >= (long double)r);
+}
+
+template<typename T, typename std::enable_if_t<std::is_floating_point<T>::value, bool> = true>
+bool		operator>=(const Rational &r, const T &n) {
+	return (r > n || r == n);
+}
+
+/* SMALLER THAN */
+
+bool		operator<(const Rational &lhs, const Rational &rhs);
+
+template<typename T, typename std::enable_if_t<std::is_integral<T>::value, bool> = true>
+bool		operator<(const T &n, const Rational &r) {
+	return !(n > r || n == r);
+}
+
+template<typename T, typename std::enable_if_t<std::is_integral<T>::value, bool> = true>
+bool		operator<(const Rational &r, const T &n) {
+	return !(r > n || r == n);
+}
+
+template<typename T, typename std::enable_if_t<std::is_floating_point<T>::value, bool> = true>
+bool		operator<(const T &n, const Rational &r) {
+	return !(n > r || n == r);
+}
+
+template<typename T, typename std::enable_if_t<std::is_floating_point<T>::value, bool> = true>
+bool		operator<(const Rational &r, const T &n) {
+	return !(r > n || r == n);
+}
+
+/* SMALLER THAN OR EQUAL */
+
+bool		operator<=(const Rational &lhs, const Rational &rhs);
+
+template<typename T, typename std::enable_if_t<std::is_integral<T>::value, bool> = true>
+bool		operator<=(const T &n, const Rational &r) {
+	return !(n > r);
+}
+
+template<typename T, typename std::enable_if_t<std::is_integral<T>::value, bool> = true>
+bool		operator<=(const Rational &r, const T &n) {
+	return !(r > n);
+}
+
+template<typename T, typename std::enable_if_t<std::is_floating_point<T>::value, bool> = true>
+bool		operator<=(const T &n, const Rational &r) {
+	return !(n > r);
+}
+
+template<typename T, typename std::enable_if_t<std::is_floating_point<T>::value, bool> = true>
+bool		operator<=(const Rational &r, const T &n) {
+	return !(r > n);
+}
+
 /* Floating point to rational */
 template <typename T,
 			typename std::enable_if_t<std::is_floating_point<T>::value, bool> = true
@@ -203,7 +244,7 @@ template <typename T,
 Rational        doubleToRational(T n, long double accuracy = 0.0) {
     try {
         auto [ whole, numerator, denominator ] = doubleToRatio(n, accuracy);
-		return Rational(numerator, denominator, whole);
+		return Rational(whole, numerator, denominator);
     }
     catch (std::overflow_error &e) {
         throw;
@@ -215,7 +256,7 @@ template<typename T,
 			typename std::enable_if_t<std::is_integral<T>::value, bool> = true
 		>
 Rational	getGcd(const Rational &a, const T &b) {
-	auto nw = Rational(b, 1);
+	auto nw = Rational(b);
 	return (getGcd(nw, a));
 }
 
@@ -254,13 +295,19 @@ long double	operator*(const T &lhs, const Rational &rhs) {
 /* DIVIDE BY INT */
 template<typename T, typename std::enable_if_t<std::is_integral<T>::value, bool> = true>
 Rational	operator/(const Rational &lhs, const T &rhs) {
-	Rational tmp = Rational(1, rhs);
+	if (rhs == 0) {
+		throw std::invalid_argument("Division by zero requested\n");
+	}
+	Rational tmp = Rational(rhs);
 	return (lhs * tmp);
 }
 
 template<typename T, typename std::enable_if_t<std::is_integral<T>::value, bool> = true>
 Rational	operator/(const T &lhs, const Rational &rhs) {
-	Rational	tmp = Rational(1, lhs);
+	if (rhs == 0) {
+		throw std::invalid_argument("Division by zero requested\n");
+	}
+	Rational	tmp = Rational(lhs);
 	return tmp / rhs;
 }
 
@@ -281,7 +328,7 @@ Rational	operator+(const Rational &lhs, const T &rhs) {
 	// Copy lhs, then add rhs
 	Rational n = lhs;
 	n += rhs;
-	return lhs;
+	return n;
 }
 
 template<typename T, typename std::enable_if_t<std::is_integral<T>::value, bool> = true>
@@ -314,14 +361,14 @@ Rational	operator-(const Rational &lhs, const T &rhs) {
 
 template<typename T, typename std::enable_if_t<std::is_integral<T>::value, bool> = true>
 Rational	operator-(const T &lhs, const Rational &rhs) {
-	Rational n = Rational(0, 1, lhs);
+	Rational n = Rational(lhs);
 	n -= rhs;
 	return n;
 }
 
 /* SUBTRACT FLOAT */
 template<typename T, typename std::enable_if_t<std::is_floating_point<T>::value, bool> = true>
-long double	operator-(Rational &lhs, const T &rhs) {
+long double	operator-(const Rational &lhs, const T &rhs) {
 	long double n = (long double)lhs;
 	assert(!((rhs < 0 && n > LDBL_MAX + rhs) 
 	|| (rhs >= 0 && lhs < LDBL_MIN + rhs)));
@@ -333,5 +380,7 @@ long double	operator-(const T &lhs, const Rational &rhs) {
 	return (rhs - lhs);
 }
 
+std::tuple<long long, long long, long long>	getDenomFactorsLcm(long long d_left, long long d_right);
+std::tuple<long long, long long>	getDenomFactors(long long d_left, long long d_right);
 
 #endif

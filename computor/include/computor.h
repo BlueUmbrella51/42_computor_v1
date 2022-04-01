@@ -12,7 +12,6 @@
 #include <Equation.h>
 #include <cstdlib>
 #include <any>
-#include <regex>
 #include <limits.h>
 
 Equation	parse_equation(std::string &equation);

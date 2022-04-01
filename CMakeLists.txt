@@ -20,24 +20,7 @@ set(catchHeaderName catch.hpp)
 
 project(computor)
 
-# include(CTest)
-# include(Catch)
-# Download catch2 header if not present yet
-# if (NOT EXISTS ${catchFilePath}/${catchHeaderName})
-#     file(DOWNLOAD https://github.com/catchorg/Catch2/releases/download/v2.13.8/catch.hpp external/catch2/catch.hpp)
-# endif()
-
 add_subdirectory(external/catch2)
 add_subdirectory(lib)
 add_subdirectory(computor)
 
-# target_link_libraries(foo PRIVATE Catch2::Catch2)
-# include(${catchFilePath}/${catchHeaderName})
-
-# add_library(Catch INTERFACE)
-# message("CATCH FILE PATH ${catchFilePath}/${catchHeaderName}")
-# target_include_directories(Catch INTERFACE ${catchFilePath})
-
-#https://github.com/catchorg/Catch2/releases/download/v2.13.8/catch.hpp
-
-# add_dependencies(computor Run_math_tests)

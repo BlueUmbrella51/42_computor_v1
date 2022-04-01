@@ -12,13 +12,44 @@
 
 #define ACCURACY 0.00000000001
 
+template<typename T, 
+			typename std::enable_if<
+            std::is_integral<T>{}, bool>::type = true
+		>
+std::pair<long long, long long>		simplify_radical(T n, int degree) {
+	/* Any square sqrt(n) can be represented as sqrt(f1) * sqrt(f2).
+	We are looking for the largest perfect square f1 */
+	long long 	prime = 2;
+	int			count = 0;
+	long long	whole = 1;
+
+	while (n >= prime * prime) {
+		if (n % prime == 0) {
+			count++;
+			if (count == degree) {
+				whole *= prime;
+			}
+			n /= prime;
+		}
+		else {
+			count = 0;
+			++prime;
+		}
+	}
+	if (n == prime && count == degree - 1) {
+		whole *= prime;
+		n = 0;
+	}
+	return std::make_pair(prime, n);
+}
+
 /* Default implementation of getGcd: if either parameter is floating point, return 1 */
 template<typename T, typename U, 
 			typename std::enable_if<
             std::is_floating_point<T>{} ||
             std::is_floating_point<U>{}, bool>::type = true
 		>
-long long 	getGcd(T &a, U &b) { return 1; }
+long long 	getGcd(T a, U b) { return 1; }
 
 /* getGcd for all combinations of integral types */
 template<typename T, typename U, 
@@ -26,7 +57,7 @@ template<typename T, typename U,
             std::is_integral<T>{} &&
             std::is_integral<U>{}, bool>::type = true
 		>
-long long	getGcd(T &a, U &b) { return std::gcd(a, b); }
+long long	getGcd(T a, U b) { return std::gcd(a, b); }
 
 template<typename T, typename U, typename V,
 			typename std::enable_if<
@@ -34,7 +65,7 @@ template<typename T, typename U, typename V,
             std::is_integral<U>{} &&
 			std::is_integral<V>{}, bool>::type = true
 		>
-long long	getGcd(T &a, U &b, V &c) {
+long long	getGcd(T a, U b, V c) {
 	long long tmp = std::gcd(a, b);
 	return std::gcd(tmp, c);
 }
@@ -101,10 +132,13 @@ template<typename T,
 bool	multiplicationExceedsLimits(T lhs, T rhs) {
 	/* Check for over- and underflow */
 	if (rhs == 0) return false;
+	/* We have to separate this case because dividing numerical limit min by -1 
+	will cause overflow in the check */
+	if (rhs == -1 && lhs > 0) return false;
 	return ((lhs > 0 && rhs > 0 && (lhs > std::numeric_limits<T>::max() / rhs))
 	|| (lhs < 0 && rhs < 0 && (lhs < std::numeric_limits<T>::max() / rhs))
 	|| (rhs > 0 && lhs < 0 && (lhs < std::numeric_limits<T>::min() / rhs))
-	|| (rhs < 0 && lhs > 0 && (lhs > std::numeric_limits<T>::min() / rhs)));
+	|| (rhs < -1 && lhs > 0 && (lhs > std::numeric_limits<T>::min() / rhs)));
 }
 
 template<typename T, 
@@ -122,7 +156,7 @@ std::tuple<long long, long long, long long>	doubleToRatio(T value, long double a
 		throw std::invalid_argument("Decimal to convert to ratio cannot be infinite.");}
 	if (std::isnan(value)) { 
 		throw std::invalid_argument("Decimal to convert to ratio cannot be nan.");}
-	if (accuracy < 0.0 || accuracy > 1.0) { 
+	if (accuracy < 0.0 || accuracy > 1.0) {
 		throw std::invalid_argument("Accuracy for conversion to ratio must be between 0 and 1.");}
 	if (floor(value) <= LONG_LONG_MIN || floor(value) >= LONG_LONG_MAX) {
 		throw std::overflow_error("Whole part of decimal is too large to fit integer type\n");}

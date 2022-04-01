@@ -1,6 +1,5 @@
 add_executable(computor 
 	computor.cpp
-	parser.cpp
 	solver.cpp
 )
 

@@ -3,33 +3,30 @@
 #include <stdio.h>
 #include <iostream>
 #include "Rational.h"
-#include "Number.h"
+#include "Real.h"
 #include "math_helpers.h"
 #include <variant>
 
 class Token
 {
 	public:
-		// typedef 	std::variant<long double, long long, Rational> coeffOpts; 
-		// template <typename T>
-		Token(Number coeff, long degree = 0);
-		// Token();
-		~Token();
-		// void		print()	const;
+		Token(Real coeff, long degree = 0);
+		~Token() = default;
+		// Token		&operator-=(const Token &t);
+		// Token		&operator+=(const Token &t);
+		// Token		&operator/=(const Token &t);
+		// Token		&operator*=(const Token &t);
+		operator	std::string() const;
 		long		getDegree() const;
-		Number		getCoeff() const;
-		void		setCoeff(Number coeff);
-		// bool   		operator==(const Token &x);
-		// Rational	coeffToRational();
+		Real		getCoeff() const;
+		void		setCoeff(Real coeff);
+
 	private:
-		Number		_coeff;
+		Real		_coeff;
 		long		_degree;
 	
 	friend std::ostream	&operator<<(std::ostream &os, const Token &r);
+	friend bool			operator==(const Token &lhs, const Token &rhs);
 };
 
-// Token				operator*(const Token &t, long long n);
-// Token				operator+(const Token &lhs, Token &rhs);
-// Token::coeffOpts	getGcd(const Token::coeffOpts &lhs, const Token::coeffOpts &rhs);
-// Token::coeffOpts		operator/(const Token::coeffOpts &lhs, const Token::coeffOpts &rhs);
 #endif

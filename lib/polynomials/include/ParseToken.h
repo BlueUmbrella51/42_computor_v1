@@ -3,6 +3,7 @@
 #include <string>
 #include <optional>
 #include <iostream>
+#include <vector>
 
 class ParseToken {
 	public:
@@ -23,5 +24,9 @@ class ParseToken {
 		coeffTypes					_type;
 };
 
-bool            operator==(const ParseToken &lhs, const ParseToken &rhs);
+bool            											operator==(const ParseToken &lhs, const ParseToken &rhs);
+ParseToken													getParsingToken(std::string &input, bool first);
+std::pair<std::vector<ParseToken>, std::vector<ParseToken>>	getParsingTokens(std::string &input);
+
+
 #endif

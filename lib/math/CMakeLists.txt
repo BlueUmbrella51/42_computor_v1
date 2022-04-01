@@ -1,9 +1,5 @@
-add_library(${mathName}
-	getGcd.cpp	
-)
+add_library(${mathName} INTERFACE)
 
-target_compile_features(${mathName} PUBLIC cxx_std_17)
+target_compile_features(${mathName} INTERFACE cxx_std_17)
 
-add_subdirectory(tests)
-
-target_include_directories(${mathName} PUBLIC ${headerDir})
+target_include_directories(${mathName} INTERFACE ${headerDir})
