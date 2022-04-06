@@ -1,6 +1,6 @@
 #include "Token.h"
 
-Token::Token(Real coeff, long degree) :
+Token::Token(Rational coeff, long degree) :
 _coeff{coeff}, _degree{degree}{
 	
 }
@@ -37,12 +37,12 @@ long		Token::getDegree() const{
 	return _degree;
 }
 
-Real		Token::getCoeff() const {
+Rational		Token::getCoeff() const {
 	return _coeff;
 	// return 1;
 }
 
-void		Token::setCoeff(Real coeff) {
+void		Token::setCoeff(Rational coeff) {
 	_coeff = coeff;
 }
 

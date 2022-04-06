@@ -6,9 +6,9 @@
 #include <optional>
 #include <numeric>
 #include "Token.h"
-#include "Rational.h"
+#include "Fraction.h"
 #include "math_helpers.h"
-#include "Real.h"
+#include "Rational.h"
 #include "ParseToken.h"
 
 class Equation {	
@@ -45,6 +45,7 @@ class Equation {
 		Equation::operationSide	getSide();
 		void					setSide(Equation::operationSide s);
 		void					factor(std::list<Token> &lst);
+		void					toCalcable(std::list<Token> &lst);
 	
 	private:
 		std::list<Token>		_tokensLeft;

@@ -2,15 +2,15 @@
 # define TOKEN_H
 #include <stdio.h>
 #include <iostream>
+#include "Fraction.h"
 #include "Rational.h"
-#include "Real.h"
 #include "math_helpers.h"
 #include <variant>
 
 class Token
 {
 	public:
-		Token(Real coeff, long degree = 0);
+		Token(Rational coeff, long degree = 0);
 		~Token() = default;
 		// Token		&operator-=(const Token &t);
 		// Token		&operator+=(const Token &t);
@@ -18,11 +18,11 @@ class Token
 		// Token		&operator*=(const Token &t);
 		operator	std::string() const;
 		long		getDegree() const;
-		Real		getCoeff() const;
-		void		setCoeff(Real coeff);
+		Rational		getCoeff() const;
+		void		setCoeff(Rational coeff);
 
 	private:
-		Real		_coeff;
+		Rational		_coeff;
 		long		_degree;
 	
 	friend std::ostream	&operator<<(std::ostream &os, const Token &r);

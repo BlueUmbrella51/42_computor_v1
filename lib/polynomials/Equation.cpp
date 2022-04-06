@@ -224,7 +224,7 @@ void	Equation::factor(std::list<Token> &lst) {
 	// TODO: wrap in try/ catch
 	// TODO: make gcd negative if first token is negative
 	std::list<Token>::iterator 	it = lst.begin();
-	Real						gcd = (*it).getCoeff();
+	Rational						gcd = (*it).getCoeff();
 
 	++it;
 	while (it != lst.end()) {
@@ -284,7 +284,7 @@ long long		string_to_ll(std::string &str) {
 	return whole;
 }
 
-Rational		rational_string_to_rational(std::string &str) {
+Fraction		rational_string_to_rational(std::string &str) {
 	long long 		numerator, denominator, whole;
 	size_t			i = 0;
 
@@ -301,7 +301,7 @@ Rational		rational_string_to_rational(std::string &str) {
 			throw std::invalid_argument("Denominator of fraction cannot be zero.");
 		}
 		// factorGcd(numerator, denominator);
-		return Rational(whole, numerator, denominator);
+		return Fraction(whole, numerator, denominator);
 	}
 	catch (std::overflow_error &e) {
 		throw e;
@@ -311,7 +311,7 @@ Rational		rational_string_to_rational(std::string &str) {
 	}
 }
 
-Rational		decimal_string_to_rational(std::string &str) {
+Fraction		decimal_string_to_rational(std::string &str) {
 	size_t		i = 0;
 	size_t		prev = 0;
 	long long 	whole, denominator, numerator;
@@ -326,7 +326,7 @@ Rational		decimal_string_to_rational(std::string &str) {
 		/* Factor out gcd of numerator and denominator */
 		factorGcd(numerator, denominator);
 		/* Combine whole part and numerator */
-		return Rational(whole, numerator, denominator);
+		return Fraction(whole, numerator, denominator);
 	}
 	catch (std::overflow_error &e) {
 		throw e;
@@ -341,28 +341,28 @@ long double	decimal_string_to_double(std::string &str) {
 	long double res = strtold(str.c_str(), &end);
 
 	if (end == str.c_str()) { throw std::invalid_argument("Could not parse whole part of number."); }
-	if (errno == ERANGE) { throw std::overflow_error("Whole part of number could not be represented as long double."); }
+	if (errno == ERANGE) { throw std::overflow_error("Number could not be represented as long double."); }
 	return res;
 }
 
-Real		get_coefficient(std::string &str, ParseToken::coeffTypes type) {
+Rational		get_coefficient(std::string &str, ParseToken::coeffTypes type) {
 	if (type == ParseToken::coeffTypes::rational) {
 		try {
-			Rational r = rational_string_to_rational(str);
-			return Real(r);
+			Fraction r = rational_string_to_rational(str);
+			return Rational(r);
 		}
 		catch (std::overflow_error &e) { throw e; }
 		catch (std::invalid_argument &e) { throw e; }
 	}
 	else if (type == ParseToken::coeffTypes::decimal) {
 		try {
-			Rational r = decimal_string_to_rational(str);
-			return Real(r);
+			Fraction r = decimal_string_to_rational(str);
+			return Rational(r);
 		}
 		catch (std::overflow_error &e) {
 			try {
 				long double n = decimal_string_to_double(str);
-				return Real(n);
+				return Rational(n);
 			}
 			catch (std::overflow_error &e) { throw e; }
 			catch (std::invalid_argument &e) { throw e; }
@@ -371,7 +371,7 @@ Real		get_coefficient(std::string &str, ParseToken::coeffTypes type) {
 	else {
 		try {
 			long long n = string_to_ll(str);
-			return Real(Rational(n));
+			return Rational(Fraction(n));
 		}
 		catch (std::overflow_error &e) { throw (e); }
 		catch (std::invalid_argument &e) { throw e; }
@@ -403,7 +403,7 @@ Token		parse_token(ParseToken &pt) {
 		ParseToken::coeffTypes		type = pt.getType();
 		std::string					coeff_str = pt.getCoeff();
 		std::optional<std::string>	degree_str = pt.getDegree();
-		Real			 			coeff = get_coefficient(coeff_str, type);
+		Rational			 			coeff = get_coefficient(coeff_str, type);
 		/* If no discriminant was given we assume one with power 0, which
 		comes down to coefficient * 1. */
 		long int					degree = 0;

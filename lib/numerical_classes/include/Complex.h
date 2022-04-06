@@ -15,9 +15,9 @@ class ComplexNumber {
 		ComplexNumber(double real, double imag);
 		~ComplexNumber(void);
 		ComplexNumber(const ComplexNumber& other);
-		double			getReal(void)	const;
+		double			getRational(void)	const;
 		double			getImag(void)	const;
-		void			setReal(double real);
+		void			setRational(double real);
 		void			setImag(double imag);
 		ComplexNumber&	operator=(const ComplexNumber& num);
 		bool			operator==(const ComplexNumber& other)	const;

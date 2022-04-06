@@ -7,37 +7,37 @@ TEST_CASE("Parsing", "[Parsing]") {
 		std::string s = "1(1/3)";
 		ParseToken pt = getParsingToken(s, true);
 		Token t = parse_token(pt);
-		Rational r = Rational(1, 1, 3);
+		Fraction r = Fraction(1, 1, 3);
 		REQUIRE(t == Token(r, 0));
 
 		s = "-1(-1/-3)";
 		pt = getParsingToken(s, true);
 		t = parse_token(pt);
-		r = Rational(-1, 1, 3);
+		r = Fraction(-1, 1, 3);
 		REQUIRE(t == Token(r, 0));
 
 		s = "-1(-1/3)";
 		pt = getParsingToken(s, true);
 		t = parse_token(pt);
-		r = Rational(-1, 1, 3);
+		r = Fraction(-1, 1, 3);
 		REQUIRE(t == Token(r, 0));
 
 		s = "-11/3";
 		pt = getParsingToken(s, true);
 		t = parse_token(pt);
-		r = Rational(-3, 2, 3);
+		r = Fraction(-3, 2, 3);
 		REQUIRE(t == Token(r, 0));
 	}
 	SECTION("Decimals\n") {
 		std::string s = "1.12";
 		ParseToken pt = getParsingToken(s, true);
 		Token t = parse_token(pt);
-		REQUIRE(t == Token(Rational(1, 3, 25), 0));
+		REQUIRE(t == Token(Fraction(1, 3, 25), 0));
 
 		s = "131.415";
 		pt = getParsingToken(s, true);
 		t = parse_token(pt);
-		REQUIRE(t == Token(Rational(131, 83, 200), 0));
+		REQUIRE(t == Token(Fraction(131, 83, 200), 0));
 	}
 	// No equals
 	std::string input = "X + 12 - 13X";

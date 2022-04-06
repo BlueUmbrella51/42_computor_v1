@@ -49,7 +49,7 @@ void		ParseToken::print() {
 		std::cout << "Integer\n";
 	}
 	else if (_type == ParseToken::coeffTypes::rational) {
-		std::cout << "Rational\n";
+		std::cout << "Fraction\n";
 	}
 	std::cout << "Coeff: " << _coeff << "\n";
 	if (_degree) {

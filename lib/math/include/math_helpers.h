@@ -12,37 +12,6 @@
 
 #define ACCURACY 0.00000000001
 
-template<typename T, 
-			typename std::enable_if<
-            std::is_integral<T>{}, bool>::type = true
-		>
-std::pair<long long, long long>		simplify_radical(T n, int degree) {
-	/* Any square sqrt(n) can be represented as sqrt(f1) * sqrt(f2).
-	We are looking for the largest perfect square f1 */
-	long long 	prime = 2;
-	int			count = 0;
-	long long	whole = 1;
-
-	while (n >= prime * prime) {
-		if (n % prime == 0) {
-			count++;
-			if (count == degree) {
-				whole *= prime;
-			}
-			n /= prime;
-		}
-		else {
-			count = 0;
-			++prime;
-		}
-	}
-	if (n == prime && count == degree - 1) {
-		whole *= prime;
-		n = 0;
-	}
-	return std::make_pair(prime, n);
-}
-
 /* Default implementation of getGcd: if either parameter is floating point, return 1 */
 template<typename T, typename U, 
 			typename std::enable_if<
@@ -107,6 +76,8 @@ bool	additionExceedsLimits(T lhs, T rhs) {
 		return (lhs > std::numeric_limits<T>::max() - rhs);
 	}
 	else {
+		std::cout << "LIMIT: " << std::numeric_limits<T>::min() << "\n";
+
 		return (lhs < std::numeric_limits<T>::min() - rhs);
 	}
 }

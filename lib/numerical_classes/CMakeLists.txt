@@ -2,8 +2,11 @@ cmake_minimum_required(VERSION 3.10)
 
 add_library(${numerName} STATIC
 			Complex.cpp
+			Fraction.cpp
 			Rational.cpp
-			Real.cpp
+			Radical.cpp
+			Root.cpp
+			Numerical.cpp
 )
 
 target_include_directories(${numerName} PUBLIC ${headerDir})

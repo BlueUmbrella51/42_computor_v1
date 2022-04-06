@@ -1,7 +1,11 @@
 #include "computor.h"
+#include <limits.h>
+#include "Root.h"
 
 int main(int argc, char *argv[]) {
 	// TODO help text
+	Root n = Root(100);
+	n.getRoot() == 5;
 	if (argc != 2) {
 		std::cerr << "Invalid number of arguments: expected one.";
 		return (1);

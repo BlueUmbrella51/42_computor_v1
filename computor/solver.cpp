@@ -1,4 +1,5 @@
 #include "computor.h"
+#include "Radical.h"
 
 void		solve_first_degree(Equation &eq) {
 	/* Form: 2X = 4. 
@@ -29,61 +30,101 @@ void		solve_first_degree(Equation &eq) {
 	}
 }
 
+// std::pair<Rational, Rational>	getRadical(Rational discriminant) {
+// 	Rational whole;
+// 	Rational radical;
+// 	try {
+// 		auto [w, r] = simplify_radical(abs(discriminant), 2);
+// 		whole = Rational(w);
+// 		radical = Rational(r);
+// 	}
+// 	catch (std::overflow_error &e) {
+// 		discriminant.toFloating();
+// 		auto [w, r] = simplify_radical(abs(discriminant), 2);
+// 		whole = Rational(w);
+// 		radical = Rational(r);
+// 	}
+// 	return std::make_pair(whole, radical);
+// }
+
+// void		solve_abc_formula(Rational &a, Rational &b, Rational &d) {
+// 	try {
+// 		auto [whole, radical] = simplify_radical(abs(d), 2);
+// 		std::cout << "whole: " << whole << " Radical: " << radical << "\n";
+
+// 	}
+// 	catch (std::overflow_error &e) {
+// 		d.toFloating();
+// 		auto [whole, radical] = simplify_radical(abs(d), 2);
+// 		std::cout << std::setprecision(150) << d;
+// 		std::cout << "whole: " << whole << " Radical: " << radical << "\n";
+
+// 	}
+// 	auto divisor = 2 * a;
+// 	Rational sol1;
+// 	Rational sol2;
+
+// 	// if (radical == 1 || radical == 0) {
+// 	// 	// Radical irrelevant
+// 	// 	sol1 = (-b + whole) / divisor;
+// 	// 	sol2 = (-b - whole) / divisor;
+// 	// 	std::cout << "X = " << sol1 << "\nX = " << sol2 << "\n"; 
+// 	// }
+// 	// // auto sol1 = (coeff_a - simplify_radical(discriminant)) / (2 * coeff_a);
+// 	// // auto [whole, radical] = simplify_radical(125, 2);
+// 	// auto n = -b / divisor;
+// 	// auto m = whole / divisor;
+// 	// std::cout << "Discriminant is strictly positive, the two solutions are:\n";
+// 	// std::cout << "X = " << n;
+// 	// if (m != 0) 
+// 	// 	std::cout  << " + " << m << "sqrt(" << radical << ")\n";
+// 	// std::cout << "X = " << n << " - " << m << "sqrt(" << radical << ")\n"; 
+// }
+
 void		solve_second_degree(Equation &eq) {
-	/* Factor ax^2 + bx + c = 0 into :
-	(x + d)(x + e) where:
-	a == 1
-	d + e == b
-	d * e == c
-	*/
-	Equation bck = eq;
+	auto a_token = (eq.findTokenOfDegree(eq.getEquationLeft(), 2));
+	auto b_token = (eq.findTokenOfDegree(eq.getEquationLeft(), 1));
+	auto c_token = (eq.findTokenOfDegree(eq.getEquationLeft(), 0));
 
-	try {
-		eq.factor(eq.getEquationLeft());
-	}
-	catch (std::overflow_error &e) {
-		std::cout << e.what();
-		eq = bck;
-	}
-	std::cout << "After factor left: " << eq << "\n";
-	auto a = (eq.findTokenOfDegree(eq.getEquationLeft(), 2));
-	auto b = (eq.findTokenOfDegree(eq.getEquationLeft(), 1));
-	auto c = (eq.findTokenOfDegree(eq.getEquationLeft(), 0));
+	Rational a = a_token ? a_token.value().getCoeff(): 0;
+	Rational b = b_token ? b_token.value().getCoeff(): 0;
+	Rational c = c_token ? c_token.value().getCoeff(): 0;
 
-	Real coeff_a = a ? a.value().getCoeff(): 0;
-	Real coeff_b = b ? b.value().getCoeff(): 0;
-	Real coeff_c = c ? c.value().getCoeff(): 0;
-	std::cout << "A: " << coeff_a << "\nB: " << coeff_b << "\nC: " << coeff_c << "\n";
-	// if (multiplicationExceedsLimits(coeff_b, coeff_b) || 
-	// multiplicationExceedsLimits(coeff_a, coeff_c) ||
-	// multiplicationExceedsLimits(coeff_a * coeff_c, 4) ||
-	// subtractionExceedsLimits(coeff_b * coeff_b, 4 * coeff_a * coeff_c)) {
-	// 	std::cout << "Cannot find discriminant without causing overflow.\n";
-	// 	throw std::overflow_error("Cannot find discriminant without causing overflow.\n");
+	// TODO: try?
+	auto discriminant = (b * b) - (4 * a * c);
+
+	Radical r = Radical(discriminant, 2);
+	std::cout << r;
+	// auto [whole, radical] = getRadical(discriminant);
+	// if (a.isFloating() || b.isFloating() || radical.isFloating()) {
+	// 	a.toFloating();
+	// 	b.toFloating();
+	// 	discriminant.toFloating();
 	// }
-	auto	discriminant = (coeff_b * coeff_b) - (4 * coeff_a * coeff_c);
-	if (discriminant > 0) {
-		/* Two real roots: -b + sqrt(d) and -b - sqrt(d) */
-		auto [whole, radical] = simplify_radical(100, 2);
-		std::cout << "Whole: " << whole << " Radical: " << radical << "\n";
+	// std::cout << "A: " << a << "\nB: " << b << "\nC: " << c << "\n";
+	// std::cout << "Discriminant: " << discriminant << "\n";
+	// std::cout << "Whole: " << whole << "\nRadical: " << radical << "\n";
+	// if (discriminant == 0) {
+	// 	// Just one solution: -b / 2a
+	// }
+	// else if (radical == 0 || radical == 1 || discriminant.isFloating()) {
+	// 	// TODO radical can't be 0?
+	// 	// Radical is irrelevant in this case
+	// 	if (discriminant.isFloating()) {
+	// 		auto d = std::sqrt(radical.getFloat());
+	// 		auto sol1 = (-b + d) / (2 * a);
+	// 		auto sol2 = (-b - d) / (2 * a);
+	// 		std::cout << -b << " +/- " << d << "/" << 2 * a << "\n";
+	// 		if (discriminant < 0)
+	// 			std::cout << "Solutions:\nX = " << sol1 << "i\nX = " << sol2 << "i\n";
+	// 		else 
+	// 			std::cout << "Solutions:\nX = " << sol1 << "\nX = " << sol2 << "\n";
+	// 	}
+	// 	else {
+	// 		// Ignore radical for now
 
-		std::cout << "Discriminant is strictly positive, the two solutions are:\n";
-	}
-	else if (discriminant < 0) {
-		/* Two complex roots: -b + sqrt(d) and -b - sqrt(d) 
-		sqrt(n) where n < 0 == i*sqrt(abs(n))
-		*/
-		std::cout << "Discriminant is strictly negative, the two solutions are:\n";
-	}
-	else {
-		// simplify_sqrt(std::get<int>(discriminant.getVal()));
-		std::cout << "Discriminant is zero, the solution is:\n";
-		/* In this case, solution is -b / 2a  */
-		auto solution = -coeff_b / (2 * coeff_a);
-		std::cout << solution << "\n";
-	}
-	/* So now we have to calculate: (-b +- sqrt(discriminant).)/2a */
-// 	if (a == 0) {
+	// 	}
+	// }
 }
 // void		solve_second_degree(Equation &token_info) {
 	

@@ -1,7 +1,7 @@
 #define CATCH_CONFIG_MAIN
 #include <single_include/catch2/catch.hpp>
 #include "math_helpers.h"
-#include "Rational.h"
+#include "Fraction.h"
 #include <limits.h>
 
 TEST_CASE("Conversion doubles to ratios", "[Math]") {
