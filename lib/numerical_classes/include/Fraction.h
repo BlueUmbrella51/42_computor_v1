@@ -3,11 +3,11 @@
 #include <type_traits>
 #include <ostream>
 #include "math_helpers.h"
-#include <limits.h>
-#include <float.h>
-#include "Types.h"
-#include "Root.h"
-#include <variant>
+// #include "math_helpers.h"
+// #include <limits.h>
+// #include <float.h>
+// #include "Types.h"
+// #include <variant>
 
 class	Fraction {
 	private:
@@ -91,7 +91,7 @@ class	Fraction {
 		Fraction 	getGcd() const;
 		void		combineWholeNumerator();
 
-	friend std::pair<long long, Fraction>		simplify_radical(const Fraction &r, int degree);
+	// friend std::pair<long long, Fraction>		simplifyRadical(const Fraction &r, int degree);
 	friend Fraction								abs(const Fraction &rhs);
 	friend Fraction								getGcd(const Fraction &lhs, const Fraction &rhs);
 	friend Fraction								operator*(const Fraction &lhs, const Fraction &rhs);
@@ -349,8 +349,8 @@ template<typename T, typename std::enable_if_t<std::is_floating_point<T>::value,
 long double	operator+(const Fraction &lhs, const T &rhs) {
 	// TODO: simplify
 	long double n = (long double)lhs;
-	assert(!((rhs >= 0 && n > LDBL_MAX - rhs) ||
-	(n && n < LDBL_MIN - n)));
+	// assert(!((rhs >= 0 && n > LDBL_MAX - rhs) ||
+	// (n && n < LDBL_MIN - n)));
 	return (n + rhs);
 }
 
@@ -377,9 +377,9 @@ Fraction	operator-(const T &lhs, const Fraction &rhs) {
 /* SUBTRACT FLOAT */
 template<typename T, typename std::enable_if_t<std::is_floating_point<T>::value, bool> = true>
 long double	operator-(const Fraction &lhs, const T &rhs) {
-	long double n = (long double)lhs;
-	assert(!((rhs < 0 && n > LDBL_MAX + rhs) 
-	|| (rhs >= 0 && lhs < LDBL_MIN + rhs)));
+	// long double n = (long double)lhs;
+	// assert(!((rhs < 0 && n > LDBL_MAX + rhs) 
+	// || (rhs >= 0 && lhs < LDBL_MIN + rhs)));
 	return ((long double)lhs - rhs);
 }
 

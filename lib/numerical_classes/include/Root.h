@@ -5,55 +5,6 @@
 #include <iostream>
 #include "Numerical.h"
 
-// typedef std::variant<int, long, long long, float, double, long double>	numerical;
-
-// class Numerical {
-// 	public:
-// 		Numerical(numerical);
-// 		~Numerical() = default;
-// 	private:
-// 		numerical _val;
-// }
-
-// bool		operator==(const numerical &lhs, const numerical &rhs);
-// bool		operator<(const numerical &lhs, const numerical &rhs);
-
-// template<typename T, 
-// 			typename std::enable_if<
-//             std::is_arithmetic<T>{}, bool>::type = true
-// 		>
-// bool		operator==(const numerical &lhs, const T &rhs) {
-// 	return (lhs == numerical(rhs));
-// }
-
-// template<typename T, 
-// 			typename std::enable_if<
-//             std::is_arithmetic<T>{}, bool>::type = true
-// 		>
-// numerical		operator*(const numerical lhs, const T rhs) {
-// 	return std::visit([=](auto &arg){
-// 		return numerical(arg * rhs);
-// 	}, lhs);
-// }
-
-// template<typename T, 
-// 			typename std::enable_if<
-//             std::is_arithmetic<T>{}, bool>::type = true
-// 		>
-// numerical	getGcd(T &lhs, numerical &rhs) {
-// 	return std::visit([=](auto &arg) {
-// 		return numerical(getGcd(lhs, arg));
-// 	}, rhs);
-// }
-
-// numerical	operator/(const numerical &lhs, const numerical &rhs) {
-// 	return std::visit([](auto &n1, auto &n2) {
-// 		return numerical(n1 / n2);
-// 	}, lhs, rhs);
-// }
-
-// numerical		abs(numerical &r);
-
 class	Root {
 	public:
 		enum Type {
@@ -81,7 +32,8 @@ class	Root {
 				_root = abs(_root);
 			}
 		}
-		Root(Numerical n, int degree);
+		Root(Numerical n, int degree = 2);
+		Root	&operator=(const Root &rhs);
 		~Root() = default;
 
 		void		simplify();
@@ -89,6 +41,7 @@ class	Root {
 		long long	getWhole() const;
 		int			getDegree() const;
 		Type		getType() const;
+		Numerical	getDivisor() const;
 		Root		&operator+=(const Root &rhs);
 		Root		&operator-=(const Root &rhs);
 		Root		&operator*=(const Root &rhs);
@@ -104,6 +57,8 @@ class	Root {
 	friend std::ostream    		&operator<<(std::ostream &os, const Root &x);
 	// friend std::ostream    		&operator<<(std::ostream &os, const numerical &x);
 };
+
+Root		operator*(const Root &lhs, const Root &rhs);
 
 bool		sameTypeAndRoot(const Root &lhs, const Root &rhs);
 bool		operator==(const Root &lhs, const Root &rhs);

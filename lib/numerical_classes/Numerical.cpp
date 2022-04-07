@@ -13,6 +13,16 @@ Numerical	&Numerical::operator=(const Numerical &rhs) {
 	return *this;
 }
 
+bool			Numerical::isIntegral() const {
+	return (std::holds_alternative<int>(_val)
+	|| std::holds_alternative<long>(_val)
+	|| std::holds_alternative<long long>(_val));
+}
+
+bool			Numerical::isFloating() const {
+	return !isIntegral();
+}
+
 numerical		Numerical::getVal() const {
 	return _val;
 }
@@ -30,6 +40,18 @@ Numerical::operator		long long() {
 Numerical::operator		long double() {
 	return std::visit([](auto n) {
 		return (long double)n;
+	}, getVal());
+}
+
+Numerical::operator		std::string() {
+	return std::visit([](auto n) {
+		return std::to_string(n);
+	}, getVal());
+}
+
+Numerical		Numerical::operator-() const {
+	return std::visit([](auto n) {
+		return Numerical(-n);
 	}, getVal());
 }
 
@@ -119,6 +141,11 @@ Numerical	operator/(const Numerical &lhs, const Numerical &rhs) {
 		return Numerical((n1 / n2));
 	}, lhs.getVal(), rhs.getVal());
 }
+
+
+// Numerical	simplifyRadical(const Numerical &n) {
+
+// }
 
 Numerical	getGcd(const Numerical &lhs, const Numerical &rhs) {
 	return std::visit([](auto n1, auto n2) {

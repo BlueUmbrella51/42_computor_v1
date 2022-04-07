@@ -3,7 +3,7 @@
 Radical::Radical(Rational discriminant, int degree) :
 _degree{degree} {
 	std::cout << "Discriminant: " << discriminant << "\n";
-	auto [whole, radical] = simplify_radical(abs(discriminant), _degree);
+	auto [whole, radical] = simplifyRadical(abs(discriminant), _degree);
 	_whole = whole;
 	_radical = radical;
 	std::cout << "Whole: " << _whole << " Radicant: " << _radical << "\n";

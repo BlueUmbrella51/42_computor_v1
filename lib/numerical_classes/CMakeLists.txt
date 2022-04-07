@@ -4,7 +4,7 @@ add_library(${numerName} STATIC
 			Complex.cpp
 			Fraction.cpp
 			Rational.cpp
-			Radical.cpp
+			# Radical.cpp
 			Root.cpp
 			Numerical.cpp
 )

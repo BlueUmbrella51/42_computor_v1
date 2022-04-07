@@ -1,7 +1,8 @@
 #ifndef NUMERICAL_H
-#define NUMERICAL_h
+#define NUMERICAL_H
 #include <variant>
 #include <iostream>
+#include "math_helpers.h"
 
 typedef std::variant<int, long, long long, float, double, long double>	numerical;
 
@@ -23,6 +24,8 @@ class Numerical {
 		}
 		~Numerical() = default;
 
+		bool			isIntegral() const;
+		bool			isFloating() const;
 		numerical		getVal() const;
 		void			setVal(numerical n);
 		template<typename T,
@@ -33,7 +36,8 @@ class Numerical {
 		}
 		operator 		long long();
 		operator 		long double();
-
+		operator		std::string ();
+		Numerical		operator-() const;
 		Numerical		&operator+=(const Numerical &rhs);
 		Numerical		&operator-=(const Numerical &rhs);
 		Numerical		&operator*=(const Numerical &rhs);
@@ -152,7 +156,7 @@ template<typename T,
 		>
 Numerical	operator-(const T &lhs, const Numerical &rhs) {
 	return std::visit([=](auto n) {
-		return Numerical((rhs - n));
+		return Numerical((lhs - n));
 	}, lhs.getVal());
 }
 
@@ -185,9 +189,26 @@ template<typename T,
 			typename std::enable_if_t<std::is_arithmetic<T>::value, bool> = true
 		>
 Numerical	operator/(const T &lhs, const Numerical &rhs) {
-	return (rhs / lhs);
+	return std::visit([=](auto n) {
+		return Numerical((lhs / n));
+	}, rhs.getVal());
 }
 
 Numerical	getGcd(const Numerical &lhs, const Numerical &rhs);
+template<typename T,
+			typename std::enable_if_t<std::is_arithmetic<T>::value, bool> = true
+		>
+Numerical	getGcd(const Numerical &lhs, const T &rhs) {
+	return std::visit([=](auto n) {
+		return Numerical(getGcd(n, rhs));
+	}, lhs.getVal());
+}
+template<typename T,
+			typename std::enable_if_t<std::is_arithmetic<T>::value, bool> = true
+		>
+Numerical	getGcd(const T &lhs, const Numerical &rhs) {
+	return getGcd(rhs, lhs);
+}
+
 Numerical	abs(const Numerical &x);
 #endif

@@ -2,8 +2,9 @@
 #include <numeric>
 #include <iostream>
 #include <tuple>
-#include <assert.h>
+// #include <assert.h>
 #include <limits.h>
+// #include "math_helpers.h"
 
 Fraction::Fraction():
 _w{0}, _n{0}, _d{1} {
@@ -359,52 +360,52 @@ void			Fraction::combineWholeNumerator() {
 	_w = 0;
 }
 
-std::pair<long long, Fraction>			simplify_radical(const Fraction &r, int degree) {
-	Fraction tmp = r;
-	try {
-		tmp.combineWholeNumerator();
-		auto [ whole_n, radical_n ] = simplify_radical(tmp.getNum(), degree);
-		auto [ whole_d, radical_d ] = simplify_radical(tmp.getDenom(), degree);
+// std::pair<long long, Fraction>			simplifyRadical(const Fraction &r, int degree) {
+// 	Fraction tmp = r;
+// 	try {
+// 		tmp.combineWholeNumerator();
+// 		auto [ whole_n, radical_n ] = simplifyRadical(tmp.getNum(), degree);
+// 		auto [ whole_d, radical_d ] = simplifyRadical(tmp.getDenom(), degree);
 		
-		// Multiply both by radical_d if it isn't zero
-		if (radical_d != 0) {
-			/* Denominator cannot contain radical, so we have to multiply
-			both numerator and denominator by the radical part of the denominator.
-			The denominator whole part then becomes whole * radical, radical becomes 0.
-			The denominator radical part becomes sqrt(radical_n * radical_d),
-			which is then simplified again.
-			Whole part is never 0.
-			*/
+// 		// Multiply both by radical_d if it isn't zero
+// 		if (radical_d != 0) {
+// 			/* Denominator cannot contain radical, so we have to multiply
+// 			both numerator and denominator by the radical part of the denominator.
+// 			The denominator whole part then becomes whole * radical, radical becomes 0.
+// 			The denominator radical part becomes sqrt(radical_n * radical_d),
+// 			which is then simplified again.
+// 			Whole part is never 0.
+// 			*/
 
-			// Handle denominator
-			long long	nw_whole_d = whole_d * radical_d;
-			long long	nw_radical_d = 0;
+// 			// Handle denominator
+// 			long long	nw_whole_d = whole_d * radical_d;
+// 			long long	nw_radical_d = 0;
 
-			// Handle numerator
-			long long 	nw_radical_n;
-			long long	nw_whole_n = whole_n;
-			if (radical_n == 0) {
-				nw_radical_n = radical_d;
-			}
-			else {
-				auto [ whole_nd, radical_nd ] = simplify_radical(radical_n * radical_d, degree);
-				nw_whole_n = whole_n * whole_nd;
-				nw_radical_n = radical_nd;
-			}
-			whole_n = nw_whole_n;
-			radical_n = nw_radical_n;
-			whole_d = nw_whole_d;
-			radical_d = nw_radical_d;
-		}
-		Fraction f;
+// 			// Handle numerator
+// 			long long 	nw_radical_n;
+// 			long long	nw_whole_n = whole_n;
+// 			if (radical_n == 0) {
+// 				nw_radical_n = radical_d;
+// 			}
+// 			else {
+// 				auto [ whole_nd, radical_nd ] = simplifyRadical(radical_n * radical_d, degree);
+// 				nw_whole_n = whole_n * whole_nd;
+// 				nw_radical_n = radical_nd;
+// 			}
+// 			whole_n = nw_whole_n;
+// 			radical_n = nw_radical_n;
+// 			whole_d = nw_whole_d;
+// 			radical_d = nw_radical_d;
+// 		}
+// 		Fraction f;
 
-		f.setNumerator(radical_n);
-		f.setDenominator(whole_d);
-		// We can't have it simplified
-		return std::make_pair(whole_n, f);
-	}
-	catch (std::overflow_error &e) { throw e; }
-}
+// 		f.setNumerator(radical_n);
+// 		f.setDenominator(whole_d);
+// 		// We can't have it simplified
+// 		return std::make_pair(whole_n, f);
+// 	}
+// 	catch (std::overflow_error &e) { throw e; }
+// }
 
 Fraction		abs(const Fraction &rhs) {
 	if (rhs._n == LONG_LONG_MIN || rhs._w == LONG_LONG_MIN) {

@@ -1,13 +1,12 @@
 #ifndef MATH_HELPERS_H
 #define MATH_HELPERS_H
 #include <type_traits>
-#include <iostream>
+// #include <iostream>
 #include <numeric>
 #include <limits>
 #include <tuple>
 #include <vector>
 #include <cmath>
-#include <assert.h>
 #include <limits.h>
 
 #define ACCURACY 0.00000000001
@@ -26,7 +25,10 @@ template<typename T, typename U,
             std::is_integral<T>{} &&
             std::is_integral<U>{}, bool>::type = true
 		>
-long long	getGcd(T a, U b) { return std::gcd(a, b); }
+long long	getGcd(T a, U b) {
+	auto gcd = std::gcd(a, b);
+	return gcd == 0 ? 1: gcd; 
+}
 
 template<typename T, typename U, typename V,
 			typename std::enable_if<
@@ -76,8 +78,6 @@ bool	additionExceedsLimits(T lhs, T rhs) {
 		return (lhs > std::numeric_limits<T>::max() - rhs);
 	}
 	else {
-		std::cout << "LIMIT: " << std::numeric_limits<T>::min() << "\n";
-
 		return (lhs < std::numeric_limits<T>::min() - rhs);
 	}
 }
@@ -129,8 +129,8 @@ std::tuple<long long, long long, long long>	doubleToRatio(T value, long double a
 		throw std::invalid_argument("Decimal to convert to ratio cannot be nan.");}
 	if (accuracy < 0.0 || accuracy > 1.0) {
 		throw std::invalid_argument("Accuracy for conversion to ratio must be between 0 and 1.");}
-	if (floor(value) <= LONG_LONG_MIN || floor(value) >= LONG_LONG_MAX) {
-		throw std::overflow_error("Whole part of decimal is too large to fit integer type\n");}
+	if (floor(value) < LONG_LONG_MIN || floor(value) > LONG_LONG_MAX) {
+		throw std::overflow_error("Whole part of decimal is too large to fit integer type\n"); }
 	
 	int				sign = value >= 0.0 ? 1 : -1;
 	value = std::abs(value);

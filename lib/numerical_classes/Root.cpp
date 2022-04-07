@@ -1,37 +1,5 @@
 #include "Root.h"
 
-/* root type */
-
-// numerical		abs(numerical &r) {
-// 	return std::visit([](auto &arg) {
-// 			return (numerical(std::abs(arg)));
-// 	}, r);
-// }
-
-
-// bool		operator==(const numerical &lhs, const numerical &rhs) {
-// 	return std::visit([](auto &lhs, auto &rhs) {
-// 		return (lhs == rhs);
-// 	}, lhs, rhs);
-// }
-
-// bool		operator!=(const numerical &lhs, const numerical &rhs) {
-// 	return !(lhs == rhs);
-// }
-
-// bool		operator<(const numerical &lhs, const numerical &rhs) {
-// 	return std::visit([](auto &lhs, auto &rhs) {
-// 		return (lhs < rhs);
-// 	}, lhs, rhs);
-// }
-
-// std::ostream    		&operator<<(std::ostream &os, const numerical &x) {
-// 	std::visit([&os](auto arg) {
-// 		os << arg;
-// 	}, x);
-// 	return os;
-// }
-
 /* Root class */
 void	Root::simplify() {
 	/* Any square sqrt(n) can be represented as sqrt(f1) * sqrt(f2).
@@ -49,7 +17,20 @@ Root::Root(Numerical n, int degree) : _root{n}, _whole{1}, _degree{degree},
 		_type = Type::imaginary;
 		_root = abs(_root);
 	}
+	simplify();
 }
+
+Root	&Root::operator=(const Root &rhs) {
+	if (*this != rhs) {
+		_root = rhs.getRoot();
+		_whole = rhs.getWhole();
+		_degree = rhs.getDegree();
+		_type = rhs.getType();
+		_divisor = rhs.getDivisor();
+	}
+	return *this;
+}
+
 
 Numerical	Root::getRoot() const {
 	return _root;
@@ -65,6 +46,10 @@ int			Root::getDegree() const {
 
 Root::Type	Root::getType() const {
 	return _type;
+}
+
+Numerical	Root::getDivisor() const {
+	return _divisor;
 }
 
 bool		sameTypeAndRoot(const Root &lhs, const Root &rhs) {
@@ -93,32 +78,41 @@ Root		&Root::operator-=(const Root &rhs) {
 }
 
 Root		&Root::operator*=(const Root &rhs) {
-	// TODO: complex and real
-	// auto nw_whole = getWhole() * rhs.getWhole();
-	// auto nw_root = getRoot() * rhs.getRoot();
-	// // Root nw_root = std::visit([](auto n1, auto n2) {
-	// // 	return Root((n1 * n2));
-	// // }, getRoot(), rhs.getRoot());
-	// nw_whole *= nw_root.getWhole();
-	// _whole = nw_whole;
-	// _root = nw_root.getRoot();
-	// std::cout << "New whole: " << nw_whole << " New root: " << nw_root << "\n";
+	// TODO: complex and real?
+	long long 	nw_whole = getWhole() * rhs.getWhole();
+	Root 		nw_root = Root(getRoot() * rhs.getRoot());
+	
+	nw_whole *= nw_root.getWhole();
+	_whole = nw_whole;
+	_root = nw_root.getRoot();
+	std::cout << "New whole: " << nw_whole << " New root: " << nw_root << "\n";
 	return *this;
 }
 
 Root		&Root::operator/=(const Root &rhs) {
-	// TODO: complex and real
-	/* Normalize the "fraction" */
-	// Root denomRoot = Root(rhs.getRoot());
-	// std::cout << "Root part of divisor: " << denomRoot << "\n";
-	// *this *= denomRoot;
-	// Numerical divisor = rhs.getRoot() * rhs.getWhole();
-	// Numerical gcd = getGcd(_whole, divisor);
-	// std::cout << "Divisor: " << divisor << "\n";
-	// divisor = divisor / gcd;
-	// _whole = _whole / (long long)gcd;
-	// std::cout << *this;
+	// TODO: complex and real. ONLY WORKS FOR SECOND DEGREE??
+	/* Normalize the "fraction" (move it from denominator to nominator) 
+	by multiplying numerator and denominator by root part of denominator */
+	Root denomRoot = Root(rhs.getRoot());
+	std::cout << "Root part of divisor: " << denomRoot << "\n";
+	*this *= denomRoot;
+	std::cout << "New numerator: " << *this << "\n";
+
+	/* multiplying root by itself just gives you the number under the sqrt */
+	_divisor = rhs.getWhole() * rhs.getRoot();
+	std::cout << "New divisor: " << _divisor << "\n";
+
+	long long gcd = (long long)getGcd(_whole, _divisor);
+	std::cout << "Gcd: " << gcd << "\n";
+	_whole /= gcd;
+	_divisor /= gcd;
+	std::cout << "Result: " << *this << "\n";
 	return *this;
+}
+
+Root		operator*(const Root &lhs, const Root &rhs) {
+	Root tmp = lhs;
+	return (tmp *= rhs);
 }
 
 bool		operator==(const Root &lhs, const Root &rhs) {
@@ -141,6 +135,9 @@ std::ostream    		&operator<<(std::ostream &os, const Root &x) {
 	}
 	if (x._type == Root::Type::imaginary) {
 		os << "i";
+	}
+	if (x._divisor != 1) {
+		os << " / " << x._divisor;
 	}
 	return os;
 }
