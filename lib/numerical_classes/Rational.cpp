@@ -66,6 +66,13 @@ Rational::operator	std::string () const {
 	}, _val);
 }
 
+Rational::operator long long() const {
+	return std::visit(overloaded {
+		[](Fraction arg) { return (long long)arg; },
+		[](Numerical arg) { return (long long)arg; }
+	}, _val);
+}
+
 // Rational::operator long double () const {
 // 	return std::visit([](auto &arg) {
 // 		return (long double)arg;

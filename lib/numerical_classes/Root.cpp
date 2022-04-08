@@ -1,27 +1,58 @@
 #include "Root.h"
+#include "math_helpers.h"
 
-/* Root class */
-void	Root::simplify() {
-	/* Any square sqrt(n) can be represented as sqrt(f1) * sqrt(f2).
-	We are looking for the largest perfect square f1 */
-	std::visit([=](auto root) {
-		auto res = simplify_root(root, _degree);
-		_whole = std::get<0>(res);
-		_root = std::get<1>(res);
-	}, (getRoot().getVal()));
+
+void		rationalize(Root &numer, const Root &denom) {
+	/* Normalize the "fraction" (move it from denominator to nominator) 
+	by multiplying numerator and denominator by root part of denominator */
+	Root denomRoot = Root(denom._root);
+
+	numer *= denomRoot;
+	
+	/* multiplying root by itself just gives you the number under the sqrt */
+	numer._divisor = denom._whole * denom._root;
 }
 
-Root::Root(Numerical n, int degree) : _root{n}, _whole{1}, _degree{degree}, 
+Root::Root(Rational n, int degree) : _root{0}, _whole{1}, _degree{degree}, 
 	_type{Root::Type::real}, _divisor{1} {
-	if (_root < 0) {
+	if (n < 0) {
 		_type = Type::imaginary;
-		_root = abs(_root);
+		n = abs(n);
 	}
-	simplify();
+	auto val = n.getVal();
+	if (n.isFraction()) {
+		simplifyFraction(std::get<Fraction>(val));
+	}
+	else {
+		simplifyNumerical(std::get<Numerical>(val));
+	}
+}
+
+void	Root::simplifyFraction(Fraction &r) {
+	std::cout << "simplify fraction\n";
+	r.combineWholeNumerator();
+	std::cout << "Combine fraction: " << r << "\n";
+	Root numer = Root(r.getNum());
+	std::cout << "Denom before root: " << r.getDenom() << "\n";
+	Root denom = Root(r.getDenom());
+
+	std::cout << "Numer: " << numer << " Denom: " << denom << "\n";
+	rationalize(numer, denom);
+	std::cout << "Numerator simplified: " << numer << "\n";
+	_root = numer._root;
+	_whole = Fraction(numer._whole, numer._divisor);
+}
+
+void	Root::simplifyNumerical(Numerical &n) {
+	std::visit([&](auto arg) {
+		auto [w, r] = simplify_root(arg, _degree);
+		_whole = w;
+		_root = r;
+	}, n.getVal());
 }
 
 Root	&Root::operator=(const Root &rhs) {
-	if (*this != rhs) {
+	if (this != &rhs) {
 		_root = rhs.getRoot();
 		_whole = rhs.getWhole();
 		_degree = rhs.getDegree();
@@ -31,12 +62,11 @@ Root	&Root::operator=(const Root &rhs) {
 	return *this;
 }
 
-
 Numerical	Root::getRoot() const {
 	return _root;
 }
 
-long long	Root::getWhole() const {
+Rational	Root::getWhole() const {
 	return _whole;
 }
 
@@ -48,7 +78,7 @@ Root::Type	Root::getType() const {
 	return _type;
 }
 
-Numerical	Root::getDivisor() const {
+Rational	Root::getDivisor() const {
 	return _divisor;
 }
 
@@ -90,23 +120,10 @@ Root		&Root::operator*=(const Root &rhs) {
 }
 
 Root		&Root::operator/=(const Root &rhs) {
-	// TODO: complex and real. ONLY WORKS FOR SECOND DEGREE??
+	// TODO: COMPLEX
 	/* Normalize the "fraction" (move it from denominator to nominator) 
 	by multiplying numerator and denominator by root part of denominator */
-	Root denomRoot = Root(rhs.getRoot());
-	std::cout << "Root part of divisor: " << denomRoot << "\n";
-	*this *= denomRoot;
-	std::cout << "New numerator: " << *this << "\n";
-
-	/* multiplying root by itself just gives you the number under the sqrt */
-	_divisor = rhs.getWhole() * rhs.getRoot();
-	std::cout << "New divisor: " << _divisor << "\n";
-
-	long long gcd = (long long)getGcd(_whole, _divisor);
-	std::cout << "Gcd: " << gcd << "\n";
-	_whole /= gcd;
-	_divisor /= gcd;
-	std::cout << "Result: " << *this << "\n";
+	rationalize(*this, rhs);
 	return *this;
 }
 
@@ -127,7 +144,7 @@ bool		operator!=(const Root &lhs, const Root &rhs) {
 }
 
 std::ostream    		&operator<<(std::ostream &os, const Root &x) {
-	if (abs(x._whole) != 1) {
+	if (x._whole != 1 || x.getRoot() == 1) {
 		os << x._whole;
 	}
 	if ((x.getRoot() != 1)) {

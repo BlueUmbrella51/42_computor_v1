@@ -1,10 +1,9 @@
 cmake_minimum_required(VERSION 3.10)
 
 add_library(${numerName} STATIC
-			Complex.cpp
+			Imaginary.cpp
 			Fraction.cpp
 			Rational.cpp
-			# Radical.cpp
 			Root.cpp
 			Numerical.cpp
 )

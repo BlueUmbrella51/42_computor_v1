@@ -3,7 +3,8 @@
 #include <variant>
 #include <vector>
 #include <iostream>
-#include "Numerical.h"
+#include "Rational.h"
+#include "math_helpers.h"
 
 class	Root {
 	public:
@@ -20,7 +21,7 @@ class	Root {
 				_type = Type::imaginary;
 				_root = abs(_root);
 			}
-			simplify();
+			simplifyNumerical(_root);
 		}
 		template<typename T,
 			typename std::enable_if_t<std::is_arithmetic<T>::value, bool> = true
@@ -32,16 +33,19 @@ class	Root {
 				_root = abs(_root);
 			}
 		}
-		Root(Numerical n, int degree = 2);
+		Root(Rational n, int degree = 2);
+		// Root(Fraction n, int degree = 2);
 		Root	&operator=(const Root &rhs);
 		~Root() = default;
 
-		void		simplify();
+		void		simplify(Rational &r);
+		void		simplifyFraction(Fraction &n);
+		void		simplifyNumerical(Numerical &n);
 		Numerical	getRoot() const;
-		long long	getWhole() const;
+		Rational	getWhole() const;
 		int			getDegree() const;
 		Type		getType() const;
-		Numerical	getDivisor() const;
+		Rational	getDivisor() const;
 		Root		&operator+=(const Root &rhs);
 		Root		&operator-=(const Root &rhs);
 		Root		&operator*=(const Root &rhs);
@@ -49,13 +53,50 @@ class	Root {
 
 	private:
 		Numerical	_root;
-		long long	_whole;
+		Rational	_whole;
 		int			_degree;
 		Type		_type;
-		Numerical	_divisor;
+		Rational	_divisor;
 	
 	friend std::ostream    		&operator<<(std::ostream &os, const Root &x);
-	// friend std::ostream    		&operator<<(std::ostream &os, const numerical &x);
+	template<typename T, 
+			typename std::enable_if<
+            std::is_floating_point<T>{}, bool>::type = true
+		>
+	std::pair<long long, long double>		simplify_root(T n, int degree) {
+		return std::make_pair(1, n);
+	}
+
+	template<typename T, 
+				typename std::enable_if<
+				std::is_integral<T>{}, bool>::type = true
+			>
+	std::pair<long long, long long>		simplify_root(T n, int degree) {
+		/* Any square sqrt(n) can be represented as sqrt(f1) * sqrt(f2).
+		We are looking for the largest perfect square f1 */
+		long long	whole = 1;
+		long long 	radical = 1;
+
+		auto factors = getPrimeFactors(n);
+		for(auto i = factors.begin(); i != factors.end(); ++i) {
+			auto factor = std::get<0>(*i);
+			auto degr = std::get<1>(*i);
+
+			while (degr >= degree) {
+				degr -= degree;
+				whole *= factor;
+			}
+			if (degr > 0) {
+				radical *= factor;
+			}
+		}
+		return std::make_pair(whole, radical);
+	}
+
+	// friend void				simplify_root(Root &r, Numerical n, int degree);
+	// friend void				simplify_root(Root &r, Fraction n, int degree);
+	friend void				rationalize(Root &numer, const Root &denom);
+	friend std::ostream    	&operator<<(std::ostream &os, const numerical &x);
 };
 
 Root		operator*(const Root &lhs, const Root &rhs);
@@ -63,62 +104,5 @@ Root		operator*(const Root &lhs, const Root &rhs);
 bool		sameTypeAndRoot(const Root &lhs, const Root &rhs);
 bool		operator==(const Root &lhs, const Root &rhs);
 bool		operator!=(const Root &lhs, const Root &rhs);
-
-template<typename T, 
-			typename std::enable_if<
-            std::is_floating_point<T>{}, bool>::type = true
-		>
-std::pair<long long, long double>		simplify_root(T n, int degree) {
-	return std::make_pair(1, n);
-}
-
-template<typename T, 
-			typename std::enable_if<
-            std::is_integral<T>{}, bool>::type = true
-		>
-std::pair<long long, long long>		simplify_root(T n, int degree) {
-	/* Any square sqrt(n) can be represented as sqrt(f1) * sqrt(f2).
-	We are looking for the largest perfect square f1 */
-	long long 	prime = 2;
-	long long	whole = 1;
-	long long 	radical = 1;
-
-	std::vector<std::pair<long long, long long>> factors = {};
-	while (n >= prime * prime) {
-		if (n % prime == 0) {
-			if (!factors.empty() && std::get<0>(factors.back()) == prime) {
-				std::get<1>(factors.back()) += 1;
-			}
-			else {
-				factors.push_back(std::make_pair(prime, 1));
-			}
-			n /= prime;
-		}
-		else {
-			// count = 0;
-			++prime;
-		}
-	}
-	if (!factors.empty() && std::get<0>(factors.back()) == n) {
-		std::get<1>(factors.back()) += 1;
-	}
-	else {
-		factors.push_back(std::make_pair(n, 1));
-	}
-	for(auto i = factors.begin(); i != factors.end(); ++i) {
-		auto factor = std::get<0>(*i);
-		auto degr = std::get<1>(*i);
-
-		while (degr >= degree) {
-			degr -= degree;
-			whole *= factor;
-		}
-		if (degr > 0) {
-			radical *= factor;
-		}
-		std::cout << factor << " " << degr << "\n";
-	}
-	return std::make_pair(whole, radical);
-}
 
 #endif

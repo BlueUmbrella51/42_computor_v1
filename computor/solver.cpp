@@ -1,4 +1,5 @@
 #include "computor.h"
+#include "Root.h"
 
 void		solve_first_degree(Equation &eq) {
 	/* Form: 2X = 4. 
@@ -30,17 +31,25 @@ void		solve_first_degree(Equation &eq) {
 }
 
 void		solve_second_degree(Equation &eq) {
+	std::cout << "Solve second degree\n";
 	auto a_token = (eq.findTokenOfDegree(eq.getEquationLeft(), 2));
 	auto b_token = (eq.findTokenOfDegree(eq.getEquationLeft(), 1));
 	auto c_token = (eq.findTokenOfDegree(eq.getEquationLeft(), 0));
 
-	Rational a = a_token ? a_token.value().getCoeff(): 0;
-	Rational b = b_token ? b_token.value().getCoeff(): 0;
-	Rational c = c_token ? c_token.value().getCoeff(): 0;
+	Rational a = a_token ? a_token.value().getCoeff(): Rational(0);
+	Rational b = b_token ? b_token.value().getCoeff(): Rational(0);
+	Rational c = c_token ? c_token.value().getCoeff(): Rational(0);
 
 	// TODO: try?
-	auto discriminant = (b * b) - (4 * a * c);
-	std::cout << discriminant << "\n";
+	std::cout << "A: " << a << " B: " << b << " C: " << c << "\n";
+	std::cout << "B^2: " << (b * b) << "- 4AC: " << (4 * a*c) << "\n";
+	Rational discriminant = (b * b) - (4 * a * c);
+	if (discriminant != 0) {
+		std::cout << "Discriminant: " <<  discriminant << "\n";
+		Root r = Root(discriminant);
+		std::cout << "Root of discriminant: " << r << "\n" << "whole: " << r.getWhole() << "\n";
+	}
+	
 }
 
 void		solve_equation(Equation &eq) {

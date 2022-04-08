@@ -3,10 +3,7 @@
 
 int main(int argc, char *argv[]) {
 	// TODO help text
-	Root lhs = Root(4, 2, 2);
-	Root rhs = Root(2, 14, 2);
-
-	lhs /= rhs;
+	Root r = Root(125.12);
 	if (argc != 2) {
 		std::cerr << "Invalid number of arguments: expected one.";
 		return (1);

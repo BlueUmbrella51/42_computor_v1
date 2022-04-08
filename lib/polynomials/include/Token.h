@@ -18,7 +18,7 @@ class Token
 		// Token		&operator*=(const Token &t);
 		operator	std::string() const;
 		long		getDegree() const;
-		Rational		getCoeff() const;
+		Rational	getCoeff() const;
 		void		setCoeff(Rational coeff);
 
 	private:

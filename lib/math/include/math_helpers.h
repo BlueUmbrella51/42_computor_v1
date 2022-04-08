@@ -202,4 +202,36 @@ long long	int_pow(T base, U exp) {
 	return result;
 }
 
+template<typename T, 
+			typename std::enable_if<
+			std::is_integral<T>{}, bool>::type = true
+		>
+std::vector<std::pair<long long, long long>>	getPrimeFactors(T n) {
+	/* Returns vector of prime factors and how many times the occur */
+	long long 	prime = 2;
+
+	std::vector<std::pair<long long, long long>> factors = {};
+	while (n >= prime * prime) {
+		if (n % prime == 0) {
+			if (!factors.empty() && std::get<0>(factors.back()) == prime) {
+				std::get<1>(factors.back()) += 1;
+			}
+			else {
+				factors.push_back(std::make_pair(prime, 1));
+			}
+			n /= prime;
+		}
+		else {
+			++prime;
+		}
+	}
+	if (!factors.empty() && std::get<0>(factors.back()) == n) {
+			std::get<1>(factors.back()) += 1;
+	}
+	else {
+		factors.push_back(std::make_pair(n, 1));
+	}
+	return factors;
+}
+
 #endif

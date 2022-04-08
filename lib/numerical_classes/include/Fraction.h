@@ -27,7 +27,7 @@ class	Fraction {
 		~Fraction() = default;
 		Fraction(const Fraction &rhs);
 		long long									getWhole() const;
-		long long				getNum() const;
+		long long									getNum() const;
 		long long									getDenom() const;
 		void										setNumerator(long long n);
 		void										setDenominator(long long d);
