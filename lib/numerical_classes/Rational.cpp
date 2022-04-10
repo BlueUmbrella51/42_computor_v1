@@ -12,7 +12,7 @@ _val{real(n)} {}
 Rational::Rational(const Rational &rhs) :
 _val{rhs._val} {}
 
-bool	Rational::isIntegral() {
+bool	Rational::isIntegral() const {
 	if (std::holds_alternative<Numerical>(_val)) {
 		auto n = std::get<Numerical>(_val);
 		return n.isIntegral();
@@ -22,7 +22,7 @@ bool	Rational::isIntegral() {
 	}
 }
 
-bool	Rational::isFloating() {
+bool	Rational::isFloating() const {
 	if (std::holds_alternative<Numerical>(_val)) {
 		auto n = std::get<Numerical>(_val);
 		return n.isFloating();
@@ -32,7 +32,7 @@ bool	Rational::isFloating() {
 	}
 }
 
-bool	Rational::isFraction() {
+bool	Rational::isFraction() const {
 	return std::holds_alternative<Fraction>(_val);
 }
 
@@ -48,11 +48,11 @@ long double	Rational::toFloating() {
 	}, _val);
 }
 
-// long double		Rational::getFloat() {
-// 	return std::visit([](auto &arg) {
-// 		return (long double)arg;
-// 	}, _val);
-// }
+Rational::operator long double () const {
+	return std::visit([](auto &arg) {
+		return (long double)arg;
+	}, _val);
+}
 
 // helper type for the visitor #4
 template<class... Ts> struct overloaded : Ts... { using Ts::operator()...; };

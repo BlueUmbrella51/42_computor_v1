@@ -26,7 +26,7 @@ class Rational {
 
 		operator 	std::string () const;
 		operator	long long () const;
-		// operator 	long double () const;
+		operator 	long double () const;
 		Rational	operator-();
 		Rational	&operator+=(const Rational &rhs);
 		Rational	&operator-=(const Rational &rhs);
@@ -34,9 +34,9 @@ class Rational {
 		Rational	&operator*=(const Rational &rhs);
 		real		getVal() const;
 
-		bool		isIntegral();
-		bool		isFloating();
-		bool		isFraction();
+		bool		isIntegral() const;
+		bool		isFloating() const;
+		bool		isFraction() const;
 
 		long double	toFloating();
 

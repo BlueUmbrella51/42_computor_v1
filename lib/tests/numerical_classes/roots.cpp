@@ -66,4 +66,22 @@ TEST_CASE("Roots", "[Roots]") {
 		lhs *= rhs;
 		REQUIRE(lhs == Root(16, 7, 2));
 	}
+	SECTION ("Is floating\n") {
+		Root r = 125.5;
+
+		REQUIRE(r.isFloating());
+
+		r = 15;
+		REQUIRE(!r.isFloating());
+
+		r = Rational(Fraction(1, 4));
+		REQUIRE(!r.isFloating());
+
+		auto n = (long double)r;
+		REQUIRE(n == 0.5);
+
+		r = Rational(Fraction(125));
+		n = (long double)r;
+		REQUIRE(n == std::sqrt(125));
+	}
 }

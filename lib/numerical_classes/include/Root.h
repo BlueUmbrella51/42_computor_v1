@@ -45,11 +45,16 @@ class	Root {
 		Rational	getWhole() const;
 		int			getDegree() const;
 		Type		getType() const;
+		void		setType(Type t);
 		Rational	getDivisor() const;
+		bool		isFloating() const;
+		operator	std::string () const;
+		operator 	long double () const;
 		Root		&operator+=(const Root &rhs);
 		Root		&operator-=(const Root &rhs);
 		Root		&operator*=(const Root &rhs);
 		Root		&operator/=(const Root &rhs);
+		Root		&operator/=(const Rational &rhs);
 
 	private:
 		Numerical	_root;
@@ -96,6 +101,7 @@ class	Root {
 	// friend void				simplify_root(Root &r, Numerical n, int degree);
 	// friend void				simplify_root(Root &r, Fraction n, int degree);
 	friend void				rationalize(Root &numer, const Root &denom);
+	friend Root				operator/(const Root &lhs, const Rational &rhs);
 	friend std::ostream    	&operator<<(std::ostream &os, const numerical &x);
 };
 
@@ -104,5 +110,4 @@ Root		operator*(const Root &lhs, const Root &rhs);
 bool		sameTypeAndRoot(const Root &lhs, const Root &rhs);
 bool		operator==(const Root &lhs, const Root &rhs);
 bool		operator!=(const Root &lhs, const Root &rhs);
-
 #endif

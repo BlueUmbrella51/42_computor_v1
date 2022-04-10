@@ -31,19 +31,19 @@ void			Numerical::setVal(numerical n) {
 	_val = n;
 }
 
-Numerical::operator		long long() {
+Numerical::operator		long long() const {
 	return std::visit([](auto n) {
 		return (long long)n;
 	}, getVal());
 }
 
-Numerical::operator		long double() {
+Numerical::operator		long double() const {
 	return std::visit([](auto n) {
 		return (long double)n;
 	}, getVal());
 }
 
-Numerical::operator		std::string() {
+Numerical::operator		std::string() const {
 	return std::visit([](auto n) {
 		return std::to_string(n);
 	}, getVal());

@@ -34,9 +34,9 @@ class Numerical {
 		void			setVal(T n) {
 			_val = numerical(n);
 		}
-		operator 		long long();
-		operator 		long double();
-		operator		std::string ();
+		operator 		long long() const;
+		operator 		long double() const;
+		operator		std::string () const;
 		Numerical		operator-() const;
 		Numerical		&operator+=(const Numerical &rhs);
 		Numerical		&operator-=(const Numerical &rhs);
@@ -108,6 +108,22 @@ template<typename T,
 		>
 bool		operator<=(const T &lhs, const Numerical &rhs) {
 	return (lhs < rhs || lhs == rhs);
+}
+
+bool		operator>(const Numerical &lhs, const Numerical &rhs);
+template<typename T,
+			typename std::enable_if_t<std::is_arithmetic<T>::value, bool> = true
+		>
+bool		operator>(const Numerical &lhs, const T &rhs) {
+	return std::visit([=](auto n) {
+		return (n >= rhs);
+	}, lhs.getVal());
+}
+template<typename T,
+			typename std::enable_if_t<std::is_arithmetic<T>::value, bool> = true
+		>
+bool		operator>(const T &lhs, const Numerical &rhs) {
+	return !(lhs < rhs);
 }
 
 bool		operator>=(const Numerical &lhs, const Numerical &rhs);

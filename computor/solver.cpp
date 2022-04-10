@@ -1,5 +1,6 @@
 #include "computor.h"
 #include "Root.h"
+#include "Solution.h"
 
 void		solve_first_degree(Equation &eq) {
 	/* Form: 2X = 4. 
@@ -44,12 +45,25 @@ void		solve_second_degree(Equation &eq) {
 	std::cout << "A: " << a << " B: " << b << " C: " << c << "\n";
 	std::cout << "B^2: " << (b * b) << "- 4AC: " << (4 * a*c) << "\n";
 	Rational discriminant = (b * b) - (4 * a * c);
-	if (discriminant != 0) {
-		std::cout << "Discriminant: " <<  discriminant << "\n";
-		Root r = Root(discriminant);
-		std::cout << "Root of discriminant: " << r << "\n" << "whole: " << r.getWhole() << "\n";
-	}
 	
+	std::cout << "Discriminant: " << discriminant << "\n";
+	
+	if (discriminant != 0) {
+		Rational divisor = (2 * a);
+		Rational left = -b / divisor;
+		Root right = Root(discriminant) / divisor;
+
+		std::cout << "Left: " << left << "\nRight: " << right << "\n";
+		// TODO: can it be numerically solved? (Anything is a float or root doesn't matter)
+		Solution plus = Solution(Solution::Sign::plus, left, right);
+		Solution minus = Solution(Solution::Sign::minus, left, right);
+
+		std::cout << "Solutions:\nX = " << plus << "\nX = " << minus << "\n";
+	}
+	else {
+		auto solution = -b / (2 * a);
+		std::cout << "Solution:\n" << solution;
+	}
 }
 
 void		solve_equation(Equation &eq) {

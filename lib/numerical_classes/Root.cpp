@@ -10,7 +10,7 @@ void		rationalize(Root &numer, const Root &denom) {
 	numer *= denomRoot;
 	
 	/* multiplying root by itself just gives you the number under the sqrt */
-	numer._divisor = denom._whole * denom._root;
+	numer._divisor = (Rational)denom._whole * (Rational)denom._root;
 }
 
 Root::Root(Rational n, int degree) : _root{0}, _whole{1}, _degree{degree}, 
@@ -82,6 +82,10 @@ Rational	Root::getDivisor() const {
 	return _divisor;
 }
 
+void		Root::setType(Type t) {
+	_type = t;
+}
+
 bool		sameTypeAndRoot(const Root &lhs, const Root &rhs) {
 	return (lhs.getType() == rhs.getType()
 	&& rhs.getRoot() == rhs.getRoot());
@@ -97,6 +101,34 @@ Root		&Root::operator+=(const Root &rhs) {
 	return *this;
 }
 
+Root::operator std::string() const {
+	std::string res = "";
+
+	if (_whole != 1) {
+		res += (std::string)_whole;
+	}
+	if (_root != 1) {
+		res += "V";
+		res += (std::string)_root;
+	}
+	if (_type == Type::imaginary) {
+		res += "i";
+	}
+	return res;
+}
+
+Root::operator long double () const {
+	long double res = (long double)_whole;
+
+	// std::cout << "Whole as long double: " << (long double)_whole << "\n";
+	// std::cout << "Long double root solved: " << (long double)std::pow((long double)_root, (1.0 / (long double)_degree)) << "\n";
+	// std::cout << "Divisor: " << (long double)_divisor << "\n";
+	res *= (long double)std::pow((long double)_root, (1.0 / (long double)_degree));
+	res /= (long double)_divisor;
+
+	return res;
+}
+
 Root		&Root::operator-=(const Root &rhs) {
 	if (!sameTypeAndRoot(*this, rhs)) {
 		std::cout << "Cannot add roots of different types or roots, exiting now\n";
@@ -109,7 +141,7 @@ Root		&Root::operator-=(const Root &rhs) {
 
 Root		&Root::operator*=(const Root &rhs) {
 	// TODO: complex and real?
-	long long 	nw_whole = getWhole() * rhs.getWhole();
+	Rational 	nw_whole = getWhole() * rhs.getWhole();
 	Root 		nw_root = Root(getRoot() * rhs.getRoot());
 	
 	nw_whole *= nw_root.getWhole();
@@ -124,6 +156,14 @@ Root		&Root::operator/=(const Root &rhs) {
 	/* Normalize the "fraction" (move it from denominator to nominator) 
 	by multiplying numerator and denominator by root part of denominator */
 	rationalize(*this, rhs);
+	return *this;
+}
+
+Root		&Root::operator/=(const Rational &rhs) {
+	// TODO: COMPLEX
+	/* Normalize the "fraction" (move it from denominator to nominator) 
+	by multiplying numerator and denominator by root part of denominator */
+	_whole /= rhs;
 	return *this;
 }
 
@@ -157,4 +197,16 @@ std::ostream    		&operator<<(std::ostream &os, const Root &x) {
 		os << " / " << x._divisor;
 	}
 	return os;
+}
+
+bool		Root::isFloating() const {
+	return (_root.isFloating() || _whole.isFloating()
+	|| _divisor.isFloating());
+}
+
+Root		operator/(const Root &lhs, const Rational &rhs) {
+	Root n = lhs;
+
+	n._whole /= rhs;
+	return n;
 }
