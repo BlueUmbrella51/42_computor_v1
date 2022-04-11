@@ -234,7 +234,7 @@ Fraction	&Fraction::operator-=(const Fraction &rhs) {
 			/* If we end up with something like -3/7 we have to adjust the 
 			whole part if it exists: we take one away from whole
 			then add 1 - new fraction to it */
-			if (nw_n == LONG_LONG_MIN) {
+			if (nw_n == LLONG_MIN) {
 				throw std::overflow_error("Cannot perform subtraction without causing overflow.\n");
 			}
 			nw_w -= 1;
@@ -363,7 +363,7 @@ void			Fraction::combineWholeNumerator() {
 }
 
 Fraction		abs(const Fraction &rhs) {
-	if (rhs._n == LONG_LONG_MIN || rhs._w == LONG_LONG_MIN) {
+	if (rhs._n == LLONG_MIN || rhs._w == LLONG_MIN) {
 		throw std::overflow_error("Cannot take absolute value of minimum value of long long without causing overflow\n");
 	}
 	Fraction tmp = rhs;
@@ -429,7 +429,7 @@ void		Fraction::fixSigns() {
 /* Fix signs if appropriate */
 	if (_d < 0 && _n < 0) {
 		// if both numerator and denominator are negative, factor out negative sign
-		if (_d == LONG_LONG_MIN || _n == LONG_LONG_MIN) {
+		if (_d == LLONG_MIN || _n == LLONG_MIN) {
 			throw std::overflow_error("Cannot make minimum value of long long positive without causing overflow.\n");
 		}
 		_d = llabs(_d);
@@ -437,7 +437,7 @@ void		Fraction::fixSigns() {
 	}
 	if (_d < 0 && _n >= 0) {
 		// Move negative sign to numerator if appropriate
-		if (_d == LONG_LONG_MIN) {
+		if (_d == LLONG_MIN) {
 			throw std::overflow_error("Cannot make minimum value of long long positive without causing overflow.\n");
 		}
 		_d = llabs(_d);
@@ -453,7 +453,7 @@ void		Fraction::simplify() {
 	fixSigns();
 
 	/* Get any whole parts from fraction */
-	if (_n == LONG_LONG_MIN && _d == -1) {
+	if (_n == LLONG_MIN && _d == -1) {
 		throw std::overflow_error("Cannot make minimum value of long long positive without causing overflow.\n");
 	}
 	long long wholes  = _n / _d;
@@ -489,7 +489,7 @@ void		Fraction::simplify() {
 	if (_n < 0 && _w != 0) {
 		/* We like to keep the minus on the fractional part implicit once 
 		Fraction has been created */
-		if (_n == LONG_LONG_MIN) {
+		if (_n == LLONG_MIN) {
 			throw std::overflow_error("Cannot convert long long min value to positive without causing overflow.\n");
 		}
 		_n = llabs(_n);

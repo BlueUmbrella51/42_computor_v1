@@ -48,8 +48,9 @@ class	Root {
 		void		setType(Type t);
 		Rational	getDivisor() const;
 		bool		isFloating() const;
+		bool		hasNumericSolution() const;
+		Rational	getNumericalSolution() const;
 		operator	std::string () const;
-		operator 	long double () const;
 		Root		&operator+=(const Root &rhs);
 		Root		&operator-=(const Root &rhs);
 		Root		&operator*=(const Root &rhs);
@@ -57,11 +58,11 @@ class	Root {
 		Root		&operator/=(const Rational &rhs);
 
 	private:
-		Numerical	_root;
-		Rational	_whole;
-		int			_degree;
-		Type		_type;
-		Rational	_divisor;
+		Numerical				_root;
+		Rational				_whole;
+		int						_degree;
+		Type					_type;
+		Rational				_divisor;
 	
 	friend std::ostream    		&operator<<(std::ostream &os, const Root &x);
 	template<typename T, 

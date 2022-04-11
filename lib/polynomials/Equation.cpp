@@ -1,6 +1,6 @@
 #include "Equation.h"
 
-Equation::Equation() : _side(Equation::operationSide::left) {
+Equation::Equation() : _side(Equation::operationSide::left), _variable{'0'} {
 	_highest_degree = -1;
 	_tokensLeft = {};
 	_tokensRight = {};
@@ -34,6 +34,7 @@ Equation::operator std::string() const {
 	for (auto it = _tokensLeft.begin(); it != _tokensLeft.end(); ++it) {
 		std::string tmp = std::string(*it);
 		if (it != _tokensLeft.begin()) {
+			std::cout << (*it).getCoeff() << "\n";
 			if ((*it).getCoeff() < 0) { tmp.erase(0, 1); }
 			if ((*it).getCoeff() < 0) {
 				// add " - " to string
@@ -79,7 +80,7 @@ Equation				&Equation::operator-=(const Token &t) {
 	}
 	_tokensLeft.push_back(tmp);
 	_tokensRight.push_back(tmp);
-	std::cout << *this << "=>" << "\n";
+	// std::cout << *this << "=>" << "\n";
 	sortTokens(_tokensLeft);
 	sortTokens(_tokensRight);
 	combineTokensByDegree(_tokensLeft);
@@ -99,7 +100,6 @@ Equation				&Equation::operator+=(const Token &t) {
 	}
 	_tokensLeft.push_back(tmp);
 	_tokensRight.push_back(tmp);
-	std::cout << *this << "=>" << "\n";
 	sortTokens(_tokensLeft);
 	sortTokens(_tokensRight);
 	combineTokensByDegree(_tokensLeft);
@@ -177,16 +177,17 @@ void	Equation::combineTokensByDegree(std::list<Token> &lst) {
 }
 
 void	Equation::moveTokensLeft() {
-	std::list<Token>::iterator iter = _tokensRight.begin();
+	std::list	tmp(_tokensRight);
+	std::list<Token>::iterator iter = tmp.begin();
 	try {
-		while (iter != _tokensRight.end())
+		while (iter != tmp.end())
 		{
-			// TODO keep same token?
-			// _tokensLeft.push_back(Token((*iter).getCoeff() * -1, (*iter).getDegree()));
 			if ((*iter).getCoeff() <= 0) {
+				std::cout << "+= " << *iter << "\n";
 				*this += *iter;
 			}
 			else {
+				std::cout << "-= " << *iter << "\n";
 				*this -= *iter;
 			}
 			iter = _tokensRight.erase(iter);
@@ -216,7 +217,8 @@ void	Equation::removeZeroCoeff(std::list<Token> &lst) {
 		}
 	}
 	// TODO
-	findHighestDegreeLeft();
+	if (!_tokensLeft.empty())
+		findHighestDegreeLeft();
 }
 
 void	Equation::factor(std::list<Token> &lst) {
@@ -251,12 +253,16 @@ void	Equation::simplify() {
 		Combines any tokens of same degree
 	 */
 	try {
+		combineTokensByDegree(_tokensRight);
 		moveTokensLeft();
+		std::cout << "After move left\n" << *this;
 		sortTokens(_tokensLeft);
+		std::cout << "After sort\n" << *this;
 		combineTokensByDegree(_tokensLeft);
+		std::cout << "After combine\n" << *this;
 		removeZeroCoeff(_tokensLeft);
 		/* If first token in sorted equation is negative, factor out that -1 */
-		if ((*_tokensLeft.begin()).getCoeff() < 0) {
+		if (!_tokensLeft.empty() && (*_tokensLeft.begin()).getCoeff() < 0) {
 			*this /= -1;
 		}
 	}
@@ -403,10 +409,11 @@ Token		parse_token(ParseToken &pt) {
 		ParseToken::coeffTypes		type = pt.getType();
 		std::string					coeff_str = pt.getCoeff();
 		std::optional<std::string>	degree_str = pt.getDegree();
-		Rational			 			coeff = get_coefficient(coeff_str, type);
+		Rational			 		coeff = get_coefficient(coeff_str, type);
 		/* If no discriminant was given we assume one with power 0, which
 		comes down to coefficient * 1. */
 		long int					degree = 0;
+		std::cout << "Coeff str: " << coeff_str << "\nCoeff: " << coeff << "\n";
 		if (degree_str) {
 			degree = get_degree(degree_str.value());
 		}
@@ -421,6 +428,7 @@ Equation		parse_equation(std::string &input) {
 	try {
 		auto [left, right] = getParsingTokens(input);
 		for (std::vector<ParseToken>::iterator it = left.begin(); it != left.end(); ++it) {
+			std::cout << (*it).getCoeff() << "\n";
 			token_info.add(parse_token(*it));
 		}
 		token_info.setSide(Equation::operationSide::right);

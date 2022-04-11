@@ -108,25 +108,35 @@ Root::operator std::string() const {
 		res += (std::string)_whole;
 	}
 	if (_root != 1) {
-		res += "V";
+		res += "√";
 		res += (std::string)_root;
 	}
 	if (_type == Type::imaginary) {
-		res += "i";
+		res += "𝑖";
 	}
 	return res;
 }
 
-Root::operator long double () const {
-	long double res = (long double)_whole;
+bool		Root::hasNumericSolution() const {
+	/* If root is of no influence or any component is 
+	floating point, solution is numeric */
+	return (_root == 1 || _root.isFloating());
+}
 
-	// std::cout << "Whole as long double: " << (long double)_whole << "\n";
-	// std::cout << "Long double root solved: " << (long double)std::pow((long double)_root, (1.0 / (long double)_degree)) << "\n";
-	// std::cout << "Divisor: " << (long double)_divisor << "\n";
-	res *= (long double)std::pow((long double)_root, (1.0 / (long double)_degree));
-	res /= (long double)_divisor;
+Rational	Root::getNumericalSolution() const {
+	if (_root == 0) {
+		return _whole;
+	}
+	else if (_root.isFloating()) {
+		return std::pow((long double)_root, 1.0f / _degree);
+	}
+	else {
+		// Root is integral
+		long double res = _whole;
 
-	return res;
+		res *= std::pow((long double)_root, 1.0 / _degree);
+		return res;
+	}
 }
 
 Root		&Root::operator-=(const Root &rhs) {
@@ -184,18 +194,7 @@ bool		operator!=(const Root &lhs, const Root &rhs) {
 }
 
 std::ostream    		&operator<<(std::ostream &os, const Root &x) {
-	if (x._whole != 1 || x.getRoot() == 1) {
-		os << x._whole;
-	}
-	if ((x.getRoot() != 1)) {
-		os << "V" << x._root;
-	}
-	if (x._type == Root::Type::imaginary) {
-		os << "i";
-	}
-	if (x._divisor != 1) {
-		os << " / " << x._divisor;
-	}
+	os << (std::string)x;
 	return os;
 }
 

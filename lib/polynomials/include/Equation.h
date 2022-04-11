@@ -52,6 +52,7 @@ class Equation {
 		std::list<Token>		_tokensRight;
 		int						_highest_degree;
 		Equation::operationSide	_side;
+		char					_variable;
 		void					findHighestDegreeLeft();
 		void					moveTokensLeft();
 		void					sortTokens(std::list<Token> &lst);

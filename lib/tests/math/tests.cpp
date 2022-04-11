@@ -8,7 +8,7 @@ TEST_CASE("Conversion doubles to ratios", "[Math]") {
 	double accuracy = 0.00000000001;
 
 	SECTION("Inputs with no decimal part\n") {
-		long double num = GENERATE(-1, 0, 1, 15, LONG_LONG_MAX, LONG_LONG_MIN);
+		long double num = GENERATE(-1, 0, 1, 15, LLONG_MAX, LLONG_MIN);
 		std::cout << "Testing: inputs with no decimal part " << num << "\n";
 		auto [ w, n, d ] = doubleToRatio(num, accuracy);
 		REQUIRE(w == num);
@@ -34,7 +34,7 @@ TEST_CASE("Conversion doubles to ratios", "[Math]") {
 	SECTION("Overflow errors\n") {
 		/* Too large to process with precision 0 */
 		long double num = GENERATE(LDBL_MAX, LDBL_MIN, 
-		(long double)(LONG_LONG_MIN) - 1, (long double)(LONG_LONG_MAX) + 1);
+		(long double)(LLONG_MIN) - 1, (long double)(LLONG_MAX) + 1);
 		std::cout << "Testing: input too large to process " << num << "\n";
 		CHECK_THROWS(doubleToRatio(num, 0));
 	}

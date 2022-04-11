@@ -3,9 +3,14 @@
 
 int main(int argc, char *argv[]) {
 	// TODO help text
-	Root r = Root(125.12);
-	if (argc != 2) {
-		std::cerr << "Invalid number of arguments: expected one.";
+	std::string help = "Usage: enter a polynomial of degree smaller than or equal to two.\nFactors can be: integers, \
+decimals or fractions (form: 1/2 or 2(2/3)).\n\nExample: \"2X^2 - X = 2.25\"\n\nAccepts one indeterminate that must be called 'X'.\n";
+	if (argc == 1) {
+		std::cout << help;
+		return (1);
+	}
+	else if (argc != 2) {
+		std::cerr << "Invalid number of arguments: expected exactly one.";
 		return (1);
 	}
 	std::string input = argv[1];
@@ -13,8 +18,8 @@ int main(int argc, char *argv[]) {
 		Equation eq = parse_equation(input);
 		std::cout << "Original equation:\n" << eq << "\n";
 		eq.simplify();
-		std::cout << "Simplified representation of equation:\n" << eq << "\n";
-		std::cout << "Highest degree: " << eq.getHighestDegree() << "\n";
+		// std::cout << "Simplified representation of equation:\n" << eq << "\n";
+		// std::cout << "Highest degree: " << eq.getHighestDegree() << "\n";
 		solve_equation(eq);
 		return (0);
 	}

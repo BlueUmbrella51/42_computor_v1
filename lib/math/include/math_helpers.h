@@ -129,7 +129,7 @@ std::tuple<long long, long long, long long>	doubleToRatio(T value, long double a
 		throw std::invalid_argument("Decimal to convert to ratio cannot be nan.");}
 	if (accuracy < 0.0 || accuracy > 1.0) {
 		throw std::invalid_argument("Accuracy for conversion to ratio must be between 0 and 1.");}
-	if (floor(value) < LONG_LONG_MIN || floor(value) > LONG_LONG_MAX) {
+	if (floor(value) < LLONG_MIN || floor(value) > LLONG_MAX) {
 		throw std::overflow_error("Whole part of decimal is too large to fit integer type\n"); }
 	
 	int				sign = value >= 0.0 ? 1 : -1;
@@ -171,7 +171,7 @@ of decimal within given precision.");
 	}
 	while (std::abs(((long double)a[i] / (long double)b[i]) - value) > accuracy);
 
-	if (a[i] == LONG_LONG_MIN && sign == -1){
+	if (a[i] == LLONG_MIN && sign == -1){
 		throw std::overflow_error("Could not find rational approximation \
 of decimal within given precision.");
 	}

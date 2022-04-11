@@ -7,14 +7,14 @@ TEST_CASE("Fractions", "[Fractions]") {
 	SECTION("Overflow\n") {
 		std::cout << "Testing: Fractions overflow\n";
 
-		long long w = LONG_LONG_MIN;
-		long long n = LONG_LONG_MIN;
+		long long w = LLONG_MIN;
+		long long n = LLONG_MIN;
 		CHECK_THROWS(Fraction(w, n, 1));
 		CHECK_THROWS(Fraction(w, n, -1));
 		CHECK_THROWS(Fraction(-1, n, 1));
 		CHECK_THROWS(Fraction(w, -1, 1));
-		w = LONG_LONG_MAX;
-		n = LONG_LONG_MAX;
+		w = LLONG_MAX;
+		n = LLONG_MAX;
 		CHECK_THROWS(Fraction(w, n, 1));
 		CHECK_THROWS(Fraction(w, 1, 1));
 	}

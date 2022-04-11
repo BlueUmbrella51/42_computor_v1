@@ -1,6 +1,7 @@
 #include "computor.h"
 #include "Root.h"
 #include "Solution.h"
+#include <iomanip>
 
 void		solve_first_degree(Equation &eq) {
 	/* Form: 2X = 4. 
@@ -12,7 +13,7 @@ void		solve_first_degree(Equation &eq) {
 
 	if (!t) {
 		// Token found
-		std::cout << "Solution: X = 0.\n";
+		std::cout << "Solution:\nX = 0.\n";
 	}
 	else {
 		/* If ax + b, solution is: -b / a */
@@ -27,12 +28,11 @@ void		solve_first_degree(Equation &eq) {
 		// Divide both sides of equation by coefficient of degree 1
 		eq /= firstDegr;
 		auto sol = eq.findTokenOfDegree(eq.getEquationRight(), 0);
-		std::cout << "Solution: X = " << sol.value()  << ".\n";
+		std::cout << "Solution:\nX = " << sol.value()  << ".\n";
 	}
 }
 
 void		solve_second_degree(Equation &eq) {
-	std::cout << "Solve second degree\n";
 	auto a_token = (eq.findTokenOfDegree(eq.getEquationLeft(), 2));
 	auto b_token = (eq.findTokenOfDegree(eq.getEquationLeft(), 1));
 	auto c_token = (eq.findTokenOfDegree(eq.getEquationLeft(), 0));
@@ -42,17 +42,18 @@ void		solve_second_degree(Equation &eq) {
 	Rational c = c_token ? c_token.value().getCoeff(): Rational(0);
 
 	// TODO: try?
-	std::cout << "A: " << a << " B: " << b << " C: " << c << "\n";
-	std::cout << "B^2: " << (b * b) << "- 4AC: " << (4 * a*c) << "\n";
+	// std::cout << "A: " << a << " B: " << b << " C: " << c << "\n";
+	// std::cout << "B^2: " << (b * b) << "- 4AC: " << (4 * a*c) << "\n";
 	Rational discriminant = (b * b) - (4 * a * c);
 	
-	std::cout << "Discriminant: " << discriminant << "\n";
+	// std::cout << "Discriminant: " << discriminant << "\n";
 	
 	if (discriminant != 0) {
 		Rational divisor = (2 * a);
 		Rational left = -b / divisor;
 		Root right = Root(discriminant) / divisor;
 
+		std::cout << std::setprecision(25) << "Numerical solution: " << right.getNumericalSolution() << "\n";
 		std::cout << "Left: " << left << "\nRight: " << right << "\n";
 		// TODO: can it be numerically solved? (Anything is a float or root doesn't matter)
 		Solution plus = Solution(Solution::Sign::plus, left, right);
@@ -69,7 +70,9 @@ void		solve_second_degree(Equation &eq) {
 void		solve_equation(Equation &eq) {
 	int		highest_degree = eq.getHighestDegree();
 
-	std::cout << "Polynomial degree: " << highest_degree << "\n";
+	if (eq.getEquationLeft().empty()) {
+		throw std::invalid_argument("Equation given when simplified comes down to \"0 = 0\", cannot solve.");
+	}
 	if (highest_degree == 0) {
 		/* Only a constant is given, this is not an equation */
 		throw std::invalid_argument("Invalid equation, no variable to solve for.");
