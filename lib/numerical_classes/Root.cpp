@@ -29,16 +29,11 @@ Root::Root(Rational n, int degree) : _root{0}, _whole{1}, _degree{degree},
 }
 
 void	Root::simplifyFraction(Fraction &r) {
-	std::cout << "simplify fraction\n";
 	r.combineWholeNumerator();
-	std::cout << "Combine fraction: " << r << "\n";
 	Root numer = Root(r.getNum());
-	std::cout << "Denom before root: " << r.getDenom() << "\n";
 	Root denom = Root(r.getDenom());
 
-	std::cout << "Numer: " << numer << " Denom: " << denom << "\n";
 	rationalize(numer, denom);
-	std::cout << "Numerator simplified: " << numer << "\n";
 	_root = numer._root;
 	_whole = Fraction(numer._whole, numer._divisor);
 }
@@ -117,6 +112,16 @@ Root::operator std::string() const {
 	return res;
 }
 
+Root::operator long double() const {
+	if (_root == 1) {
+		return (long double)_whole;
+	}
+	else {
+		auto root = std::pow((long double)_root, 1.0f/(long double)_degree);
+		return (long double)_whole * root;
+	}
+}
+
 bool		Root::hasNumericSolution() const {
 	/* If root is of no influence or any component is 
 	floating point, solution is numeric */
@@ -124,7 +129,7 @@ bool		Root::hasNumericSolution() const {
 }
 
 Rational	Root::getNumericalSolution() const {
-	if (_root == 0) {
+	if (_root == 1) {
 		return _whole;
 	}
 	else if (_root.isFloating()) {
@@ -157,7 +162,6 @@ Root		&Root::operator*=(const Root &rhs) {
 	nw_whole *= nw_root.getWhole();
 	_whole = nw_whole;
 	_root = nw_root.getRoot();
-	std::cout << "New whole: " << nw_whole << " New root: " << nw_root << "\n";
 	return *this;
 }
 

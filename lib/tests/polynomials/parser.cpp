@@ -34,10 +34,15 @@ TEST_CASE("Parsing", "[Parsing]") {
 		Token t = parse_token(pt);
 		REQUIRE(t == Token(Fraction(1, 3, 25), 0));
 
-		s = "131.415";
+		s = "-131.415";
 		pt = getParsingToken(s, true);
 		t = parse_token(pt);
-		REQUIRE(t == Token(Fraction(131, 83, 200), 0));
+		REQUIRE(t == Token(Fraction(-131, 83, 200), 0));
+
+		s = "-0.5";
+		pt = getParsingToken(s, false);
+		t = parse_token(pt);
+		REQUIRE(t == Token(Fraction(-1, 2)));
 	}
 	// No equals
 	std::string input = "X + 12 - 13X";

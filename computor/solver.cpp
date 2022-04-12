@@ -42,28 +42,27 @@ void		solve_second_degree(Equation &eq) {
 	Rational c = c_token ? c_token.value().getCoeff(): Rational(0);
 
 	// TODO: try?
-	// std::cout << "A: " << a << " B: " << b << " C: " << c << "\n";
-	// std::cout << "B^2: " << (b * b) << "- 4AC: " << (4 * a*c) << "\n";
+	std::cout << "A: " << a << " B: " << b << " C: " << c << "\n";
+	std::cout << "B^2: " << (b * b) << "- 4AC: " << (4 * a*c) << "\n";
 	Rational discriminant = (b * b) - (4 * a * c);
-	
-	// std::cout << "Discriminant: " << discriminant << "\n";
-	
+	Rational divisor = (2 * a);
+	Rational left = -b / divisor;
+	Root right = Root(discriminant) / divisor;
+
+	std::cout << "Discriminant: " << discriminant << "\nLeft: " << left << "\nRight: " << right << "\n";
 	if (discriminant != 0) {
-		Rational divisor = (2 * a);
-		Rational left = -b / divisor;
-		Root right = Root(discriminant) / divisor;
+		if (discriminant > 0) {
+			std::cout << "Discriminant is strictly positive.\n";
+		}
+		else {
+			std::cout << "Discriminant is strictly negative.\n";
+		}
+		Solution s = Solution(left, right);
 
-		std::cout << std::setprecision(25) << "Numerical solution: " << right.getNumericalSolution() << "\n";
-		std::cout << "Left: " << left << "\nRight: " << right << "\n";
-		// TODO: can it be numerically solved? (Anything is a float or root doesn't matter)
-		Solution plus = Solution(Solution::Sign::plus, left, right);
-		Solution minus = Solution(Solution::Sign::minus, left, right);
-
-		std::cout << "Solutions:\nX = " << plus << "\nX = " << minus << "\n";
+		std::cout << "Solutions:\n" << s << "\n";
 	}
 	else {
-		auto solution = -b / (2 * a);
-		std::cout << "Solution:\n" << solution;
+		std::cout << "Solution:\n" << left;
 	}
 }
 

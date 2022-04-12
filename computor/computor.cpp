@@ -1,8 +1,6 @@
 #include "computor.h"
-#include "Root.h"
 
 int main(int argc, char *argv[]) {
-	// TODO help text
 	std::string help = "Usage: enter a polynomial of degree smaller than or equal to two.\nFactors can be: integers, \
 decimals or fractions (form: 1/2 or 2(2/3)).\n\nExample: \"2X^2 - X = 2.25\"\n\nAccepts one indeterminate that must be called 'X'.\n";
 	if (argc == 1) {
@@ -18,8 +16,8 @@ decimals or fractions (form: 1/2 or 2(2/3)).\n\nExample: \"2X^2 - X = 2.25\"\n\n
 		Equation eq = parse_equation(input);
 		std::cout << "Original equation:\n" << eq << "\n";
 		eq.simplify();
-		// std::cout << "Simplified representation of equation:\n" << eq << "\n";
-		// std::cout << "Highest degree: " << eq.getHighestDegree() << "\n";
+		std::cout << "Reduced form:\n" << eq << "\n";
+		std::cout << "Polynomial degree: " << eq.getHighestDegree() << "\n";
 		solve_equation(eq);
 		return (0);
 	}

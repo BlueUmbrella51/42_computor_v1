@@ -36,18 +36,6 @@ bool	Rational::isFraction() const {
 	return std::holds_alternative<Fraction>(_val);
 }
 
-long double	Rational::toFloating() {
-	return std::visit([](auto &arg) {
-		try {
-			return (long double)arg;
-		}
-		catch (std::overflow_error &e) {
-			std::cout << e.what();
-			throw e;
-		}
-	}, _val);
-}
-
 Rational::operator long double () const {
 	return std::visit([](auto &arg) {
 		return (long double)arg;
@@ -201,7 +189,7 @@ bool		operator>(const Numerical &lhs, const Fraction &rhs) {
 }
 
 bool		operator>(const Fraction &lhs, const Numerical &rhs) {
-	return !(rhs <= lhs);
+	return !(lhs <= rhs);
 }
 
 bool		operator>=(const Numerical &lhs, const Fraction &rhs) {
@@ -307,4 +295,100 @@ Rational				abs(const Rational &r) {
 	// else {
 	// 	return Rational(std::abs(std::get<long double>(n)));
 	// }
+}
+
+
+bool		operator==(const Numerical &lhs, const Rational &rhs) {
+	return std::visit([=](auto n) {
+		return (n == rhs);
+	}, lhs.getVal());
+}
+
+bool		operator==(const Rational &lhs, const Numerical &rhs) {
+	return (rhs == lhs);
+}
+
+bool		operator!=(const Numerical &lhs, const Rational &rhs) {
+	return !(lhs == rhs);
+}
+
+bool		operator!=(const Rational &lhs, const Numerical &rhs) {
+	return !(lhs == rhs);
+}
+
+bool		operator<(const Numerical &lhs, const Rational &rhs) {
+	return std::visit([=](auto n) {
+		return (n < rhs);
+	}, lhs.getVal());
+}
+
+bool		operator<(const Rational &lhs, const Numerical &rhs) {
+	return !(rhs < lhs || lhs == rhs);
+}
+
+bool		operator<=(const Numerical &lhs, const Rational &rhs) {
+	return (lhs < rhs || lhs == rhs);
+}
+
+bool		operator<=(const Rational &lhs, const Numerical &rhs) {
+	return (lhs < rhs || lhs == rhs);
+}
+
+bool		operator>(const Numerical &lhs, const Rational &rhs) {
+	return !(lhs <= rhs);
+}
+
+bool		operator>(const Rational &lhs, const Numerical &rhs) {
+	return !(lhs <= rhs);
+}
+
+bool		operator>=(const Numerical &lhs, const Rational &rhs) {
+	return !(lhs < rhs);
+}
+
+bool		operator>=(const Rational &lhs, const Numerical &rhs) {
+	return !(lhs < rhs);
+}
+
+Rational	operator+(const Numerical &lhs, const Rational &rhs) {
+	return std::visit([=](auto n) {
+		return Rational((n + rhs));
+	}, lhs.getVal());
+}
+
+Rational	operator+(const Rational &lhs, const Numerical &rhs) {
+	return (rhs + lhs);
+}
+
+Rational	operator-(const Numerical &lhs, const Rational &rhs) {
+	return std::visit([=](auto n) {
+		return Rational((n - rhs));
+	}, lhs.getVal());
+}
+
+Rational	operator-(const Rational &lhs, const Numerical &rhs) {
+	return std::visit([=](auto n) {
+		return Rational((lhs - n));
+	}, rhs.getVal());
+}
+
+Rational	operator*(const Numerical &lhs, const Rational &rhs) {
+	return std::visit([=](auto n) {
+		return Rational((n * rhs));
+	}, lhs.getVal());
+}
+Rational	operator*(const Rational &lhs, const Numerical &rhs) {
+	return (rhs * lhs);
+}
+
+Rational	operator/(const Numerical &lhs, const Rational &rhs) {
+	return std::visit([=](auto n) {
+		return Rational((n / rhs));
+	}, lhs.getVal());
+}
+
+Rational	operator/(const Rational &lhs, const Numerical &rhs) {
+	return std::visit([=](auto n) {
+		return Rational((lhs / n));
+	}, rhs.getVal());
 }

@@ -3,35 +3,69 @@
 #include "Rational.h"
 #include "Root.h"
 #include <optional>
+#include <variant>
 
-class Solution {
+typedef std::variant<Rational, Root>	parts;
+
+class 	CompoundSolution {
 	public:
-		enum	Order {
-			standard, reversed
-		};
-		enum	Sign {
-			plus, minus
-		};
-		Solution(Sign sign, Rational left, Root right);
+		CompoundSolution(char sign, Rational l, Root r);
+		~CompoundSolution() = default;
 		operator	std::string() const;
-		void		factor();
-		void		adjustOrder();
-		void		getNumericalSolution();
 
 	private:
-		Sign					_sign;
-		Order					_order;
-		Rational 				_num;
-		Root					_root;
-		Root::Type				_type;
-		Rational				_gcd;
-		bool					_gcdIsImag;
-		bool					_numIsImag;
-		bool					_factored;
-		std::optional<Rational> _solution;
+		char		_sign;
+		bool		_isImaginary;
+		Rational 	_commonFactor;
+		bool		_cfIsImag;
+		Rational 	_left;
+		bool		_leftIsImag;
+		Root		_right;
+		bool		_rev;
 
+		void	factor();
+		void	adjustOrder();
+	
+	friend std::ostream    		&operator<<(std::ostream &os, const CompoundSolution &x);
+};
+
+class	CompoundSolutions {
+	public:
+		CompoundSolutions(Rational l, Root r);
+		~CompoundSolutions() = default;
+		std::pair<std::string, std::string> toStrings() const;
+	private:
+		CompoundSolution	_plus;
+		CompoundSolution	_min;
+	
+	friend std::ostream    		&operator<<(std::ostream &os, const CompoundSolutions &x);
+};
+
+class	SimpleSolutions {
+	public:
+		SimpleSolutions() = default;
+		SimpleSolutions(Rational l, Rational r);
+		~SimpleSolutions() = default;
+		std::pair<std::string, std::string> toStrings() const;
+	private:
+		Rational	_plus;
+		Rational	_min;
+	
+	friend std::ostream    		&operator<<(std::ostream &os, const SimpleSolutions &x);
+};
+
+typedef	std::variant<SimpleSolutions, CompoundSolutions>	solution;
+
+class	Solution {
+	public:
+		Solution() = default;
+		Solution(Rational l, Root r);
+	
+	private:
+		solution _sol;
+		void	getNumericalSolutions();
+	
 	friend std::ostream    		&operator<<(std::ostream &os, const Solution &x);
-	// friend bool					operator==(const Solution &lhs, const Solution &rhs);
 };
 
 #endif

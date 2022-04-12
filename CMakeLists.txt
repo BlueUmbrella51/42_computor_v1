@@ -18,8 +18,7 @@ find_package(Git REQUIRED)
 
 if(NOT EXISTS external/catch2/CMakeLists.txt)
   execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive -- external/catch2
-    WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
-    COMMAND_ERROR_IS_FATAL ANY)
+    WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
 endif()
 
 # find_package(Git QUIET)

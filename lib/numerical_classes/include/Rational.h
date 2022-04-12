@@ -38,10 +38,7 @@ class Rational {
 		bool		isFloating() const;
 		bool		isFraction() const;
 
-		long double	toFloating();
-
 	friend Rational				abs(const Rational &r);
-	// friend std::pair<Rational, Rational>	simplifyRadical(const Rational &r, int degree);
 	friend Rational				operator*(const Rational &a, const Rational &b);
 	friend Rational				operator/(const Rational &a, const Rational &b);
 	friend Rational				operator+(const Rational &a, const Rational &b);
@@ -56,15 +53,6 @@ class Rational {
 	friend bool					operator<=(const Rational &lhs, const Rational &rhs);
 };
 
-Rational	operator+(const Numerical &lhs, const Fraction &rhs);
-Rational	operator+(const Fraction &lhs, const Numerical &rhs);
-Rational	operator-(const Numerical &lhs, const Fraction &rhs);
-Rational	operator-(const Fraction &lhs, const Numerical &rhs);
-Rational	operator*(const Numerical &lhs, const Fraction &rhs);
-Rational	operator*(const Fraction &lhs, const Numerical &rhs);
-Rational	operator/(const Numerical &lhs, const Fraction &rhs);
-Rational	operator/(const Fraction &lhs, const Numerical &rhs);
-
 bool		operator==(const Numerical &lhs, const Fraction &rhs);
 bool		operator==(const Fraction &lhs, const Numerical &rhs);
 bool		operator!=(const Numerical &lhs, const Fraction &rhs);
@@ -77,6 +65,37 @@ bool		operator>(const Numerical &lhs, const Fraction &rhs);
 bool		operator>(const Fraction &lhs, const Numerical &rhs);
 bool		operator>=(const Numerical &lhs, const Fraction &rhs);
 bool		operator>=(const Fraction &lhs, const Numerical &rhs);
+
+Rational	operator+(const Numerical &lhs, const Fraction &rhs);
+Rational	operator+(const Fraction &lhs, const Numerical &rhs);
+Rational	operator-(const Numerical &lhs, const Fraction &rhs);
+Rational	operator-(const Fraction &lhs, const Numerical &rhs);
+Rational	operator*(const Numerical &lhs, const Fraction &rhs);
+Rational	operator*(const Fraction &lhs, const Numerical &rhs);
+Rational	operator/(const Numerical &lhs, const Fraction &rhs);
+Rational	operator/(const Fraction &lhs, const Numerical &rhs);
+
+bool		operator==(const Numerical &lhs, const Rational &rhs);
+bool		operator==(const Rational &lhs, const Numerical &rhs);
+bool		operator!=(const Numerical &lhs, const Rational &rhs);
+bool		operator!=(const Rational &lhs, const Numerical &rhs);
+bool		operator<(const Numerical &lhs, const Rational &rhs);
+bool		operator<(const Rational &lhs, const Numerical &rhs);
+bool		operator<=(const Numerical &lhs, const Rational &rhs);
+bool		operator<=(const Rational &lhs, const Numerical &rhs);
+bool		operator>(const Numerical &lhs, const Rational &rhs);
+bool		operator>(const Rational &lhs, const Numerical &rhs);
+bool		operator>=(const Numerical &lhs, const Rational &rhs);
+bool		operator>=(const Rational &lhs, const Numerical &rhs);
+
+Rational	operator+(const Numerical &lhs, const Rational &rhs);
+Rational	operator+(const Rational &lhs, const Numerical &rhs);
+Rational	operator-(const Numerical &lhs, const Rational &rhs);
+Rational	operator-(const Rational &lhs, const Numerical &rhs);
+Rational	operator*(const Numerical &lhs, const Rational &rhs);
+Rational	operator*(const Rational &lhs, const Numerical &rhs);
+Rational	operator/(const Numerical &lhs, const Rational &rhs);
+Rational	operator/(const Rational &lhs, const Numerical &rhs);
 
 template<typename T, 
 			typename std::enable_if<

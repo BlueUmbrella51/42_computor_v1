@@ -34,7 +34,6 @@ class	Root {
 			}
 		}
 		Root(Rational n, int degree = 2);
-		// Root(Fraction n, int degree = 2);
 		Root	&operator=(const Root &rhs);
 		~Root() = default;
 
@@ -51,6 +50,7 @@ class	Root {
 		bool		hasNumericSolution() const;
 		Rational	getNumericalSolution() const;
 		operator	std::string () const;
+		operator	long double () const;
 		Root		&operator+=(const Root &rhs);
 		Root		&operator-=(const Root &rhs);
 		Root		&operator*=(const Root &rhs);

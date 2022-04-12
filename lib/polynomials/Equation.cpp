@@ -34,7 +34,6 @@ Equation::operator std::string() const {
 	for (auto it = _tokensLeft.begin(); it != _tokensLeft.end(); ++it) {
 		std::string tmp = std::string(*it);
 		if (it != _tokensLeft.begin()) {
-			std::cout << (*it).getCoeff() << "\n";
 			if ((*it).getCoeff() < 0) { tmp.erase(0, 1); }
 			if ((*it).getCoeff() < 0) {
 				// add " - " to string
@@ -80,7 +79,6 @@ Equation				&Equation::operator-=(const Token &t) {
 	}
 	_tokensLeft.push_back(tmp);
 	_tokensRight.push_back(tmp);
-	// std::cout << *this << "=>" << "\n";
 	sortTokens(_tokensLeft);
 	sortTokens(_tokensRight);
 	combineTokensByDegree(_tokensLeft);
@@ -121,7 +119,7 @@ Equation				&Equation::operator/=(const Token &t) {
 
 std::ostream		&operator<<(std::ostream &os, const Equation &eq) {
 	auto s = std::string(eq);
-	std::cout << s << "\n";
+	os << s;
 	return os;
 }
 
@@ -183,11 +181,9 @@ void	Equation::moveTokensLeft() {
 		while (iter != tmp.end())
 		{
 			if ((*iter).getCoeff() <= 0) {
-				std::cout << "+= " << *iter << "\n";
 				*this += *iter;
 			}
 			else {
-				std::cout << "-= " << *iter << "\n";
 				*this -= *iter;
 			}
 			iter = _tokensRight.erase(iter);
@@ -255,11 +251,8 @@ void	Equation::simplify() {
 	try {
 		combineTokensByDegree(_tokensRight);
 		moveTokensLeft();
-		std::cout << "After move left\n" << *this;
 		sortTokens(_tokensLeft);
-		std::cout << "After sort\n" << *this;
 		combineTokensByDegree(_tokensLeft);
-		std::cout << "After combine\n" << *this;
 		removeZeroCoeff(_tokensLeft);
 		/* If first token in sorted equation is negative, factor out that -1 */
 		if (!_tokensLeft.empty() && (*_tokensLeft.begin()).getCoeff() < 0) {
@@ -328,6 +321,9 @@ Fraction		decimal_string_to_rational(std::string &str) {
 		++i;
 		prev = i;
 		numerator = string_to_ll(str, &i);
+		if (str[0] == '-' && whole == 0) {
+			numerator = -numerator;
+		}
 		denominator = int_pow(10, i - prev);
 		/* Factor out gcd of numerator and denominator */
 		factorGcd(numerator, denominator);
@@ -413,7 +409,6 @@ Token		parse_token(ParseToken &pt) {
 		/* If no discriminant was given we assume one with power 0, which
 		comes down to coefficient * 1. */
 		long int					degree = 0;
-		std::cout << "Coeff str: " << coeff_str << "\nCoeff: " << coeff << "\n";
 		if (degree_str) {
 			degree = get_degree(degree_str.value());
 		}
@@ -428,7 +423,6 @@ Equation		parse_equation(std::string &input) {
 	try {
 		auto [left, right] = getParsingTokens(input);
 		for (std::vector<ParseToken>::iterator it = left.begin(); it != left.end(); ++it) {
-			std::cout << (*it).getCoeff() << "\n";
 			token_info.add(parse_token(*it));
 		}
 		token_info.setSide(Equation::operationSide::right);

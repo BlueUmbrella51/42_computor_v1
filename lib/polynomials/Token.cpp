@@ -12,7 +12,10 @@ Token::operator std::string() const {
 	res += std::string(_coeff);
 	if (_degree != 0) {
 		res += "X";
-		if (_degree != 1) {
+		if (_degree == 2) {
+			res += "²";
+		}
+		else if (_degree != 1) {
 			res += "^" + std::to_string(_degree);
 		}
 	}
@@ -20,16 +23,17 @@ Token::operator std::string() const {
 }
 
 std::ostream &operator<<(std::ostream &os, const Token &r) {
-	auto coeff = r._coeff;
-	auto degree = r._degree;
+	// auto coeff = r._coeff;
+	// auto degree = r._degree;
 
-	os << coeff;
-	if (degree != 0) {
-		os << "X";
-		if (degree != 1) {
-			os << "^" << degree;
-		}
-	}
+	// os << coeff;
+	// if (degree != 0) {
+	// 	os << "X";
+	// 	if (degree == 2) {
+	// 		os << "\x00B2" << degree;
+	// 	}
+	// }
+	os << (std::string)r;
 	return os;
 }
 

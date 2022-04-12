@@ -78,11 +78,11 @@ TEST_CASE("Roots", "[Roots]") {
 		r = Rational(Fraction(1, 4));
 		REQUIRE(!r.isFloating());
 
-		// long double n = (long double)r;
-		// REQUIRE(n == 0.5);
+		long double n = (long double)r;
+		REQUIRE(n == 0.5);
 
-		// r = Rational(Fraction(125));
-		// n = (long double)r;
-		// REQUIRE(n == (long double)std::pow(125, 0.5));
+		r = Rational(Fraction(125));
+		n = (long double)r;
+		REQUIRE(n == (long double)std::pow(125, 0.5));
 	}
 }
