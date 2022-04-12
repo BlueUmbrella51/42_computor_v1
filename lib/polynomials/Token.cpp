@@ -10,13 +10,15 @@ Token::operator std::string() const {
 	std::string res = "";
 
 	res += std::string(_coeff);
-	if (_degree != 0) {
-		res += "X";
-		if (_degree == 2) {
-			res += "²";
-		}
-		else if (_degree != 1) {
-			res += "^" + std::to_string(_degree);
+	if (_coeff != 0) {
+		if (_degree != 0) {
+			res += "X";
+			if (_degree == 2) {
+				res += "²";
+			}
+			else if (_degree != 1) {
+				res += "^" + std::to_string(_degree);
+			}
 		}
 	}
 	return res;

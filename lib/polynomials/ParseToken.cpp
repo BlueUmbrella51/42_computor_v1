@@ -175,7 +175,7 @@ std::pair<std::string, std::string>		getParsingHalves(std::string &eq) {
 	std::vector<std::string> 	halves{it, {}};
 
 	if (halves.size() != 2) {
-		throw std::invalid_argument("Only one '=' sign allowed in equation.");
+		throw std::invalid_argument("Equation must contain exactly on '=' sign followed by at least one number.");
 	}
 	return	std::make_pair(halves.at(0), halves.at(1));
 }
