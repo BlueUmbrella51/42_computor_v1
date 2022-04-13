@@ -49,7 +49,7 @@ void		solve_second_degree(Equation &eq) {
 	Rational left = -b / divisor;
 	Root right = Root(discriminant) / divisor;
 
-	std::cout << "Discriminant: " << discriminant << "\nLeft: " << left << "\nRight: " << right << "\n";
+	std::cout << "Discriminant: " << discriminant << "Root discriminant: " << Root(discriminant) <<"\nLeft: " << left << "\nRight: " << right << "\n";
 	if (discriminant != 0) {
 		if (discriminant > 0) {
 			std::cout << "Discriminant is strictly positive.\n";

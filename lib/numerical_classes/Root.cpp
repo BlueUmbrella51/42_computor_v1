@@ -1,6 +1,6 @@
 #include "Root.h"
 #include "math_helpers.h"
-
+#include <iomanip>
 
 void		rationalize(Root &numer, const Root &denom) {
 	/* Normalize the "fraction" (move it from denominator to nominator) 
@@ -20,11 +20,13 @@ Root::Root(Rational n, int degree) : _root{0}, _whole{1}, _degree{degree},
 		n = abs(n);
 	}
 	auto val = n.getVal();
-	if (n.isFraction()) {
-		simplifyFraction(std::get<Fraction>(val));
-	}
-	else {
-		simplifyNumerical(std::get<Numerical>(val));
+	if (_degree > 0) {
+		if (n.isFraction()) {
+			simplifyFraction(std::get<Fraction>(val));
+		}
+		else {
+			simplifyNumerical(std::get<Numerical>(val));
+		}
 	}
 }
 
@@ -117,15 +119,15 @@ Root::operator long double() const {
 		return (long double)_whole;
 	}
 	else {
-		auto root = std::pow((long double)_root, 1.0f/(long double)_degree);
+		long double root = std::pow((long double)_root, 1.0/(long double)_degree);
 		return (long double)_whole * root;
 	}
 }
 
-bool		Root::hasNumericSolution() const {
+bool		Root::hasRealNumericSolution() const {
 	/* If root is of no influence or any component is 
 	floating point, solution is numeric */
-	return (_root == 1 || _root.isFloating());
+	return ((_root == 1 || _root.isFloating()) && _type == Type::real);
 }
 
 Rational	Root::getNumericalSolution() const {
@@ -169,7 +171,12 @@ Root		&Root::operator/=(const Root &rhs) {
 	// TODO: COMPLEX
 	/* Normalize the "fraction" (move it from denominator to nominator) 
 	by multiplying numerator and denominator by root part of denominator */
-	rationalize(*this, rhs);
+	if (_degree == rhs._degree) {
+		rationalize(*this, rhs);
+	}
+	else {
+		
+	}
 	return *this;
 }
 

@@ -130,7 +130,7 @@ std::pair<std::string, std::string> SimpleSolutions::toStrings() const {
 }
 
 Solution::Solution(Rational l, Root r) {
-	if (r.hasNumericSolution() || l.isFloating()) {
+	if (r.hasRealNumericSolution() || l.isFloating()) {
 		_sol = SimpleSolutions(l, r.getNumericalSolution());
 	}
 	else {

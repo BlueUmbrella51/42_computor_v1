@@ -35,7 +35,6 @@ class Equation {
 			}
 			return *this;
 		}
-		// Equation				&operator*=(const Token &t);
 		std::list<Token>		&getEquationLeft();
 		std::list<Token>		&getEquationRight();
 		void					add(Token token);
@@ -52,7 +51,6 @@ class Equation {
 		std::list<Token>		_tokensRight;
 		int						_highest_degree;
 		Equation::operationSide	_side;
-		char					_variable;
 		void					findHighestDegreeLeft();
 		void					moveTokensLeft();
 		void					sortTokens(std::list<Token> &lst);

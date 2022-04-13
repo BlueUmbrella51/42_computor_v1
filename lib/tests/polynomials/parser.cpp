@@ -76,5 +76,13 @@ TEST_CASE("Parsing", "[Parsing]") {
 
 	/* Random tests */
 	input = "X + X + X = X";
-	CHECK_NOTHROW(input);
+	CHECK_NOTHROW(parse_equation(input));
+
+	/* Invalid degree */
+	input = "X-2=3X+5X^289178917891789178917";
+	CHECK_THROWS(parse_equation(input));
+
+	/* Negative power is not allowed */
+	input = "2X^2 + X^-1 = 0";
+	CHECK_THROWS(parse_equation(input));
 }

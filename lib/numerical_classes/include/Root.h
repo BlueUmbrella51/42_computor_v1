@@ -15,17 +15,6 @@ class	Root {
 		template<typename T,
 			typename std::enable_if_t<std::is_arithmetic<T>::value, bool> = true
 		>
-		Root(T d, int degree = 2) : _root{d}, _whole{1}, _degree{degree},
-		_type{Root::Type::real}, _divisor{1} {
-			if (_root < 0) {
-				_type = Type::imaginary;
-				_root = abs(_root);
-			}
-			simplifyNumerical(_root);
-		}
-		template<typename T,
-			typename std::enable_if_t<std::is_arithmetic<T>::value, bool> = true
-		>
 		Root(long long w, T r, int degree = 2) : _root{r}, _whole{w}, _degree{degree}, 
 		_type{Root::Type::real}, _divisor{1} {
 			if (_root < 0) {
@@ -47,7 +36,7 @@ class	Root {
 		void		setType(Type t);
 		Rational	getDivisor() const;
 		bool		isFloating() const;
-		bool		hasNumericSolution() const;
+		bool		hasRealNumericSolution() const;
 		Rational	getNumericalSolution() const;
 		operator	std::string () const;
 		operator	long double () const;
@@ -82,12 +71,13 @@ class	Root {
 		We are looking for the largest perfect square f1 */
 		long long	whole = 1;
 		long long 	radical = 1;
-
 		auto factors = getPrimeFactors(n);
+		for(auto i = factors.begin(); i != factors.end(); ++i) {
+			std::cout << std::get<0>(*i) << " " << std::get<1>(*i) << "\n";
+		}
 		for(auto i = factors.begin(); i != factors.end(); ++i) {
 			auto factor = std::get<0>(*i);
 			auto degr = std::get<1>(*i);
-
 			while (degr >= degree) {
 				degr -= degree;
 				whole *= factor;

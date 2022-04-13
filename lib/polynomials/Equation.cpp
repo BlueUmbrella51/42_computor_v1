@@ -1,6 +1,6 @@
 #include "Equation.h"
 
-Equation::Equation() : _side(Equation::operationSide::left), _variable{'0'} {
+Equation::Equation() : _side(Equation::operationSide::left) {
 	_highest_degree = -1;
 	_tokensLeft = {};
 	_tokensRight = {};
@@ -84,6 +84,7 @@ Equation				&Equation::operator-=(const Token &t) {
 	combineTokensByDegree(_tokensLeft);
 	combineTokensByDegree(_tokensRight);
 	removeZeroCoeff(_tokensLeft);
+	removeZeroCoeff(_tokensRight);
 	return *this;
 }
 
@@ -103,6 +104,7 @@ Equation				&Equation::operator+=(const Token &t) {
 	combineTokensByDegree(_tokensLeft);
 	combineTokensByDegree(_tokensRight);
 	removeZeroCoeff(_tokensLeft);
+	removeZeroCoeff(_tokensRight);
 	return *this;
 }
 
@@ -115,7 +117,6 @@ Equation				&Equation::operator/=(const Token &t) {
 	}
 	return *this;
 }
-// Equation				&operator*=(const Token &t);
 
 std::ostream		&operator<<(std::ostream &os, const Equation &eq) {
 	auto s = std::string(eq);
@@ -175,18 +176,15 @@ void	Equation::combineTokensByDegree(std::list<Token> &lst) {
 }
 
 void	Equation::moveTokensLeft() {
-	std::list	tmp(_tokensRight);
-	std::list<Token>::iterator iter = tmp.begin();
 	try {
-		while (iter != tmp.end())
-		{
+		while (!_tokensRight.empty()) {
+			std::list<Token>::iterator iter = _tokensRight.begin();
 			if ((*iter).getCoeff() <= 0) {
 				*this += *iter;
 			}
 			else {
 				*this -= *iter;
 			}
-			iter = _tokensRight.erase(iter);
 		}
 	}
 	catch (std::overflow_error &e) { throw (e); }
@@ -202,7 +200,7 @@ void		Equation::findHighestDegreeLeft() {
 }
 
 void	Equation::removeZeroCoeff(std::list<Token> &lst) {
-	std::list<Token>::iterator it = _tokensLeft.begin();
+	std::list<Token>::iterator it = lst.begin();
 
 	while (it != lst.end()) {
 		if ((*it).getCoeff() == 0) {
@@ -212,9 +210,6 @@ void	Equation::removeZeroCoeff(std::list<Token> &lst) {
 			++it;
 		}
 	}
-	// TODO
-	if (!_tokensLeft.empty())
-		findHighestDegreeLeft();
 }
 
 void	Equation::factor(std::list<Token> &lst) {
@@ -222,7 +217,7 @@ void	Equation::factor(std::list<Token> &lst) {
 	// TODO: wrap in try/ catch
 	// TODO: make gcd negative if first token is negative
 	std::list<Token>::iterator 	it = lst.begin();
-	Rational						gcd = (*it).getCoeff();
+	Rational					gcd = (*it).getCoeff();
 
 	++it;
 	while (it != lst.end()) {
@@ -254,6 +249,7 @@ void	Equation::simplify() {
 		sortTokens(_tokensLeft);
 		combineTokensByDegree(_tokensLeft);
 		removeZeroCoeff(_tokensLeft);
+		findHighestDegreeLeft();
 		/* If first token in sorted equation is negative, factor out that -1 */
 		if (!_tokensLeft.empty() && (*_tokensLeft.begin()).getCoeff() < 0) {
 			*this /= -1;
@@ -299,7 +295,6 @@ Fraction		rational_string_to_rational(std::string &str) {
 		if (denominator == 0) {
 			throw std::invalid_argument("Denominator of fraction cannot be zero.");
 		}
-		// factorGcd(numerator, denominator);
 		return Fraction(whole, numerator, denominator);
 	}
 	catch (std::overflow_error &e) {
@@ -325,8 +320,6 @@ Fraction		decimal_string_to_rational(std::string &str) {
 			numerator = -numerator;
 		}
 		denominator = int_pow(10, i - prev);
-		/* Factor out gcd of numerator and denominator */
-		factorGcd(numerator, denominator);
 		/* Combine whole part and numerator */
 		return Fraction(whole, numerator, denominator);
 	}
@@ -386,6 +379,7 @@ long int		get_degree(std::string &str) {
 	char					*end;
 
 	while (it != str.end() && !isdigit(*it)) {
+		/* Skips X^ */
 		++it;
 	}
 	/* If no digits are specified as power, we just assume ^1 was meant.
@@ -393,10 +387,11 @@ long int		get_degree(std::string &str) {
 	if (it == str.end()) {
 		return 1;
 	}
-	std::string		s{ *it };
+	std::string 	s = std::string(it, str.end());
 	long int		degree = strtol(s.c_str(), &end, 10);
+
 	if (end == s.c_str()) { throw std::invalid_argument("Could not parse degree."); }
-	if (errno == ERANGE) { throw std::overflow_error("Degreer could not be represented as long."); }
+	if (errno == ERANGE) { throw std::overflow_error("Degree could not be represented as long."); }
 	return degree;
 }
 

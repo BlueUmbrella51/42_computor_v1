@@ -25,16 +25,6 @@ Token::operator std::string() const {
 }
 
 std::ostream &operator<<(std::ostream &os, const Token &r) {
-	// auto coeff = r._coeff;
-	// auto degree = r._degree;
-
-	// os << coeff;
-	// if (degree != 0) {
-	// 	os << "X";
-	// 	if (degree == 2) {
-	// 		os << "\x00B2" << degree;
-	// 	}
-	// }
 	os << (std::string)r;
 	return os;
 }
@@ -45,7 +35,6 @@ long		Token::getDegree() const{
 
 Rational		Token::getCoeff() const {
 	return _coeff;
-	// return 1;
 }
 
 void		Token::setCoeff(Rational coeff) {

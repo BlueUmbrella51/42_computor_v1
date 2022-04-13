@@ -22,7 +22,6 @@ class	Fraction {
 		Fraction();
 		Fraction(long long whole);
 		Fraction(long long n, long long d);
-		// Fraction(Root n, long long d);
 		Fraction(long long whole, long long n, long long d);
 		~Fraction() = default;
 		Fraction(const Fraction &rhs);
@@ -91,7 +90,6 @@ class	Fraction {
 		Fraction 	getGcd() const;
 		void		combineWholeNumerator();
 
-	// friend std::pair<long long, Fraction>		simplifyRadical(const Fraction &r, int degree);
 	friend Fraction								abs(const Fraction &rhs);
 	friend Fraction								getGcd(const Fraction &lhs, const Fraction &rhs);
 	friend Fraction								operator*(const Fraction &lhs, const Fraction &rhs);

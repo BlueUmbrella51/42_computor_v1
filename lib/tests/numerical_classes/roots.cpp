@@ -66,23 +66,32 @@ TEST_CASE("Roots", "[Roots]") {
 
 		lhs *= rhs;
 		REQUIRE(lhs == Root(16, 7, 2));
+
+		lhs = Root(2, 15);
+		rhs = Root(-6, -7);
+		Root res = lhs * rhs;
+		REQUIRE(res.getWhole() == -12);
+		REQUIRE(res.getRoot() == 105);
+		REQUIRE(res.getType() == Root::Type::imaginary);
 	}
 	SECTION ("Is floating\n") {
-		Root r = 125.5;
+		Root r = Root(125.5);
 
 		REQUIRE(r.isFloating());
 
-		r = 15;
+		r = Root(15);
 		REQUIRE(!r.isFloating());
 
 		r = Rational(Fraction(1, 4));
 		REQUIRE(!r.isFloating());
-
+	}
+	SECTION ("To long double") {
+		Root r = Rational(Fraction(1, 2));
 		long double n = (long double)r;
 		REQUIRE(n == 0.5);
 
 		r = Rational(Fraction(125));
 		n = (long double)r;
-		REQUIRE(n == (long double)std::pow(125, 0.5));
+		REQUIRE(n == (long double)std::pow((long double)125, 0.5));
 	}
 }

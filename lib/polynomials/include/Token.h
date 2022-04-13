@@ -12,10 +12,6 @@ class Token
 	public:
 		Token(Rational coeff, long degree = 0);
 		~Token() = default;
-		// Token		&operator-=(const Token &t);
-		// Token		&operator+=(const Token &t);
-		// Token		&operator/=(const Token &t);
-		// Token		&operator*=(const Token &t);
 		operator	std::string() const;
 		long		getDegree() const;
 		Rational	getCoeff() const;

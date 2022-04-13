@@ -1,1 +1,1 @@
-cd build && ctest --verbose && cd ..
+cd build && ctest --verbose --output-on-failure && cd ..

@@ -183,6 +183,7 @@ std::pair<std::string, std::string>		getParsingHalves(std::string &eq) {
 std::pair<std::vector<ParseToken>, std::vector<ParseToken>>	getParsingTokens(std::string &eq) {
 	eq.erase(std::remove_if(eq.begin(), eq.end(), ::isspace),
 	eq.end());
+	std::cout << "String to parse: " << eq << "\n";
 	try {
 		auto [left, right] = getParsingHalves(eq);
 		std::vector<ParseToken> leftParse = parseHalf(left);
