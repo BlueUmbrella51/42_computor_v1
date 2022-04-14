@@ -1,94 +1,95 @@
 #define CATCH_CONFIG_MAIN
 #include <single_include/catch2/catch.hpp>
-#include "Root.h"
+#include "SquareRoot.h"
 #include <iomanip>
 
-TEST_CASE("Roots", "[Roots]") {
+TEST_CASE("SquareRoots", "[SquareRoots]") {
 	SECTION ("Creation") {
-		Root r = Root(125);
+		SquareRoot r = SquareRoot(125);
 		REQUIRE(r.getWhole() == 5);
-		REQUIRE((r.getRoot() == 5));
-		REQUIRE(r.getType() == Root::Type::real);
+		REQUIRE((r.getSquareRoot() == 5));
+		REQUIRE(r.getType() == SquareRoot::Type::real);
 
-		r = Root(125.12);
+		r = SquareRoot(125.12);
 		REQUIRE(r.getWhole() == 1);
-		REQUIRE((r.getRoot() == 125.12));
-		REQUIRE(r.getType() == Root::Type::real);
+		REQUIRE((r.getSquareRoot() == 125.12));
+		REQUIRE(r.getType() == SquareRoot::Type::real);
 
-		Root n = Root(100);
+		SquareRoot n = SquareRoot(100);
 		REQUIRE(n != r);
 		
-		r = Root(-4.15);
+		r = SquareRoot(-4.15);
 		REQUIRE(r.getWhole() == 1);
-		REQUIRE((r.getRoot() == 4.15));
-		REQUIRE(r.getType() == Root::Type::imaginary);
+		REQUIRE((r.getSquareRoot() == 4.15));
+		REQUIRE(r.getType() == SquareRoot::Type::imaginary);
 	
-		r = Root(100);
+		r = SquareRoot(100);
 		REQUIRE(r.getWhole() == 10);
-		REQUIRE((r.getRoot() == 1));
-		REQUIRE(r.getType() == Root::Type::real);
+		REQUIRE((r.getSquareRoot() == 1));
+		REQUIRE(r.getType() == SquareRoot::Type::real);
 
-		r = Root(-100);
+		r = SquareRoot(-100);
 		REQUIRE(r.getWhole() == 10);
-		REQUIRE((r.getRoot() == 1));
-		REQUIRE(r.getType() == Root::Type::imaginary);
+		REQUIRE((r.getSquareRoot() == 1));
+		REQUIRE(r.getType() == SquareRoot::Type::imaginary);
 
-		r = Root(17);
+		r = SquareRoot(17);
 		REQUIRE(r.getWhole() == 1);
-		REQUIRE((r.getRoot() == 17));
-		REQUIRE(r.getType() == Root::Type::real);
+		REQUIRE((r.getSquareRoot() == 17));
+		REQUIRE(r.getType() == SquareRoot::Type::real);
 
 		/* From discriminant */
-		r = Root(Fraction(2, 1, 7));
+		r = SquareRoot(Fraction(2, 1, 7));
 		REQUIRE(r.getWhole() == Fraction(1, 7));
-		REQUIRE((r.getRoot() == 105));
-		REQUIRE(r.getType() == Root::Type::real);
+		REQUIRE((r.getSquareRoot() == 105));
+		REQUIRE(r.getType() == SquareRoot::Type::real);
 
-		r = Root(Fraction(-8, 3, 8));
+		r = SquareRoot(Fraction(-8, 3, 8));
 		REQUIRE(r.getWhole() == Fraction(1, 4));
-		REQUIRE((r.getRoot() == 134));
-		REQUIRE(r.getType() == Root::Type::imaginary);
+		REQUIRE((r.getSquareRoot() == 134));
+		REQUIRE(r.getType() == SquareRoot::Type::imaginary);
 
-		r = Root(Fraction(25));
+		r = SquareRoot(Fraction(25));
 		REQUIRE(r.getWhole() == 5);
-		REQUIRE((r.getRoot() == 1));
-		REQUIRE(r.getType() == Root::Type::real);
+		REQUIRE((r.getSquareRoot() == 1));
+		REQUIRE(r.getType() == SquareRoot::Type::real);
 
-		r = Root(-36);
+		r = SquareRoot(-36);
 		REQUIRE(r.getWhole() == 6);
-		REQUIRE((r.getRoot() == 1));
-		REQUIRE(r.getType() == Root::Type::imaginary);
+		REQUIRE((r.getSquareRoot() == 1));
+		REQUIRE(r.getType() == SquareRoot::Type::imaginary);
 	}
 	SECTION ("Multiplication\n") {
 		std::cout << "Fractions\n";
-		Root lhs = Root(4, 2, 2);
-		Root rhs = Root(2, 14, 2);
+		SquareRoot lhs = SquareRoot(4, 2);
+		SquareRoot rhs = SquareRoot(2, 14);
 
 		lhs *= rhs;
-		REQUIRE(lhs == Root(16, 7, 2));
+		REQUIRE(lhs == SquareRoot(16, 7));
 
-		lhs = Root(2, 15);
-		rhs = Root(-6, -7);
-		Root res = lhs * rhs;
+		lhs = SquareRoot(2, -7);
+		rhs = SquareRoot(-6, 3);
+		SquareRoot res = lhs * rhs;
 		REQUIRE(res.getWhole() == -12);
-		REQUIRE(res.getRoot() == 105);
-		REQUIRE(res.getType() == Root::Type::imaginary);
+		REQUIRE(res.getSquareRoot() == 21);
+		REQUIRE(res.getType() == SquareRoot::Type::imaginary);
 	}
 	SECTION ("Is floating\n") {
-		Root r = Root(125.5);
+		SquareRoot r = SquareRoot(125.5);
 
 		REQUIRE(r.isFloating());
 
-		r = Root(15);
+		r = SquareRoot(15);
 		REQUIRE(!r.isFloating());
 
 		r = Rational(Fraction(1, 4));
 		REQUIRE(!r.isFloating());
 	}
 	SECTION ("To long double") {
-		Root r = Rational(Fraction(1, 2));
+		SquareRoot r = Rational(Fraction(1, 2));
 		long double n = (long double)r;
-		REQUIRE(n == 0.5);
+		std::cout << n << "\n";
+		REQUIRE(n == std::sqrt(0.5));
 
 		r = Rational(Fraction(125));
 		n = (long double)r;

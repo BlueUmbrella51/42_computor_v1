@@ -45,44 +45,46 @@ TEST_CASE("Parsing", "[Parsing]") {
 		REQUIRE(t == Token(Fraction(-1, 2)));
 	}
 	// No equals
-	std::string input = "X + 12 - 13X";
-	CHECK_THROWS(parse_equation(input));
-	input = "X + 12 - 13X = 2X^2";
-	CHECK_NOTHROW(parse_equation(input));
+	SECTION("Full inputs") {
+		std::string input = "X + 12 - 13X";
+		CHECK_THROWS(parse_equation(input));
+		input = "X + 12 - 13X = 2X^2";
+		CHECK_NOTHROW(parse_equation(input));
 
-	// Invalid operation
-	input = "3X - 14 * 12 = X";
-	CHECK_THROWS(parse_equation(input));
-	input = "3X - 14 + 12 = X";
-	CHECK_NOTHROW(parse_equation(input));
+		// Invalid operation
+		input = "3X - 14 * 12 = X";
+		CHECK_THROWS(parse_equation(input));
+		input = "3X - 14 + 12 = X";
+		CHECK_NOTHROW(parse_equation(input));
 
-	// Invalid indiscriminant
-	input = "3A - 14 + 12 = X";
-	CHECK_THROWS(parse_equation(input));
-	input = "3X - 14 + 12 = X";
-	CHECK_NOTHROW(parse_equation(input));
+		// Invalid indiscriminant
+		input = "3A - 14 + 12 = X";
+		CHECK_THROWS(parse_equation(input));
+		input = "3X - 14 + 12 = X";
+		CHECK_NOTHROW(parse_equation(input));
 
-	// Invalid decimal
-	input = "X +12. -1 = 4";
-	CHECK_THROWS(parse_equation(input));
-	input = "X +12.4 -1 = 4";
-	CHECK_NOTHROW(parse_equation(input));
+		// Invalid decimal
+		input = "X +12. -1 = 4";
+		CHECK_THROWS(parse_equation(input));
+		input = "X +12.4 -1 = 4";
+		CHECK_NOTHROW(parse_equation(input));
 
-	// Random token at end
-	input = "X +12.4 -1 = 4%";
-	CHECK_THROWS(parse_equation(input));
-	input = "X +12.4 -1 = 4";
-	CHECK_NOTHROW(parse_equation(input));
+		// Random token at end
+		input = "X +12.4 -1 = 4%";
+		CHECK_THROWS(parse_equation(input));
+		input = "X +12.4 -1 = 4";
+		CHECK_NOTHROW(parse_equation(input));
 
-	/* Random tests */
-	input = "X + X + X = X";
-	CHECK_NOTHROW(parse_equation(input));
+		/* Random tests */
+		input = "X + X + X = X";
+		CHECK_NOTHROW(parse_equation(input));
 
-	/* Invalid degree */
-	input = "X-2=3X+5X^289178917891789178917";
-	CHECK_THROWS(parse_equation(input));
+		/* Invalid degree */
+		input = "X-2=3X+5X^289178917891789178917";
+		CHECK_THROWS(parse_equation(input));
 
-	/* Negative power is not allowed */
-	input = "2X^2 + X^-1 = 0";
-	CHECK_THROWS(parse_equation(input));
+		/* Negative power is not allowed */
+		input = "2X^2 + X^-1 = 0";
+		CHECK_THROWS(parse_equation(input));
+	}
 }

@@ -1,15 +1,15 @@
 #ifndef SOLUTION_H
 #define SOLUTION_H
 #include "Rational.h"
-#include "Root.h"
+#include "SquareRoot.h"
 #include <optional>
 #include <variant>
 
-typedef std::variant<Rational, Root>	parts;
+typedef std::variant<Rational, SquareRoot>	parts;
 
 class 	CompoundSolution {
 	public:
-		CompoundSolution(char sign, Rational l, Root r);
+		CompoundSolution(char sign, Rational l, SquareRoot r);
 		~CompoundSolution() = default;
 		operator	std::string() const;
 
@@ -20,7 +20,7 @@ class 	CompoundSolution {
 		bool		_cfIsImag;
 		Rational 	_left;
 		bool		_leftIsImag;
-		Root		_right;
+		SquareRoot		_right;
 		bool		_rev;
 
 		void	factor();
@@ -31,7 +31,7 @@ class 	CompoundSolution {
 
 class	CompoundSolutions {
 	public:
-		CompoundSolutions(Rational l, Root r);
+		CompoundSolutions(Rational l, SquareRoot r);
 		~CompoundSolutions() = default;
 		std::pair<std::string, std::string> toStrings() const;
 	private:
@@ -59,7 +59,7 @@ typedef	std::variant<SimpleSolutions, CompoundSolutions>	solution;
 class	Solution {
 	public:
 		Solution() = default;
-		Solution(Rational l, Root r);
+		Solution(Rational l, SquareRoot r);
 	
 	private:
 		solution _sol;

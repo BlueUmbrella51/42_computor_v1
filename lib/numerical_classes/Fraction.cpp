@@ -27,7 +27,7 @@ Fraction::Fraction(long long n, long long d):
 		simplify();
 }
 
-// Fraction::Fraction(Root n, long long d):
+// Fraction::Fraction(SquareRoot n, long long d):
 // _w{0}, _n{n}, _d{d} {
 
 // }

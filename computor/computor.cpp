@@ -1,6 +1,16 @@
 #include "computor.h"
-#include "Root.h"
+
+#include "ParseToken.h"
+#include "Token.h"
+
 int main(int argc, char *argv[]) {
+	std::string s = "1.12";
+	ParseToken pt = getParsingToken(s, true);
+	Token t = parse_token(pt);
+
+	std::string in = "3X - 14 + 12 = X";
+	parse_equation(in);
+	// exit(0);
 	std::string help = "Usage: enter a polynomial of degree smaller than or equal to two.\nFactors can be: integers, \
 decimals or fractions (form: 1/2 or 2(2/3)).\n\nExample: \"2X^2 - X = 2.25\"\n\nAccepts one indeterminate that must be called 'X'.\n";
 	if (argc == 1) {

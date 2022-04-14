@@ -4,7 +4,7 @@ add_library(${numerName} STATIC
 			Imaginary.cpp
 			Fraction.cpp
 			Rational.cpp
-			Root.cpp
+			SquareRoot.cpp
 			Numerical.cpp
 )
 

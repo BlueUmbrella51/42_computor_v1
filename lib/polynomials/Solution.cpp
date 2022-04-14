@@ -1,7 +1,7 @@
 #include "Solution.h"
 
-CompoundSolution::CompoundSolution(char sign, Rational l, Root r) :
-_sign{sign}, _isImaginary{r.getType() == Root::Type::imaginary},
+CompoundSolution::CompoundSolution(char sign, Rational l, SquareRoot r) :
+_sign{sign}, _isImaginary{r.getType() == SquareRoot::Type::imaginary},
 _commonFactor{1}, _cfIsImag{false}, _left{l}, 
 _leftIsImag{false}, _right{r}, _rev{false} {
 	if (_left != 0) {
@@ -21,7 +21,7 @@ void	CompoundSolution::factor() {
 		/* Factor out i if possible */
 		_cfIsImag = true;
 		_leftIsImag = true;
-		_right.setType(Root::Type::real);
+		_right.setType(SquareRoot::Type::real);
 
 		_left = -_left;
 	}
@@ -104,7 +104,7 @@ std::ostream    		&operator<<(std::ostream &os, const CompoundSolution &x) {
 	return os;
 }
 
-CompoundSolutions::CompoundSolutions(Rational l, Root r):
+CompoundSolutions::CompoundSolutions(Rational l, SquareRoot r):
 _plus{CompoundSolution('+', l, r)}, _min{CompoundSolution('-', l, r)} {
 	// _plus = CompoundSolution('+', l, r);
 	// _min = CompoundSolution('-', l, r);
@@ -129,7 +129,7 @@ std::pair<std::string, std::string> SimpleSolutions::toStrings() const {
 	return std::make_pair((std::string)_plus, (std::string)_min);
 }
 
-Solution::Solution(Rational l, Root r) {
+Solution::Solution(Rational l, SquareRoot r) {
 	if (r.hasRealNumericSolution() || l.isFloating()) {
 		_sol = SimpleSolutions(l, r.getNumericalSolution());
 	}
@@ -179,7 +179,7 @@ std::ostream    		&operator<<(std::ostream &os, const Solution &x) {
 // 	_solution = _sign == Sign::plus ? _num + s : _num - s;
 // }
 
-// Solution::Solution(Sign sign, Rational left, Root right):
+// Solution::Solution(Sign sign, Rational left, SquareRoot right):
 // _sign{sign}, _order{Order::standard}, _num{left}, _root{right},
 // _type{right.getType()}, _gcdIsImag{false}, _numIsImag{false}, _factored{false},
 // _solution{std::nullopt} {
@@ -196,7 +196,7 @@ std::ostream    		&operator<<(std::ostream &os, const Solution &x) {
 // 	// 	// +/ _root is solution
 // 	// 	std::cout << "b is 0\n" << "+/-" << (_solution? _solution.value() : _root) << "\n";
 // 	// }
-// 	// if (_root.getRoot() == 1) {
+// 	// if (_root.getSquareRoot() == 1) {
 // 	// 	std::cout << "Can be numerically solved:\n" << _num + _root.getWhole() << "\n" << _num - _root.getWhole() << "\n";
 // 	// }
 // 	else {
@@ -204,9 +204,9 @@ std::ostream    		&operator<<(std::ostream &os, const Solution &x) {
 // 		if (_gcd != 1 && _num != 0) {
 // 			_factored = true;
 // 			factor();
-// 			if ((_num == 1 || _num == -1) && _root.getWhole() == 1 && _root.getType() == Root::Type::imaginary) {
+// 			if ((_num == 1 || _num == -1) && _root.getWhole() == 1 && _root.getType() == SquareRoot::Type::imaginary) {
 // 			/* Left can become i or -i, so we can factor out i to a common factor */
-// 				_root.setType(Root::Type::real);
+// 				_root.setType(SquareRoot::Type::real);
 // 				_gcdIsImag = true;
 // 				_numIsImag = true;
 

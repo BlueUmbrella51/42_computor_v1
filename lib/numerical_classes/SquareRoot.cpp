@@ -1,20 +1,24 @@
-#include "Root.h"
+#include "SquareRoot.h"
 #include "math_helpers.h"
 #include <iomanip>
 
-void		rationalize(Root &numer, const Root &denom) {
+void		rationalize(SquareRoot &numer, const SquareRoot &denom) {
 	/* Normalize the "fraction" (move it from denominator to nominator) 
 	by multiplying numerator and denominator by root part of denominator */
-	Root denomRoot = Root(denom._root);
+	SquareRoot denomSquareRoot = SquareRoot(denom._root);
 
-	numer *= denomRoot;
+	numer *= denomSquareRoot;
 	
 	/* multiplying root by itself just gives you the number under the sqrt */
 	numer._divisor = (Rational)denom._whole * (Rational)denom._root;
 }
 
-Root::Root(Rational n, int degree) : _root{0}, _whole{1}, _degree{degree}, 
-	_type{Root::Type::real}, _divisor{1} {
+SquareRoot::SquareRoot(Rational n) : _root{1}, _whole{1}, _degree{2}, 
+	_type{SquareRoot::Type::real}, _divisor{1} {
+	if (n == 0) {
+		std::cout << "Root cannot be zero, setting it to 1.\n";
+		n = 1;
+	}
 	if (n < 0) {
 		_type = Type::imaginary;
 		n = abs(n);
@@ -30,17 +34,17 @@ Root::Root(Rational n, int degree) : _root{0}, _whole{1}, _degree{degree},
 	}
 }
 
-void	Root::simplifyFraction(Fraction &r) {
+void	SquareRoot::simplifyFraction(Fraction &r) {
 	r.combineWholeNumerator();
-	Root numer = Root(r.getNum());
-	Root denom = Root(r.getDenom());
+	SquareRoot numer = SquareRoot(r.getNum());
+	SquareRoot denom = SquareRoot(r.getDenom());
 
 	rationalize(numer, denom);
 	_root = numer._root;
 	_whole = Fraction(numer._whole, numer._divisor);
 }
 
-void	Root::simplifyNumerical(Numerical &n) {
+void	SquareRoot::simplifyNumerical(Numerical &n) {
 	std::visit([&](auto arg) {
 		auto [w, r] = simplify_root(arg, _degree);
 		_whole = w;
@@ -48,9 +52,9 @@ void	Root::simplifyNumerical(Numerical &n) {
 	}, n.getVal());
 }
 
-Root	&Root::operator=(const Root &rhs) {
+SquareRoot	&SquareRoot::operator=(const SquareRoot &rhs) {
 	if (this != &rhs) {
-		_root = rhs.getRoot();
+		_root = rhs.getSquareRoot();
 		_whole = rhs.getWhole();
 		_degree = rhs.getDegree();
 		_type = rhs.getType();
@@ -59,37 +63,37 @@ Root	&Root::operator=(const Root &rhs) {
 	return *this;
 }
 
-Numerical	Root::getRoot() const {
+Numerical	SquareRoot::getSquareRoot() const {
 	return _root;
 }
 
-Rational	Root::getWhole() const {
+Rational	SquareRoot::getWhole() const {
 	return _whole;
 }
 
-int			Root::getDegree() const {
+int			SquareRoot::getDegree() const {
 	return _degree;
 }
 
-Root::Type	Root::getType() const {
+SquareRoot::Type	SquareRoot::getType() const {
 	return _type;
 }
 
-Rational	Root::getDivisor() const {
+Rational	SquareRoot::getDivisor() const {
 	return _divisor;
 }
 
-void		Root::setType(Type t) {
+void		SquareRoot::setType(Type t) {
 	_type = t;
 }
 
-bool		sameTypeAndRoot(const Root &lhs, const Root &rhs) {
+bool		sameTypeAndSquareRoot(const SquareRoot &lhs, const SquareRoot &rhs) {
 	return (lhs.getType() == rhs.getType()
-	&& rhs.getRoot() == rhs.getRoot());
+	&& rhs.getSquareRoot() == rhs.getSquareRoot());
 }
 
-Root		&Root::operator+=(const Root &rhs) {
-	if (!sameTypeAndRoot(*this, rhs)) {
+SquareRoot		&SquareRoot::operator+=(const SquareRoot &rhs) {
+	if (!sameTypeAndSquareRoot(*this, rhs)) {
 		std::cout << "Cannot add roots of different types or roots, exiting now\n";
 	}
 	else {
@@ -98,7 +102,7 @@ Root		&Root::operator+=(const Root &rhs) {
 	return *this;
 }
 
-Root::operator std::string() const {
+SquareRoot::operator std::string() const {
 	std::string res = "";
 
 	if (_whole != 1) {
@@ -114,7 +118,7 @@ Root::operator std::string() const {
 	return res;
 }
 
-Root::operator long double() const {
+SquareRoot::operator long double() const {
 	if (_root == 1) {
 		return (long double)_whole;
 	}
@@ -124,13 +128,13 @@ Root::operator long double() const {
 	}
 }
 
-bool		Root::hasRealNumericSolution() const {
+bool		SquareRoot::hasRealNumericSolution() const {
 	/* If root is of no influence or any component is 
 	floating point, solution is numeric */
 	return ((_root == 1 || _root.isFloating()) && _type == Type::real);
 }
 
-Rational	Root::getNumericalSolution() const {
+Rational	SquareRoot::getNumericalSolution() const {
 	if (_root == 1) {
 		return _whole;
 	}
@@ -138,7 +142,7 @@ Rational	Root::getNumericalSolution() const {
 		return std::pow((long double)_root, 1.0f / _degree);
 	}
 	else {
-		// Root is integral
+		// SquareRoot is integral
 		long double res = _whole;
 
 		res *= std::pow((long double)_root, 1.0 / _degree);
@@ -146,8 +150,8 @@ Rational	Root::getNumericalSolution() const {
 	}
 }
 
-Root		&Root::operator-=(const Root &rhs) {
-	if (!sameTypeAndRoot(*this, rhs)) {
+SquareRoot		&SquareRoot::operator-=(const SquareRoot &rhs) {
+	if (!sameTypeAndSquareRoot(*this, rhs)) {
 		std::cout << "Cannot add roots of different types or roots, exiting now\n";
 	}
 	else {
@@ -156,31 +160,30 @@ Root		&Root::operator-=(const Root &rhs) {
 	return *this;
 }
 
-Root		&Root::operator*=(const Root &rhs) {
+SquareRoot		&SquareRoot::operator*=(const SquareRoot &rhs) {
 	// TODO: complex and real?
-	Rational 	nw_whole = getWhole() * rhs.getWhole();
-	Root 		nw_root = Root(getRoot() * rhs.getRoot());
-	
+	Rational 		nw_whole = getWhole() * rhs.getWhole();
+	SquareRoot 		nw_root = SquareRoot(getSquareRoot() * rhs.getSquareRoot());
+
 	nw_whole *= nw_root.getWhole();
 	_whole = nw_whole;
-	_root = nw_root.getRoot();
-	return *this;
-}
-
-Root		&Root::operator/=(const Root &rhs) {
-	// TODO: COMPLEX
-	/* Normalize the "fraction" (move it from denominator to nominator) 
-	by multiplying numerator and denominator by root part of denominator */
-	if (_degree == rhs._degree) {
-		rationalize(*this, rhs);
-	}
-	else {
-		
+	_root = nw_root.getSquareRoot();
+	if (rhs._type == SquareRoot::Type::imaginary) {
+		_type = SquareRoot::Type::imaginary;
 	}
 	return *this;
 }
 
-Root		&Root::operator/=(const Rational &rhs) {
+// SquareRoot		&SquareRoot::operator/=(const SquareRoot &rhs) {
+// 	// TODO: COMPLEX
+// 	/* Normalize the "fraction" (move it from denominator to nominator) 
+// 	by multiplying numerator and denominator by root part of denominator */
+
+// 	rationalize(*this, rhs);
+// 	return *this;
+// }
+
+SquareRoot		&SquareRoot::operator/=(const Rational &rhs) {
 	// TODO: COMPLEX
 	/* Normalize the "fraction" (move it from denominator to nominator) 
 	by multiplying numerator and denominator by root part of denominator */
@@ -188,34 +191,34 @@ Root		&Root::operator/=(const Rational &rhs) {
 	return *this;
 }
 
-Root		operator*(const Root &lhs, const Root &rhs) {
-	Root tmp = lhs;
+SquareRoot		operator*(const SquareRoot &lhs, const SquareRoot &rhs) {
+	SquareRoot tmp = lhs;
 	return (tmp *= rhs);
 }
 
-bool		operator==(const Root &lhs, const Root &rhs) {
-	return (lhs.getRoot() == rhs.getRoot()
+bool		operator==(const SquareRoot &lhs, const SquareRoot &rhs) {
+	return (lhs.getSquareRoot() == rhs.getSquareRoot()
 	&& lhs.getType() == rhs.getType()
 	&& lhs.getWhole() == rhs.getWhole()
 	&& lhs.getDegree() == rhs.getDegree());
 }
 
-bool		operator!=(const Root &lhs, const Root &rhs) {
+bool		operator!=(const SquareRoot &lhs, const SquareRoot &rhs) {
 	return !(lhs == rhs);
 }
 
-std::ostream    		&operator<<(std::ostream &os, const Root &x) {
+std::ostream    		&operator<<(std::ostream &os, const SquareRoot &x) {
 	os << (std::string)x;
 	return os;
 }
 
-bool		Root::isFloating() const {
+bool		SquareRoot::isFloating() const {
 	return (_root.isFloating() || _whole.isFloating()
 	|| _divisor.isFloating());
 }
 
-Root		operator/(const Root &lhs, const Rational &rhs) {
-	Root n = lhs;
+SquareRoot		operator/(const SquareRoot &lhs, const Rational &rhs) {
+	SquareRoot n = lhs;
 
 	n._whole /= rhs;
 	return n;

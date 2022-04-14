@@ -1,35 +1,50 @@
-#ifndef ROOT_H
-#define ROOT_H
+#ifndef SQUARE_ROOT_H
+#define SQUARE_ROOT_H
 #include <variant>
 #include <vector>
 #include <iostream>
 #include "Rational.h"
 #include "math_helpers.h"
 
-class	Root {
+class	SquareRoot {
 	public:
 		enum Type {
 			real,
 			imaginary
 		};
+		// template<typename T,
+		// 	typename std::enable_if_t<std::is_arithmetic<T>::value, bool> = true
+		// >
+		// SquareRoot(T d) : _root{d}, _whole{1}, _degree{2},
+		// _type{SquareRoot::Type::real}, _divisor{1} {
+		// 	if (_root < 0) {
+		// 		_type = Type::imaginary;
+		// 		_root = abs(_root);
+		// 	}
+		// 	simplifyNumerical(_root);
+		// }
 		template<typename T,
 			typename std::enable_if_t<std::is_arithmetic<T>::value, bool> = true
 		>
-		Root(long long w, T r, int degree = 2) : _root{r}, _whole{w}, _degree{degree}, 
-		_type{Root::Type::real}, _divisor{1} {
+		SquareRoot(long long w, T r) : _root{r}, _whole{w}, _degree{2}, 
+		_type{SquareRoot::Type::real}, _divisor{1} {
+			if (_root == 0) {
+				std::cout << "Root cannot be zero, setting it to 1.\n";
+				_root = 1;
+			}
 			if (_root < 0) {
 				_type = Type::imaginary;
 				_root = abs(_root);
 			}
 		}
-		Root(Rational n, int degree = 2);
-		Root	&operator=(const Root &rhs);
-		~Root() = default;
+		SquareRoot(Rational n);
+		SquareRoot	&operator=(const SquareRoot &rhs);
+		~SquareRoot() = default;
 
 		void		simplify(Rational &r);
 		void		simplifyFraction(Fraction &n);
 		void		simplifyNumerical(Numerical &n);
-		Numerical	getRoot() const;
+		Numerical	getSquareRoot() const;
 		Rational	getWhole() const;
 		int			getDegree() const;
 		Type		getType() const;
@@ -40,11 +55,11 @@ class	Root {
 		Rational	getNumericalSolution() const;
 		operator	std::string () const;
 		operator	long double () const;
-		Root		&operator+=(const Root &rhs);
-		Root		&operator-=(const Root &rhs);
-		Root		&operator*=(const Root &rhs);
-		Root		&operator/=(const Root &rhs);
-		Root		&operator/=(const Rational &rhs);
+		SquareRoot		&operator+=(const SquareRoot &rhs);
+		SquareRoot		&operator-=(const SquareRoot &rhs);
+		SquareRoot		&operator*=(const SquareRoot &rhs);
+		// SquareRoot		&operator/=(const SquareRoot &rhs);
+		SquareRoot		&operator/=(const Rational &rhs);
 
 	private:
 		Numerical				_root;
@@ -53,7 +68,7 @@ class	Root {
 		Type					_type;
 		Rational				_divisor;
 	
-	friend std::ostream    		&operator<<(std::ostream &os, const Root &x);
+	friend std::ostream    		&operator<<(std::ostream &os, const SquareRoot &x);
 	template<typename T, 
 			typename std::enable_if<
             std::is_floating_point<T>{}, bool>::type = true
@@ -71,13 +86,12 @@ class	Root {
 		We are looking for the largest perfect square f1 */
 		long long	whole = 1;
 		long long 	radical = 1;
+
 		auto factors = getPrimeFactors(n);
-		for(auto i = factors.begin(); i != factors.end(); ++i) {
-			std::cout << std::get<0>(*i) << " " << std::get<1>(*i) << "\n";
-		}
 		for(auto i = factors.begin(); i != factors.end(); ++i) {
 			auto factor = std::get<0>(*i);
 			auto degr = std::get<1>(*i);
+
 			while (degr >= degree) {
 				degr -= degree;
 				whole *= factor;
@@ -89,16 +103,16 @@ class	Root {
 		return std::make_pair(whole, radical);
 	}
 
-	// friend void				simplify_root(Root &r, Numerical n, int degree);
-	// friend void				simplify_root(Root &r, Fraction n, int degree);
-	friend void				rationalize(Root &numer, const Root &denom);
-	friend Root				operator/(const Root &lhs, const Rational &rhs);
+	// friend void				simplify_root(SquareRoot &r, Numerical n, int degree);
+	// friend void				simplify_root(SquareRoot &r, Fraction n, int degree);
+	friend void				rationalize(SquareRoot &numer, const SquareRoot &denom);
+	friend SquareRoot				operator/(const SquareRoot &lhs, const Rational &rhs);
 	friend std::ostream    	&operator<<(std::ostream &os, const numerical &x);
 };
 
-Root		operator*(const Root &lhs, const Root &rhs);
+SquareRoot		operator*(const SquareRoot &lhs, const SquareRoot &rhs);
 
-bool		sameTypeAndRoot(const Root &lhs, const Root &rhs);
-bool		operator==(const Root &lhs, const Root &rhs);
-bool		operator!=(const Root &lhs, const Root &rhs);
+bool		sameTypeAndSquareRoot(const SquareRoot &lhs, const SquareRoot &rhs);
+bool		operator==(const SquareRoot &lhs, const SquareRoot &rhs);
+bool		operator!=(const SquareRoot &lhs, const SquareRoot &rhs);
 #endif

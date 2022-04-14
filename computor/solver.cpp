@@ -1,5 +1,5 @@
 #include "computor.h"
-#include "Root.h"
+#include "SquareRoot.h"
 #include "Solution.h"
 #include <iomanip>
 
@@ -47,9 +47,9 @@ void		solve_second_degree(Equation &eq) {
 	Rational discriminant = (b * b) - (4 * a * c);
 	Rational divisor = (2 * a);
 	Rational left = -b / divisor;
-	Root right = Root(discriminant) / divisor;
+	SquareRoot right = SquareRoot(discriminant) / divisor;
 
-	std::cout << "Discriminant: " << discriminant << "Root discriminant: " << Root(discriminant) <<"\nLeft: " << left << "\nRight: " << right << "\n";
+	std::cout << "Discriminant: " << discriminant << "SquareRoot discriminant: " << SquareRoot(discriminant) <<"\nLeft: " << left << "\nRight: " << right << "\n";
 	if (discriminant != 0) {
 		if (discriminant > 0) {
 			std::cout << "Discriminant is strictly positive.\n";
