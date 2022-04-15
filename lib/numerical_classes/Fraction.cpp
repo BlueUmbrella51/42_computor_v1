@@ -2,9 +2,7 @@
 #include <numeric>
 #include <iostream>
 #include <tuple>
-// #include <assert.h>
 #include <limits.h>
-// #include "math_helpers.h"
 
 Fraction::Fraction():
 _w{0}, _n{0}, _d{1} {
@@ -26,11 +24,6 @@ Fraction::Fraction(long long n, long long d):
 	else
 		simplify();
 }
-
-// Fraction::Fraction(SquareRoot n, long long d):
-// _w{0}, _n{n}, _d{d} {
-
-// }
 
 Fraction::Fraction(long long w, long long n, long long d) :
 _w{w}, _n{n}, _d{d} {
@@ -77,16 +70,10 @@ Fraction 	Fraction::operator-() const {
 	// If relevant part is long long min, we can't make it positive
 	Fraction tmp = *this;
 	if (tmp._w != 0) {
-		if (tmp._w == LLONG_MIN) {
-			throw std::overflow_error("Cannot make minimum value of long long positive without causing overflow.\n");
-		}
-		tmp._w *= -1;
+		tmp._w = safeMultiplication(tmp._w, -1);
 	}
 	else {
-		if (tmp._w == LLONG_MIN) {
-			throw std::overflow_error("Cannot make minimum value of long long positive without causing overflow.\n");
-		}
-		tmp._n *= -1;
+		tmp._n = safeMultiplication(tmp._n, -1);
 	}
 	return tmp;
 }
@@ -105,11 +92,6 @@ bool	operator==(const Fraction &lhs, const Fraction &rhs) {
 	(lhs.getNum() * rhs.getDenom()) == (rhs.getNum() * lhs.getDenom()));
 }
 
-// bool		Fraction::operator==(const Fraction &rhs) const {
-// 	/* Returns true for equivalence, so 1(1/2) == 1(3/6) returns true */
-// 	return (_w == rhs._w && (_n * rhs._d) == (rhs._n * _d));
-// }
-
 bool	operator!=(const Fraction &lhs, const Fraction &rhs) {
 	return !(lhs == rhs);
 }
@@ -118,7 +100,7 @@ bool		operator>(const Fraction &lhs, const Fraction &rhs) {
 	if (lhs.getWhole() > rhs.getWhole()) { return true; }
 	if (lhs.getWhole() < rhs.getWhole()) { return false; }
 	auto [factor_left, factor_right] = getDenomFactors(lhs.getDenom(), rhs.getDenom());
-	return (lhs.getNum() * factor_left > rhs.getNum() * factor_right);
+	return ((lhs.getNum() * factor_left) > (rhs.getNum() * factor_right));
 }
 
 bool		operator>=(const Fraction &lhs, const Fraction &rhs) {
@@ -126,34 +108,12 @@ bool		operator>=(const Fraction &lhs, const Fraction &rhs) {
 }
 
 bool		operator<(const Fraction &lhs, const Fraction &rhs) {
-	if (lhs.getWhole() < rhs.getWhole()) { return true; }
-	if (lhs.getWhole() > rhs.getWhole()) { return false; }
-	auto [factor_left, factor_right] = getDenomFactors(lhs.getDenom(), rhs.getDenom());
-	return (lhs.getNum() * factor_left < rhs.getNum() * factor_right);
+	return !(lhs >= rhs);
 }
 
 bool		operator<=(const Fraction &lhs, const Fraction &rhs) {
 	return (lhs < rhs || lhs == rhs);
 }
-
-// bool		Fraction::operator>(const Fraction &rhs) const {
-// 	if (_w > rhs._w) { return true; }
-// 	if (_w < rhs._w) {return false; }
-// 	return ((_n * rhs._d) > (rhs._n * _d));
-// }
-
-// bool		Fraction::operator>=(const Fraction &rhs) const {
-// 	return (*this > rhs || *this == rhs);
-// }
-
-// bool		Fraction::operator<(const Fraction &rhs) const {
-// 	if (_w < rhs._w) { return true; }
-// 	else { return ((_n * rhs._d) < (rhs._n * _d)); }
-// }
-
-// bool		Fraction::operator<=(const Fraction &rhs) const {
-// 	return (*this < rhs || *this == rhs);
-// }
 
 Fraction	&Fraction::operator+=(const Fraction &rhs){
 	// a += b
@@ -170,23 +130,12 @@ Fraction	&Fraction::operator+=(const Fraction &rhs){
 	}
 	else {
 		/* Both a and b >= 0 */
-		// Calculate new whole part
-		/* Prevent overflow */
-		if(additionExceedsLimits(_w, rhs._w)) {
-			throw std::overflow_error("Cannot perform addition without causing overflow.\n");
-		}
-		long long nw_w = _w + rhs._w;
+		long long nw_w = safeAddition(_w, rhs._w);//_w + rhs._w;
 		
 		// Calculate new fraction
 		auto [lcm, factor_left, factor_right] = getDenomFactorsLcm(_d, rhs._d);
 
-		/* Prevent multiplication overflow (factors and numerators are guaranteed to be positive) */
-		if (multiplicationExceedsLimits(_n, factor_left)
-		|| multiplicationExceedsLimits(rhs._n, factor_right)
-		|| additionExceedsLimits((_n * factor_left), (rhs._n * factor_right))) {
-			throw std::overflow_error("Cannot perform addition without causing overflow.\n");
-		}
-		long long nw_n = (_n * factor_left) + (rhs._n * factor_right);
+		long long nw_n = safeAddition(safeMultiplication(_n, factor_left), safeMultiplication(rhs._n, factor_right));
 		long long nw_d = lcm;
 
 		_w = nw_w;
@@ -216,32 +165,18 @@ Fraction	&Fraction::operator-=(const Fraction &rhs) {
 	else {
 		/* Both a and b >= 0 AND b is guaranteed to be >= a*/
 		// Calculate new whole part
-		if (subtractionExceedsLimits(_w, rhs._w)) {
-			throw std::overflow_error("Cannot perform subtraction without causing overflow.\n");
-		}
-		long long nw_w = _w - rhs._w;
+		long long nw_w = safeSubtraction(_w, rhs._w);//_w - rhs._w;
 		// Calculate new fraction
 		auto [lcm, factor_left, factor_right] = getDenomFactorsLcm(_d, rhs._d);
 
-		if(multiplicationExceedsLimits(_n, factor_left) 
-		|| multiplicationExceedsLimits(rhs._n, factor_right)
-		|| subtractionExceedsLimits((_n * factor_left), (rhs._n * factor_right))) {
-			throw std::overflow_error("Cannot perform subtraction without causing overflow.\n");
-		}
-		long long nw_n = (_n * factor_left) - (rhs._n * factor_right);
+		long long nw_n = safeSubtraction(safeMultiplication(_n, factor_left), safeMultiplication(rhs._n, factor_right));
 		long long nw_d = lcm;
 		if (nw_n < 0 && nw_w > 0) {
 			/* If we end up with something like -3/7 we have to adjust the 
 			whole part if it exists: we take one away from whole
 			then add 1 - new fraction to it */
-			if (nw_n == LLONG_MIN) {
-				throw std::overflow_error("Cannot perform subtraction without causing overflow.\n");
-			}
-			nw_w -= 1;
-			if (additionExceedsLimits(nw_d, nw_n)) {
-				throw std::overflow_error("Cannot perform subtraction without causing overflow.\n");
-			}
-			nw_n = nw_d + nw_n; // + because nw_n is < 0
+			nw_w = safeSubtraction(nw_w, 1);
+			nw_n = safeAddition(nw_d, nw_n); // + because nw_n is < 0
 		}
 		_w = nw_w;
 		_n = nw_n;
@@ -266,32 +201,16 @@ Fraction	&Fraction::operator*=(const Fraction &rhs) {
 	}
 	else {
 		// Multiply lhs by whole part of rhs
-		// Fraction 	lhs_times_rhs_w = *this * rhs._w;
-		if (multiplicationExceedsLimits(rhs._w, _w) || multiplicationExceedsLimits(rhs._w, _n)) {
-			throw std::overflow_error("Cannot perform multiplication without causing overflow.\n");
-		}
-		Fraction lhs_times_rhs_w = Fraction(_w * rhs._w, _n * rhs._w, _d);
-		lhs_times_rhs_w.simplify();
+		Fraction 	lhs_times_rhs_w = Fraction(safeMultiplication(_w, rhs._w), safeMultiplication(_n, rhs._w), _d);
 
 		// Multiply whole part of lhs by fractional part of rhs
-		if (multiplicationExceedsLimits(_w, rhs._n)) {
-			throw std::overflow_error("Cannot perform multiplication without causing overflow.\n");
-		}
-		long long 	nw_w = (_w * rhs._n) / rhs._d;
+		long long 	nw_w = safeMultiplication(_w, rhs._n)/ rhs._d;
 		
-		if (multiplicationExceedsLimits(nw_w, rhs._d)
-		|| subtractionExceedsLimits((_w * rhs._n), (nw_w * rhs._d))) {
-			throw std::overflow_error("Cannot perform multiplication without causing overflow.\n");
-		}
-		long long 	rest_n = (_w * rhs._n) - (nw_w * rhs._d);
-		Fraction lhs_w_times_rhs_fract = Fraction(nw_w, rest_n, rhs._d);
+		long long 	rest_n = safeSubtraction(safeMultiplication(_w, rhs._n), safeMultiplication(nw_w, rhs._d));
+		Fraction 	lhs_w_times_rhs_fract = Fraction(nw_w, rest_n, rhs._d);
 
 		// Multiply fractional part of lhs by fractional part of rhs
-		if (multiplicationExceedsLimits(_n, rhs._n)
-		|| multiplicationExceedsLimits(_d, rhs._d)) {
-			throw std::overflow_error("Cannot perform multiplication without causing overflow.\n");
-		}
-		Fraction 	lhs_fract_times_rhs_fract = Fraction(_n * rhs._n, _d * rhs._d);
+		Fraction 	lhs_fract_times_rhs_fract = Fraction(safeMultiplication(_n, rhs._n), safeMultiplication(_d, rhs._d));
 		
 		// Add all results together
 		*this = lhs_times_rhs_w + lhs_w_times_rhs_fract + lhs_fract_times_rhs_fract;
@@ -336,39 +255,39 @@ Fraction	&Fraction::operator/=(const Fraction &rhs) {
 std::tuple<long long, long long, long long>	getDenomFactorsLcm(long long d_left, long long d_right) {
 	/* LCM is always positive */
 	long long lcm = std::lcm(d_left, d_right);
-	long long factor_left = lcm / d_left;
-	long long factor_right = lcm / d_right;
+	long long factor_left = safeDivision(lcm, d_left);
+	long long factor_right = safeDivision(lcm, d_right);
 
 	return std::make_tuple(lcm, factor_left, factor_right); 
 }
 
 std::tuple<long long, long long>		getDenomFactors(long long d_left, long long d_right) {
 	long long lcm = std::lcm(d_left, d_right);
-	long long factor_left = lcm / d_left;
-	long long factor_right = lcm / d_right;
+	long long factor_left = safeDivision(lcm, d_left);
+	long long factor_right = safeDivision(lcm, d_right);
 
 	return std::make_tuple(factor_left, factor_right);
 }
 
 void			Fraction::combineWholeNumerator() {
-	if (multiplicationExceedsLimits(_w, _d) 
-	|| additionExceedsLimits(_w * _d, _n)) {
-		throw (std::overflow_error("Cannot combine numerator and whole part without causing overflow.\n"));
-	}
+	// if (multiplicationExceedsLimits(_w, _d) 
+	// || additionExceedsLimits(_w * _d, _n)) {
+	// 	throw (std::overflow_error("Cannot combine numerator and whole part without causing overflow.\n"));
+	// }
 	int sign = _w < 0 ? -1 : 1;
 
-	_n += abs(_w) * _d;
-	_n *= sign;
+	_n = safeAddition(_n, safeMultiplication(safeAbs(_w), _d));
+	_n = safeMultiplication(_n, sign);
 	_w = 0;
 }
 
 Fraction		abs(const Fraction &rhs) {
-	if (rhs._n == LLONG_MIN || rhs._w == LLONG_MIN) {
-		throw std::overflow_error("Cannot take absolute value of minimum value of long long without causing overflow\n");
-	}
+	// if (rhs._n == LLONG_MIN || rhs._w == LLONG_MIN) {
+	// 	throw std::overflow_error("Cannot take absolute value of minimum value of long long without causing overflow\n");
+	// }
 	Fraction tmp = rhs;
-	tmp._n = llabs(tmp._n);
-	tmp._w = llabs(tmp._w);
+	tmp._n = safeAbs(tmp._n);
+	tmp._w = safeAbs(tmp._w);
 	return (tmp);
 }
 
@@ -401,7 +320,7 @@ Fraction::operator long double() const {
 }
 
 Fraction::operator long long() const {
-	return ((long long)(_n / _d));
+	return ((long long)safeDivision(_n, _d));
 }
 
 Fraction::operator std::string() const {
@@ -429,11 +348,13 @@ void		Fraction::fixSigns() {
 /* Fix signs if appropriate */
 	if (_d < 0 && _n < 0) {
 		// if both numerator and denominator are negative, factor out negative sign
-		if (_d == LLONG_MIN || _n == LLONG_MIN) {
-			throw std::overflow_error("Cannot make minimum value of long long positive without causing overflow.\n");
-		}
-		_d = llabs(_d);
-		_n = llabs(_n);
+		// if (_d == LLONG_MIN || _n == LLONG_MIN) {
+		// 	throw std::overflow_error("Cannot make " + (std::string)*this + " positive without causing overflow.\n");
+		// }
+		// _d = llabs(_d);
+		// _n = llabs(_n);
+		_d = safeAbs(_d);
+		_n = safeAbs(_n);
 	}
 	if (_d < 0 && _n >= 0) {
 		// Move negative sign to numerator if appropriate
@@ -453,46 +374,30 @@ void		Fraction::simplify() {
 	fixSigns();
 
 	/* Get any whole parts from fraction */
-	if (_n == LLONG_MIN && _d == -1) {
-		throw std::overflow_error("Cannot make minimum value of long long positive without causing overflow.\n");
-	}
-	long long wholes  = _n / _d;
+	long long wholes  = safeDivision(_n, _d);
 
 	factorGcd(_n, _d);
 	/* Move leftover wholes from fraction to _w	*/
 	if (wholes != 0) {
 		if (_w < 0 && wholes > 0) {
 			/* If wholes > 0, so is _n */
-			if (subtractionExceedsLimits(_w, wholes)) {
-				throw std::overflow_error("Cannot perform subtraction without causing overflow.\n");
-			}
-			_w -= wholes;
+			_w -= wholes; // Can't overflow because different signs
 		}
 		else {
-			if (additionExceedsLimits(_w, wholes)) {
-				throw std::overflow_error("Cannot perform addition without causing overflow.\n");
-			}
-			_w += wholes;
+			_w = safeAddition(_w, wholes);
 		}
-		if (multiplicationExceedsLimits(_d, wholes)
-		|| subtractionExceedsLimits(_n, wholes * _d)) {
-			throw std::overflow_error("Cannot perform addition without causing overflow.\n");
-		}
-		_n -= wholes * _d;
+		_n = safeSubtraction(_n, safeMultiplication(wholes, _d));
 	}
 	/* If _w is a positive number and _n is a negative number,
 	subtract it from the whole part and adjust _n */
 	if (_w > 0 && _n < 0) {
 		_w -= 1;
-		_n = _d + _n;
+		_n = safeAddition(_d, _n);
 	}
 	if (_n < 0 && _w != 0) {
 		/* We like to keep the minus on the fractional part implicit once 
 		Fraction has been created */
-		if (_n == LLONG_MIN) {
-			throw std::overflow_error("Cannot convert long long min value to positive without causing overflow.\n");
-		}
-		_n = llabs(_n);
+		_n = safeAbs(_n);
 	}
 }
 
@@ -500,7 +405,7 @@ Fraction		Fraction::invert() const {
 	Fraction 	n = *this;
 	long long 	nw_d;
 
-	nw_d = n._n + (n._w * n._d);
+	nw_d = safeAddition(n._n, safeMultiplication(n._w, n._d));
 	n._w = 0;
 	n._n = n._d;
 	n._d = nw_d;
@@ -547,13 +452,9 @@ Fraction		operator*(const Fraction &lhs, const Fraction &rhs) {
 }
 
 Fraction		operator/(const Fraction &lhs, const Fraction &rhs) {
-	try {
-		Fraction nw = lhs;
-		nw /= rhs;
-		return nw;
-	}
-	catch (std::overflow_error &e) {throw e;}
-	catch (std::invalid_argument &e) {throw e;}
+	Fraction nw = lhs;
+	nw /= rhs;
+	return nw;
 }
 
 std::ostream	&operator<<(std::ostream &os, const Fraction &r) {

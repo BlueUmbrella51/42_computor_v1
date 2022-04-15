@@ -71,12 +71,7 @@ Equation::operator std::string() const {
 Equation				&Equation::operator-=(const Token &t) {
 	Token tmp = t;
 
-	try {
-		tmp.setCoeff(-tmp.getCoeff());
-	}
-	catch (std::overflow_error &e) {
-		throw e;
-	}
+	tmp.setCoeff(-tmp.getCoeff());
 	_tokensLeft.push_back(tmp);
 	_tokensRight.push_back(tmp);
 	sortTokens(_tokensLeft);
@@ -91,12 +86,7 @@ Equation				&Equation::operator-=(const Token &t) {
 Equation				&Equation::operator+=(const Token &t) {
 	Token tmp = t;
 
-	try {
-		tmp.setCoeff(-tmp.getCoeff());
-	}
-	catch (std::overflow_error &e) {
-		throw e;
-	}
+	tmp.setCoeff(-tmp.getCoeff());
 	_tokensLeft.push_back(tmp);
 	_tokensRight.push_back(tmp);
 	sortTokens(_tokensLeft);
@@ -160,13 +150,8 @@ void	Equation::combineTokensByDegree(std::list<Token> &lst) {
 	++it;
 	while (it != lst.end()) {
 		if ((*it).getDegree() == (*curr).getDegree()) {
-			try {
-				(*curr).setCoeff((*curr).getCoeff() + (*it).getCoeff());
-				it = lst.erase(it);
-			}
-			catch (std::overflow_error &e) {
-				throw e;
-			}
+			(*curr).setCoeff((*curr).getCoeff() + (*it).getCoeff());
+			it = lst.erase(it);
 		}
 		else {
 			curr = it;
@@ -176,18 +161,15 @@ void	Equation::combineTokensByDegree(std::list<Token> &lst) {
 }
 
 void	Equation::moveTokensLeft() {
-	try {
-		while (!_tokensRight.empty()) {
-			std::list<Token>::iterator iter = _tokensRight.begin();
-			if ((*iter).getCoeff() <= 0) {
-				*this += *iter;
-			}
-			else {
-				*this -= *iter;
-			}
+	while (!_tokensRight.empty()) {
+		std::list<Token>::iterator iter = _tokensRight.begin();
+		if ((*iter).getCoeff() <= 0) {
+			*this += *iter;
+		}
+		else {
+			*this -= *iter;
 		}
 	}
-	catch (std::overflow_error &e) { throw (e); }
 }
 
 void		Equation::findHighestDegreeLeft() {
@@ -232,10 +214,7 @@ void	Equation::factor(std::list<Token> &lst) {
 	}
 	it = lst.begin();
 	for (std::list<Token>::iterator i = lst.begin(); i != lst.end(); ++i) {
-		try {
-			(*i).setCoeff((*i).getCoeff() / gcd);
-		}
-		catch (std::overflow_error &e) { throw e; }
+		(*i).setCoeff((*i).getCoeff() / gcd);
 	}
 }
 
@@ -243,19 +222,16 @@ void	Equation::simplify() {
 	/* 	Moves all tokens to left of equation
 		Combines any tokens of same degree
 	 */
-	try {
-		combineTokensByDegree(_tokensRight);
-		moveTokensLeft();
-		sortTokens(_tokensLeft);
-		combineTokensByDegree(_tokensLeft);
-		removeZeroCoeff(_tokensLeft);
-		findHighestDegreeLeft();
-		/* If first token in sorted equation is negative, factor out that -1 */
-		if (!_tokensLeft.empty() && (*_tokensLeft.begin()).getCoeff() < 0) {
-			*this /= -1;
-		}
+	combineTokensByDegree(_tokensRight);
+	moveTokensLeft();
+	sortTokens(_tokensLeft);
+	combineTokensByDegree(_tokensLeft);
+	removeZeroCoeff(_tokensLeft);
+	findHighestDegreeLeft();
+	/* If first token in sorted equation is negative, factor out that -1 */
+	if (!_tokensLeft.empty() && (*_tokensLeft.begin()).getCoeff() < 0) {
+		*this /= -1;
 	}
-	catch (std::overflow_error &e) { throw e; }
 }
 
 long long		string_to_ll(std::string &str, size_t *i) {
@@ -283,26 +259,18 @@ Fraction		rational_string_to_rational(std::string &str) {
 	long long 		numerator, denominator, whole;
 	size_t			i = 0;
 
-	try {
-		if (str.find('(') != std::string::npos) {
-			whole = string_to_ll(str, &i);
-			++i; // skip '('
-		}
-		else { whole = 0; }
-		numerator = string_to_ll(str, &i);
-		++i; // skip '/'
-		denominator = string_to_ll(str, &i);
-		if (denominator == 0) {
-			throw std::invalid_argument("Denominator of fraction cannot be zero.");
-		}
-		return Fraction(whole, numerator, denominator);
+	if (str.find('(') != std::string::npos) {
+		whole = string_to_ll(str, &i);
+		++i; // skip '('
 	}
-	catch (std::overflow_error &e) {
-		throw e;
+	else { whole = 0; }
+	numerator = string_to_ll(str, &i);
+	++i; // skip '/'
+	denominator = string_to_ll(str, &i);
+	if (denominator == 0) {
+		throw std::invalid_argument("Denominator of fraction cannot be zero.");
 	}
-	catch (std::invalid_argument &e) {
-		throw e;
-	}
+	return Fraction(whole, numerator, denominator);
 }
 
 Fraction		decimal_string_to_rational(std::string &str) {
@@ -310,25 +278,17 @@ Fraction		decimal_string_to_rational(std::string &str) {
 	size_t		prev = 0;
 	long long 	whole, denominator, numerator;
 
-	try {
-		whole = string_to_ll(str, &i);
-		/* skip '.' */
-		++i;
-		prev = i;
-		numerator = string_to_ll(str, &i);
-		if (str[0] == '-' && whole == 0) {
-			numerator = -numerator;
-		}
-		denominator = int_pow(10, i - prev);
-		/* Combine whole part and numerator */
-		return Fraction(whole, numerator, denominator);
+	whole = string_to_ll(str, &i);
+	/* skip '.' */
+	++i;
+	prev = i;
+	numerator = string_to_ll(str, &i);
+	if (str[0] == '-' && whole == 0) {
+		numerator = -numerator;
 	}
-	catch (std::overflow_error &e) {
-		throw e;
-	}
-	catch (std::invalid_argument &e) {
-		throw e;
-	}
+	denominator = int_pow(10, i - prev);
+	/* Combine whole part and numerator */
+	return Fraction(whole, numerator, denominator);
 }
 
 long double	decimal_string_to_double(std::string &str) {
@@ -342,12 +302,8 @@ long double	decimal_string_to_double(std::string &str) {
 
 Rational		get_coefficient(std::string &str, ParseToken::coeffTypes type) {
 	if (type == ParseToken::coeffTypes::rational) {
-		try {
-			Fraction r = rational_string_to_rational(str);
-			return Rational(r);
-		}
-		catch (std::overflow_error &e) { throw e; }
-		catch (std::invalid_argument &e) { throw e; }
+		Fraction r = rational_string_to_rational(str);
+		return Rational(r);
 	}
 	else if (type == ParseToken::coeffTypes::decimal) {
 		try {
@@ -360,16 +316,11 @@ Rational		get_coefficient(std::string &str, ParseToken::coeffTypes type) {
 				return Rational(n);
 			}
 			catch (std::overflow_error &e) { throw e; }
-			catch (std::invalid_argument &e) { throw e; }
 		}
 	}
 	else {
-		try {
-			long long n = string_to_ll(str);
-			return Rational(Fraction(n));
-		}
-		catch (std::overflow_error &e) { throw (e); }
-		catch (std::invalid_argument &e) { throw e; }
+		long long n = string_to_ll(str);
+		return Rational(Fraction(n));
 	}
 }
 
@@ -396,40 +347,28 @@ long int		get_degree(std::string &str) {
 }
 
 Token		parse_token(ParseToken &pt) {
-	try {
-		ParseToken::coeffTypes		type = pt.getType();
-		std::string					coeff_str = pt.getCoeff();
-		std::optional<std::string>	degree_str = pt.getDegree();
-		Rational			 		coeff = get_coefficient(coeff_str, type);
-		/* If no discriminant was given we assume one with power 0, which
-		comes down to coefficient * 1. */
-		long int					degree = 0;
-		if (degree_str) {
-			degree = get_degree(degree_str.value());
-		}
-		return Token(coeff, degree);
+	ParseToken::coeffTypes		type = pt.getType();
+	std::string					coeff_str = pt.getCoeff();
+	std::optional<std::string>	degree_str = pt.getDegree();
+	Rational			 		coeff = get_coefficient(coeff_str, type);
+	/* If no discriminant was given we assume one with power 0, which
+	comes down to coefficient * 1. */
+	long int					degree = 0;
+	if (degree_str) {
+		degree = get_degree(degree_str.value());
 	}
-	catch (std::invalid_argument &e) { throw (e); }
-	catch (std::overflow_error &e) { throw (e); }
+	return Token(coeff, degree);
 }
 
 Equation		parse_equation(std::string &input) {
 	Equation token_info = Equation();
-	try {
-		auto [left, right] = getParsingTokens(input);
-		for (std::vector<ParseToken>::iterator it = left.begin(); it != left.end(); ++it) {
-			token_info.add(parse_token(*it));
-		}
-		token_info.setSide(Equation::operationSide::right);
-		for (std::vector<ParseToken>::iterator it = right.begin(); it != right.end(); ++it) {
-			token_info.add(parse_token(*it));
-		}
+	auto [left, right] = getParsingTokens(input);
+	for (std::vector<ParseToken>::iterator it = left.begin(); it != left.end(); ++it) {
+		token_info.add(parse_token(*it));
 	}
-	catch (std::invalid_argument &e) {
-		throw e;
-	}
-	catch (std::overflow_error &e) {
-		throw e;
+	token_info.setSide(Equation::operationSide::right);
+	for (std::vector<ParseToken>::iterator it = right.begin(); it != right.end(); ++it) {
+		token_info.add(parse_token(*it));
 	}
 	return token_info;
 }

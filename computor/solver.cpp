@@ -1,7 +1,6 @@
 #include "computor.h"
 #include "SquareRoot.h"
 #include "Solution.h"
-#include <iomanip>
 
 void		solve_first_degree(Equation &eq) {
 	/* Form: 2X = 4. 
@@ -47,8 +46,10 @@ void		solve_second_degree(Equation &eq) {
 	Rational discriminant = (b * b) - (4 * a * c);
 	Rational divisor = (2 * a);
 	Rational left = -b / divisor;
+	std::cout << "Left: " << left << "\n";
 	SquareRoot right = SquareRoot(discriminant) / divisor;
 
+	std::cout << "Right: " << right << "\n";
 	std::cout << "Discriminant: " << discriminant << "SquareRoot discriminant: " << SquareRoot(discriminant) <<"\nLeft: " << left << "\nRight: " << right << "\n";
 	if (discriminant != 0) {
 		if (discriminant > 0) {

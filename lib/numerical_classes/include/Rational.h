@@ -4,7 +4,6 @@
 #include "math_helpers.h"
 #include "Fraction.h"
 #include "Numerical.h"
-// #include "Radical.h"
 
 typedef	std::variant<Numerical, Fraction> real;
 

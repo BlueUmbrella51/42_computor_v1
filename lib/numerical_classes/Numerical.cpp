@@ -51,12 +51,19 @@ Numerical::operator		std::string() const {
 
 Numerical		Numerical::operator-() const {
 	return std::visit([](auto n) {
+		if (multiplicationExceedsLimits(n, -1)) {
+			throw std::overflow_error("Cannot perform -" + std::to_string(n) + " without causing overflow.\n");
+		}
 		return Numerical(-n);
 	}, getVal());
 }
 
 Numerical		&Numerical::operator+=(const Numerical &rhs) {
 	_val = std::visit([](auto &n1, auto &n2) {
+		if (additionExceedsLimits(n1, n2)) {
+			throw std::overflow_error("Cannot add " + std::to_string(n1) + 
+			" and " + std::to_string(n2) + " without causing overflow.\n");
+		}
 		return numerical((n1 + n2));
 	}, _val, rhs._val);
 	return *this;
@@ -64,6 +71,10 @@ Numerical		&Numerical::operator+=(const Numerical &rhs) {
 
 Numerical		&Numerical::operator-=(const Numerical &rhs) {
 	_val = std::visit([](auto &n1, auto &n2) {
+		if (subtractionExceedsLimits(n1, n2)) {
+			throw std::overflow_error("Cannot subtract " + std::to_string(n1) + 
+			" and " + std::to_string(n2) + " without causing overflow.\n");
+		}
 		return numerical((n1 - n2));
 	}, _val, rhs._val);
 	return *this;
@@ -71,6 +82,10 @@ Numerical		&Numerical::operator-=(const Numerical &rhs) {
 
 Numerical		&Numerical::operator*=(const Numerical &rhs) {
 	_val = std::visit([](auto &n1, auto &n2) {
+		if (multiplicationExceedsLimits(n1, n2)) {
+			throw std::overflow_error("Cannot multiply " + std::to_string(n1) + 
+			" and " + std::to_string(n2) + " without causing overflow.\n");
+		}
 		return numerical((n1 * n2));
 	}, _val, rhs._val);
 	return *this;
@@ -78,6 +93,10 @@ Numerical		&Numerical::operator*=(const Numerical &rhs) {
 
 Numerical		&Numerical::operator/=(const Numerical &rhs) {
 	_val = std::visit([](auto &n1, auto &n2) {
+		if (divisionExceedsLimits(n1, n2)) {
+			throw std::overflow_error("Cannot divide " + std::to_string(n1) + 
+			" and " + std::to_string(n2) + " without causing overflow.\n");
+		}
 		return numerical((n1 / n2));
 	}, _val, rhs._val);
 	return *this;
@@ -119,27 +138,35 @@ bool		operator>=(const Numerical &lhs, const Numerical &rhs) {
 }
 
 Numerical	operator+(const Numerical &lhs, const Numerical &rhs) {
-	return std::visit([](auto n1, auto n2) {
-		return Numerical((n1 + n2));
-	}, lhs.getVal(), rhs.getVal());
+	Numerical tmp = lhs;
+	return tmp += rhs;
+	// return std::visit([](auto n1, auto n2) {
+	// 	return Numerical((n1 + n2));
+	// }, lhs.getVal(), rhs.getVal());
 }
 
 Numerical	operator-(const Numerical &lhs, const Numerical &rhs) {
-	return std::visit([](auto n1, auto n2) {
-		return Numerical((n1 - n2));
-	}, lhs.getVal(), rhs.getVal());
+	Numerical tmp = lhs;
+	return tmp -= rhs;
+	// return std::visit([](auto n1, auto n2) {
+	// 	return Numerical((n1 - n2));
+	// }, lhs.getVal(), rhs.getVal());
 }
 
 Numerical	operator*(const Numerical &lhs, const Numerical &rhs) {
-	return std::visit([](auto n1, auto n2) {
-		return Numerical((n1 * n2));
-	}, lhs.getVal(), rhs.getVal());
+	Numerical tmp = lhs;
+	return tmp *= rhs;
+	// return std::visit([](auto n1, auto n2) {
+	// 	return Numerical((n1 * n2));
+	// }, lhs.getVal(), rhs.getVal());
 }
 
 Numerical	operator/(const Numerical &lhs, const Numerical &rhs) {
-	return std::visit([](auto n1, auto n2) {
-		return Numerical((n1 / n2));
-	}, lhs.getVal(), rhs.getVal());
+	Numerical tmp = lhs;
+	return tmp /= rhs;
+	// return std::visit([](auto n1, auto n2) {
+	// 	return Numerical((n1 / n2));
+	// }, lhs.getVal(), rhs.getVal());
 }
 
 

@@ -5,7 +5,8 @@
 void		rationalize(SquareRoot &numer, const SquareRoot &denom) {
 	/* Normalize the "fraction" (move it from denominator to nominator) 
 	by multiplying numerator and denominator by root part of denominator */
-	SquareRoot denomSquareRoot = SquareRoot(denom._root);
+	SquareRoot denomSquareRoot = denom;
+	denomSquareRoot._whole = 1;
 
 	numer *= denomSquareRoot;
 	

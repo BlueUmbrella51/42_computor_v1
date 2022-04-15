@@ -248,13 +248,8 @@ template <typename T,
 			typename std::enable_if_t<std::is_floating_point<T>::value, bool> = true
 		>
 Fraction        doubleToFraction(T n, long double accuracy = 0.0) {
-    try {
-        auto [ whole, numerator, denominator ] = doubleToRatio(n, accuracy);
-		return Fraction(whole, numerator, denominator);
-    }
-    catch (std::overflow_error &e) {
-        throw;
-    }
+	auto [ whole, numerator, denominator ] = doubleToRatio(n, accuracy);
+	return Fraction(whole, numerator, denominator);
 }
 
 /*  GET GCD INT */

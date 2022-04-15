@@ -109,18 +109,12 @@ std::pair<ParseToken::coeffTypes, std::string>	getParseCoeffAndType(std::string 
 	std::regex					non_first_match_int{R"(^[+-](\d+|[Xx]{1}))"};
 
 	if (first) {
-		try {
-			return getParseCoeffAndTypeInner(str, first_match_decimal, 
-			first_match_rational, first_match_int);
-		}
-		catch (std::invalid_argument &e) { throw e; }
+		return getParseCoeffAndTypeInner(str, first_match_decimal, 
+		first_match_rational, first_match_int);
 	}
 	else {
-		try {
-			return getParseCoeffAndTypeInner(str, non_first_match_decimal, 
-			non_first_match_rational, non_first_match_int);
-		}
-		catch (std::invalid_argument &e) { throw e; }
+		return getParseCoeffAndTypeInner(str, non_first_match_decimal, 
+		non_first_match_rational, non_first_match_int);
 	}
 }
 
@@ -140,31 +134,23 @@ std::optional<std::string>		getParseDegree(std::string &str) {
 }
 
 ParseToken				getParsingToken(std::string &input, bool first) {
-	try {
-		auto [ type, token ] = getParseCoeffAndType(input, first);
-		auto degree = getParseDegree(input);
-		if (degree) {
-			return ParseToken(type, token, degree.value());
-		}
-		else {
-			return ParseToken(type, token);
-		}
+	auto [ type, token ] = getParseCoeffAndType(input, first);
+	auto degree = getParseDegree(input);
+	if (degree) {
+		return ParseToken(type, token, degree.value());
 	}
-	catch (std::invalid_argument &e) { throw e; }
+	else {
+		return ParseToken(type, token);
+	}
 }
 
 std::vector<ParseToken>	parseHalf(std::string &half) {
 	std::vector<ParseToken> tokens = {};
 	bool first = true;
 	while (!half.empty()) {
-		try {
-			ParseToken t = getParsingToken(half, first);
-			first = false;
-			tokens.push_back(t);
-		}
-		catch (std::invalid_argument &e) {
-			throw e;
-		}
+		ParseToken t = getParsingToken(half, first);
+		first = false;
+		tokens.push_back(t);
 	}
 	return tokens;
 }
@@ -183,13 +169,8 @@ std::pair<std::string, std::string>		getParsingHalves(std::string &eq) {
 std::pair<std::vector<ParseToken>, std::vector<ParseToken>>	getParsingTokens(std::string &eq) {
 	eq.erase(std::remove_if(eq.begin(), eq.end(), ::isspace),
 	eq.end());
-	try {
-		auto [left, right] = getParsingHalves(eq);
-		std::vector<ParseToken> leftParse = parseHalf(left);
-		std::vector<ParseToken> rightParse = parseHalf(right);
-		return std::make_pair(leftParse, rightParse);
-	}
-	catch (std::invalid_argument &e) {
-		throw e;
-	}
+	auto [left, right] = getParsingHalves(eq);
+	std::vector<ParseToken> leftParse = parseHalf(left);
+	std::vector<ParseToken> rightParse = parseHalf(right);
+	return std::make_pair(leftParse, rightParse);
 }

@@ -1,7 +1,7 @@
 #ifndef MATH_HELPERS_H
 #define MATH_HELPERS_H
 #include <type_traits>
-// #include <iostream>
+#include <iostream>
 #include <numeric>
 #include <limits>
 #include <tuple>
@@ -120,6 +120,58 @@ bool	divisionExceedsLimits(T lhs, T rhs) {
 	return (lhs == std::numeric_limits<T>::min() && rhs == -1);
 }
 
+template<typename T, typename U, 
+			typename std::enable_if<
+            std::is_arithmetic<T>{} &&
+            std::is_arithmetic<U>{}, bool>::type = true
+		>
+bool	additionExceedsLimits(T lhs, U rhs) {
+	if (std::numeric_limits<T>::max() > std::numeric_limits<U>::max())
+		return additionExceedsLimits(lhs, (T)rhs);
+	else {
+		return additionExceedsLimits((U)lhs, rhs);
+	}
+}
+
+template<typename T, typename U, 
+			typename std::enable_if<
+            std::is_arithmetic<T>{} &&
+            std::is_arithmetic<U>{}, bool>::type = true
+		>
+bool	subtractionExceedsLimits(T lhs, U rhs) {
+	if (std::numeric_limits<T>::max() > std::numeric_limits<U>::max())
+		return subtractionExceedsLimits(lhs, (T)rhs);
+	else {
+		return subtractionExceedsLimits((U)lhs, rhs);
+	}
+}
+
+template<typename T, typename U, 
+			typename std::enable_if<
+            std::is_arithmetic<T>{} &&
+            std::is_arithmetic<U>{}, bool>::type = true
+		>
+bool	multiplicationExceedsLimits(T lhs, U rhs) {
+	if (std::numeric_limits<T>::max() > std::numeric_limits<U>::max())
+		return multiplicationExceedsLimits(lhs, (T)rhs);
+	else {
+		return multiplicationExceedsLimits((U)lhs, rhs);
+	}
+}
+
+template<typename T, typename U, 
+			typename std::enable_if<
+            std::is_arithmetic<T>{} &&
+            std::is_arithmetic<U>{}, bool>::type = true
+		>
+bool	divisionExceedsLimits(T lhs, U rhs) {
+	if (std::numeric_limits<T>::max() > std::numeric_limits<U>::max())
+		return divisionExceedsLimits(lhs, (T)rhs);
+	else {
+		return divisionExceedsLimits((U)lhs, rhs);
+	}
+}
+
 // Returns whole part, numerator and denominator
 template <typename T, typename = std::enable_if<std::is_floating_point<T>::value>>
 std::tuple<long long, long long, long long>	doubleToRatio(T value, long double accuracy = ACCURACY) {
@@ -206,12 +258,58 @@ template<typename T,
 			typename std::enable_if<
 			std::is_integral<T>{}, bool>::type = true
 		>
+bool		isPrime(T n) {
+	/* Doesn't work for negative numbers */
+	if (n < 2) {
+		return false;
+	}
+	if (n == 2 || n == 3) {
+		return true;
+	}
+	if (n % 2 == 0 || n % 3 == 0) {
+		return false;
+	}
+	long long divisor = 6;
+	// Based on the fact that every prime other than two and three is of the form
+	// 6k+/-1
+	while ((divisor * divisor) - ((divisor * 2) + 1) <= n) {
+		if (n % (divisor - 1) == 0 || n % (divisor + 1) == 0) {
+			return false;
+		}
+		divisor += 6;
+	}
+	return true;
+}
+
+template<typename T, 
+			typename std::enable_if<
+			std::is_integral<T>{}, bool>::type = true
+		>
+long long	findNextPrime(T n) {
+	long long res = n;
+	
+	++res;
+	// We only have to test odd numbers
+	if (res % 2 == 0) {
+		++res;
+	}
+	while (!isPrime(res)) {
+		res += 2;
+	}
+	return res;
+}
+
+template<typename T, 
+			typename std::enable_if<
+			std::is_integral<T>{}, bool>::type = true
+		>
 std::vector<std::pair<long long, long long>>	getPrimeFactors(T n) {
 	/* Returns vector of prime factors and how many times the occur */
 	long long 	prime = 2;
 
 	std::vector<std::pair<long long, long long>> factors = {};
-	while (n >= prime * prime) {
+
+	while ((n >= prime * prime) && !isPrime(n)) {
 		if (n % prime == 0) {
 			if (!factors.empty() && std::get<0>(factors.back()) == prime) {
 				std::get<1>(factors.back()) += 1;
@@ -222,7 +320,26 @@ std::vector<std::pair<long long, long long>>	getPrimeFactors(T n) {
 			n /= prime;
 		}
 		else {
-			++prime;
+			// ++prime;
+			// long long prev = prime;
+			// prime = findNextPrime(prime);
+			// if (prev == prime) {
+			// 	std::cout << std::to_string(prime) << "\n";
+			// 	std::cout << "LOOP\n";
+			// 	exit(0);
+			// }
+			if (prime == 2)
+				++prime;
+			else {
+				prime += 2;
+				if (prime % 3 == 0) {
+					prime += 2;
+				}
+			}
+			// 	// while (!isPrime(prime)) {
+			// 	// 	prime += 2;
+			// 	// }
+			// }
 		}
 	}
 	if (!factors.empty() && std::get<0>(factors.back()) == n) {
@@ -234,4 +351,19 @@ std::vector<std::pair<long long, long long>>	getPrimeFactors(T n) {
 	return factors;
 }
 
+long long	safeAddition(long long n1, long long n2);
+long long	safeSubtraction(long long n1, long long n2);
+long long	safeMultiplication(long long n1, long long n2);
+long long	safeDivision(long long n1, long long n2);
+
+template<typename T, 
+			typename std::enable_if<
+			std::is_arithmetic<T>{}, bool>::type = true
+		>
+T			safeAbs(T &n) {
+	if (n == std::numeric_limits<T>::min()) {
+		throw std::overflow_error("Cannot make " + std::to_string(n) + " positive without causing overflow.\n");
+	}
+	return (T)std::abs(n);
+}
 #endif

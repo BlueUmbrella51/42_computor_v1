@@ -61,12 +61,6 @@ Rational::operator long long() const {
 	}, _val);
 }
 
-// Rational::operator long double () const {
-// 	return std::visit([](auto &arg) {
-// 		return (long double)arg;
-// 	}, _val);
-// }
-
 real	Rational::getVal() const {
 	return _val;
 }
@@ -284,17 +278,6 @@ Rational				abs(const Rational &r) {
 	return std::visit([=](auto n) {
 		return Rational(abs(n));
 	}, r.getVal());
-	// auto n = r._val;
-	// if (std::holds_alternative<Fraction>(n)) {
-	// 	return Rational(abs(std::get<Fraction>(n)));
-	// }
-	// else if (std::holds_alternative<int>(n) || (std::holds_alternative<long>(n))
-	// || (std::holds_alternative<long long>(n))) {
-	// 	return Rational(std::abs(std::get<long long>(n)));
-	// }
-	// else {
-	// 	return Rational(std::abs(std::get<long double>(n)));
-	// }
 }
 
 

@@ -227,4 +227,5 @@ Numerical	getGcd(const T &lhs, const Numerical &rhs) {
 }
 
 Numerical	abs(const Numerical &x);
+
 #endif

@@ -4,7 +4,6 @@
 #include <vector>
 #include <iostream>
 #include "Rational.h"
-#include "math_helpers.h"
 
 class	SquareRoot {
 	public:
@@ -87,6 +86,7 @@ class	SquareRoot {
 		long long	whole = 1;
 		long long 	radical = 1;
 
+		std::cout << "Get prime factors " << n << "\n";
 		auto factors = getPrimeFactors(n);
 		for(auto i = factors.begin(); i != factors.end(); ++i) {
 			auto factor = std::get<0>(*i);
@@ -100,6 +100,7 @@ class	SquareRoot {
 				radical *= factor;
 			}
 		}
+		std::cout << "After\n";
 		return std::make_pair(whole, radical);
 	}
 
