@@ -287,7 +287,7 @@ template<typename T,
 		>
 long long	findNextPrime(T n) {
 	long long res = n;
-	
+
 	++res;
 	// We only have to test odd numbers
 	if (res % 2 == 0) {
@@ -305,10 +305,11 @@ template<typename T,
 		>
 std::vector<std::pair<long long, long long>>	getPrimeFactors(T n) {
 	/* Returns vector of prime factors and how many times the occur */
-	long long 	prime = 2;
+	static std::vector<long long> primes = {2};
+	auto prime_iter = primes.begin();
+	long long prime = *prime_iter;
 
 	std::vector<std::pair<long long, long long>> factors = {};
-
 	while ((n >= prime * prime) && !isPrime(n)) {
 		if (n % prime == 0) {
 			if (!factors.empty() && std::get<0>(factors.back()) == prime) {
@@ -320,26 +321,17 @@ std::vector<std::pair<long long, long long>>	getPrimeFactors(T n) {
 			n /= prime;
 		}
 		else {
-			// ++prime;
-			// long long prev = prime;
-			// prime = findNextPrime(prime);
-			// if (prev == prime) {
-			// 	std::cout << std::to_string(prime) << "\n";
-			// 	std::cout << "LOOP\n";
-			// 	exit(0);
-			// }
-			if (prime == 2)
-				++prime;
-			else {
-				prime += 2;
-				if (prime % 3 == 0) {
-					prime += 2;
-				}
+			// Check whether it's in the list
+			if (std::distance(prime_iter, primes.end()) != 1) {
+				// Means we have a next iterator
+				++prime_iter;
+				// prime = *prime_iter;
 			}
-			// 	// while (!isPrime(prime)) {
-			// 	// 	prime += 2;
-			// 	// }
-			// }
+			else {
+				primes.push_back(findNextPrime(prime));
+				prime_iter = --(primes.end());
+			}
+			prime = *prime_iter;
 		}
 	}
 	if (!factors.empty() && std::get<0>(factors.back()) == n) {

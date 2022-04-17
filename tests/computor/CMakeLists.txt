@@ -1,5 +1,6 @@
 add_executable(solution_tests
 	solutions.cpp
+	${compSourceDir}/solver.cpp
 )
 
 target_compile_features(solution_tests PUBLIC cxx_std_17)

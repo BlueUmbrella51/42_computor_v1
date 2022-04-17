@@ -41,6 +41,7 @@ class Equation {
 		void					simplify();
 		int						getHighestDegree();
 		std::optional<Token>	findTokenOfDegree(std::list<Token> &tokens, int degree);
+		Rational				findCoeffOfDegree(std::list<Token> &tokens, int degree);
 		Equation::operationSide	getSide();
 		void					setSide(Equation::operationSide s);
 		void					factor(std::list<Token> &lst);

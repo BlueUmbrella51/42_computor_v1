@@ -70,9 +70,12 @@ TEST_CASE("SquareRoots", "[SquareRoots]") {
 		lhs = SquareRoot(2, -7);
 		rhs = SquareRoot(-6, 3);
 		SquareRoot res = lhs * rhs;
-		REQUIRE(res.getWhole() == -12);
-		REQUIRE(res.getSquareRoot() == 21);
-		REQUIRE(res.getType() == SquareRoot::Type::imaginary);
+		REQUIRE(res == SquareRoot(-12, -21));
+
+		lhs = SquareRoot(44);
+		rhs = SquareRoot(-3);
+		lhs *= rhs;
+		REQUIRE(lhs == SquareRoot(2, -33));
 	}
 	SECTION ("Is floating\n") {
 		SquareRoot r = SquareRoot(125.5);
@@ -89,10 +92,26 @@ TEST_CASE("SquareRoots", "[SquareRoots]") {
 		SquareRoot r = Rational(Fraction(1, 2));
 		long double n = (long double)r;
 		std::cout << n << "\n";
-		REQUIRE(n == std::sqrt(0.5));
+		REQUIRE(n == (long double)std::sqrt((long double)0.5));
 
 		r = Rational(Fraction(125));
 		n = (long double)r;
-		REQUIRE(n == (long double)std::pow((long double)125, 0.5));
+		REQUIRE(n == std::pow((long double)125, 0.5));
+	}
+	SECTION ("To numerical solution\n") {
+		SquareRoot r = Rational(Fraction(1, 2));
+		REQUIRE(r.getNumericalSolution() == std::sqrt((long double)0.5));
+
+		long double n = 117.1234877;
+		r = Rational(n);
+		REQUIRE(r.getNumericalSolution() == (long double)std::sqrt(n));
+
+		long double g = -117.1234877;
+		r = Rational(g);
+		REQUIRE(r.getNumericalSolution() == (std::sqrt(abs(g))));
+
+		long long m = 25;
+		r = Rational(m);
+		REQUIRE(r.getNumericalSolution() == (std::sqrt(m)));
 	}
 }

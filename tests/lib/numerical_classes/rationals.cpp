@@ -250,4 +250,22 @@ TEST_CASE("Fractions", "[Fractions]") {
 		r = getGcd(Fraction(5, 1, 3), Fraction(3, 7));
 		REQUIRE(r == Fraction(1, 21));
 	}
+	SECTION("Casting\n") {
+		long double n = (long double)Fraction(-1, 4);
+		long double m = (long double)-0.25;
+
+		REQUIRE(n == m);
+		
+		n = (long double)Fraction(1, 2);
+		m = (long double)0.5;
+		REQUIRE(n == m);
+
+		n = (long double)Fraction(-125, 1, 2);
+		m = (long double)-125.5;
+		REQUIRE(n == m);
+
+		n = (long double)Fraction(-1, 2);
+		m = (long double)-0.5;
+		REQUIRE(n == m);
+	}
 }

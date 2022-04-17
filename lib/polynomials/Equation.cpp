@@ -125,6 +125,15 @@ std::optional<Token>		Equation::findTokenOfDegree(std::list<Token> &tokens, int 
 	return std::nullopt;
 }
 
+Rational					Equation::findCoeffOfDegree(std::list<Token> &tokens, int degree) {
+	auto token = findTokenOfDegree(tokens, degree);
+
+	if (token) {
+		return Rational(token.value().getCoeff());
+	}
+	return 0;
+}
+
 void	Equation::add(Token token) {
 	if (token.getDegree() > _highest_degree) {
 		_highest_degree = token.getDegree();
