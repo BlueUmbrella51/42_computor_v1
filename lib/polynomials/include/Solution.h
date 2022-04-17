@@ -60,6 +60,7 @@ class	Solution {
 	public:
 		Solution() = default;
 		Solution(Rational l, SquareRoot r);
+		operator	std::string() const;
 	
 	private:
 		solution _sol;

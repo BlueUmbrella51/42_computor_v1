@@ -10,3 +10,5 @@ target_link_libraries(computor
 )
 
 target_include_directories(computor PUBLIC ${CMAKE_CURRENT_LIST_DIR}/include)
+
+# add_subdirectory(tests)

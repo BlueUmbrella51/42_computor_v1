@@ -22,6 +22,7 @@ add_executable(roots_tests
 target_compile_features(roots_tests PUBLIC cxx_std_17)
 
 target_include_directories(roots_tests 
+	PRIVATE ${mathHeaderDir}
 	PRIVATE ${numericalHeaderDir}
 	PRIVATE ${catchFilePath}
 )

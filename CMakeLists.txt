@@ -21,6 +21,18 @@ if(NOT EXISTS external/catch2/CMakeLists.txt)
     WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
 endif()
 
+set(headerDir include)
+set(computorHeaderDir ${CMAKE_CURRENT_LIST_DIR}/computor/${headerDir})
+set(mathHeaderDir ${CMAKE_CURRENT_LIST_DIR}/lib/math/${headerDir})
+set(polynomialHeaderDir ${CMAKE_CURRENT_LIST_DIR}/lib/polynomial/${headerDir})
+set(numericalHeaderDir ${CMAKE_CURRENT_LIST_DIR}/lib/numerical_classes/${headerDir})
+
+set(mathName math_helpers)
+set(numerName numerical_classes)
+set(polyName polynomials)
+
+message(${computorHeaderDir})
+message(${mathHeaderDir})
 # find_package(Git QUIET)
 # if(GIT_FOUND AND EXISTS "${PROJECT_SOURCE_DIR}/.git")
 # # Update submodules as needed
@@ -54,4 +66,6 @@ project(computor)
 add_subdirectory(external/catch2)
 add_subdirectory(lib)
 add_subdirectory(computor)
+
+add_subdirectory(tests)
 

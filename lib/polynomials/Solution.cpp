@@ -143,6 +143,12 @@ std::ostream    		&operator<<(std::ostream &os, const SimpleSolutions &x) {
 	return os;
 }
 
+Solution::operator std::string() const {
+	return std::visit([](auto arg) {
+		return (std::string)arg;
+	}, _sol);
+}
+
 std::ostream    		&operator<<(std::ostream &os, const Solution &x) {
 	std::visit([&](auto arg){
 		os << arg;

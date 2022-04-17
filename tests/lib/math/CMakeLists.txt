@@ -4,7 +4,8 @@ add_executable(math_tests
 
 target_compile_features(math_tests PUBLIC cxx_std_17)
 
-target_include_directories(math_tests 
+target_include_directories(math_tests
+	PRIVATE ${numericalHeaderDir}
 	PRIVATE ${mathHeaderDir}
 	PRIVATE ${catchFilePath}
 )
