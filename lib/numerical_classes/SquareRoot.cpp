@@ -93,16 +93,6 @@ bool		sameTypeAndSquareRoot(const SquareRoot &lhs, const SquareRoot &rhs) {
 	&& rhs.getSquareRoot() == rhs.getSquareRoot());
 }
 
-SquareRoot		&SquareRoot::operator+=(const SquareRoot &rhs) {
-	if (!sameTypeAndSquareRoot(*this, rhs)) {
-		std::cout << "Cannot add roots of different types or roots, exiting now\n";
-	}
-	else {
-		_whole += rhs.getWhole();
-	}
-	return *this;
-}
-
 SquareRoot::operator std::string() const {
 	std::string res = "";
 
@@ -151,9 +141,19 @@ Rational	SquareRoot::getNumericalSolution() const {
 	}
 }
 
+SquareRoot		&SquareRoot::operator+=(const SquareRoot &rhs) {
+	if (!sameTypeAndSquareRoot(*this, rhs)) {
+		std::cout << "Cannot add roots of different types or roots, not performing operation\n";
+	}
+	else {
+		_whole += rhs.getWhole();
+	}
+	return *this;
+}
+
 SquareRoot		&SquareRoot::operator-=(const SquareRoot &rhs) {
 	if (!sameTypeAndSquareRoot(*this, rhs)) {
-		std::cout << "Cannot add roots of different types or roots, exiting now\n";
+		std::cout << "Cannot subtract roots of different types or roots, not performing operation\n";
 	}
 	else {
 		_whole -= rhs.getWhole();
@@ -174,15 +174,6 @@ SquareRoot		&SquareRoot::operator*=(const SquareRoot &rhs) {
 	}
 	return *this;
 }
-
-// SquareRoot		&SquareRoot::operator/=(const SquareRoot &rhs) {
-// 	// TODO: COMPLEX
-// 	/* Normalize the "fraction" (move it from denominator to nominator) 
-// 	by multiplying numerator and denominator by root part of denominator */
-
-// 	rationalize(*this, rhs);
-// 	return *this;
-// }
 
 SquareRoot		&SquareRoot::operator/=(const Rational &rhs) {
 	// TODO: COMPLEX

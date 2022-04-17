@@ -11,17 +11,6 @@ class	SquareRoot {
 			real,
 			imaginary
 		};
-		// template<typename T,
-		// 	typename std::enable_if_t<std::is_arithmetic<T>::value, bool> = true
-		// >
-		// SquareRoot(T d) : _root{d}, _whole{1}, _degree{2},
-		// _type{SquareRoot::Type::real}, _divisor{1} {
-		// 	if (_root < 0) {
-		// 		_type = Type::imaginary;
-		// 		_root = abs(_root);
-		// 	}
-		// 	simplifyNumerical(_root);
-		// }
 		template<typename T,
 			typename std::enable_if_t<std::is_arithmetic<T>::value, bool> = true
 		>

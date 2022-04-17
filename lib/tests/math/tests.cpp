@@ -81,8 +81,8 @@ TEST_CASE("Conversion doubles to ratios", "[Math]") {
 		REQUIRE(d_2 == 2);
 	}
 	SECTION("Primes\n") {
-		bool is_prime = isPrime(64144081);
-		REQUIRE(is_prime == false);
+		// bool is_prime = isPrime(64144081);
+		REQUIRE(isPrime(64144081) == false);
 
 		auto n = findNextPrime(2);
 		REQUIRE(n == 3);

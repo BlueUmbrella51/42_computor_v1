@@ -43,8 +43,9 @@ class	CompoundSolutions {
 
 class	SimpleSolutions {
 	public:
-		SimpleSolutions() = default;
+		// SimpleSolutions() = default;
 		SimpleSolutions(Rational l, Rational r);
+		SimpleSolutions(Rational sol);
 		~SimpleSolutions() = default;
 		std::pair<std::string, std::string> toStrings() const;
 	private:
@@ -54,16 +55,20 @@ class	SimpleSolutions {
 	friend std::ostream    		&operator<<(std::ostream &os, const SimpleSolutions &x);
 };
 
-typedef	std::variant<SimpleSolutions, CompoundSolutions>	solution;
+typedef	std::variant<Rational, SquareRoot, SimpleSolutions, CompoundSolutions>	solution;
 
 class	Solution {
 	public:
 		Solution() = default;
-		Solution(Rational l, SquareRoot r);
+		Solution(Rational l, SquareRoot r, size_t degree = 2);
+		Solution(Rational sol, size_t degree);
+		// Solution(SquareRoot sol);
 	
 	private:
-		solution _sol;
-		void	getNumericalSolutions();
+		solution 	_sol;
+		size_t		_degree;
+		size_t		_num_print_solutions;
+		void		getNumericalSolutions();
 	
 	friend std::ostream    		&operator<<(std::ostream &os, const Solution &x);
 };
