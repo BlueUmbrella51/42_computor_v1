@@ -361,7 +361,7 @@ void		Fraction::fixSigns() {
 		if (_d == LLONG_MIN) {
 			throw std::overflow_error("Cannot make minimum value of long long positive without causing overflow.\n");
 		}
-		_d = llabs(_d);
+		_d = safeAbs(_d);
 		_n *= -1;
 	}
 	if (_w < 0 && _n > 0) {

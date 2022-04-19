@@ -182,6 +182,6 @@ Numerical	getGcd(const Numerical &lhs, const Numerical &rhs) {
 
 Numerical	abs(const Numerical &x) {
 	return std::visit([](auto n) {
-		return Numerical(std::abs(n));
+		return Numerical(safeAbs(n));
 	}, x.getVal());
 }

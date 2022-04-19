@@ -156,14 +156,14 @@ Solution::Solution(Rational l, SquareRoot r, size_t degree) : _degree{degree}, _
 }
 
 Solution::Solution(Rational sol, size_t degree): _sol{sol}, _degree{degree}, _num_print_solutions{1} {
-	// In case of first degree solution or discriminant 0
+	// In case of first degree solution or discriminant 0, only one s
 	if (degree < 1 || degree > 2) {
 		std::cout << "Degree of solution has to be 1 or 2. Using default degree of 1.\n";
 		_degree = 1;
 	}
 	if (_degree == 2) {
 		/* Means the discriminant was zero */ 
-		_sol = abs(sol);
+		_sol = sol;
 	}
 }
 
@@ -198,12 +198,12 @@ Solution::operator std::string() const {
 			return res;
 		},
 		[=](Rational arg) {
-			std::string res = "";
-			if (_num_print_solutions == 1 && _degree == 2 && arg != 0) {
-				res += "+/-";
-			}
-			res += (std::string)arg;
-			return res;
+			// std::string res = "";
+			// if (_num_print_solutions == 1 && _degree == 2 && arg != 0) {
+			// 	res += "+/-";
+			// }
+			return (std::string)arg;
+			// return res;
 		}
 	}, _sol);
 }

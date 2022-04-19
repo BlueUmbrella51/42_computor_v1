@@ -2,6 +2,7 @@
 #include <single_include/catch2/catch.hpp>
 #include "SquareRoot.h"
 #include <iomanip>
+#include <cmath>
 
 TEST_CASE("SquareRoots", "[SquareRoots]") {
 	SECTION ("Creation") {
@@ -108,7 +109,7 @@ TEST_CASE("SquareRoots", "[SquareRoots]") {
 
 		long double g = -117.1234877;
 		r = Rational(g);
-		REQUIRE(r.getNumericalSolution() == (std::sqrt(abs(g))));
+		REQUIRE(r.getNumericalSolution() == (std::sqrt(std::abs(g))));
 
 		long long m = 25;
 		r = Rational(m);

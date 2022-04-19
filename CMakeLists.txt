@@ -1,19 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 
-
-# set(CXX_STANDARD 17)
-# set(CXX_STANDARD_REQUIRED ON)
-# set(CMAKE_CXX_STANDARD 17)
-# set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_FLAGS "-Wall -Werror -Wextra -Wpedantic -Wno-unused-parameter -g")
-# set(GIT_SUBMODULE ON)
-# set(CMAKE_CXX_COMPILER /usr/bin/clang++)
-# # set(CXX_FLAGS "-std=c++17")
-# # set(CMAKE_CXX_EXTENSIONS OFF)
-# set(CMAKE_CXX_STANDARD 17)
-# set(CMAKE_CXX_STANDARD_REQUIRED OFF)
-# set(CMAKE_CXX_EXTENSIONS OFF)
-
+# set(CMAKE_CXX_FLAGS "-Wall -Werror -Wextra -Wpedantic -Wno-unused-parameter -g")
+set(CMAKE_CXX_FLAGS "-g")
 find_package(Git REQUIRED)
 
 if (NOT EXISTS external/catch2/CMakeLists.txt)

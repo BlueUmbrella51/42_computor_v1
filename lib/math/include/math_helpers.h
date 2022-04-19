@@ -11,6 +11,18 @@
 
 #define ACCURACY 0.00000000001
 
+
+template<typename T, 
+			typename std::enable_if<
+			std::is_arithmetic<T>{}, bool>::type = true
+		>
+T			safeAbs(T n) {
+	if (n == std::numeric_limits<T>::min()) {
+		throw std::overflow_error("Cannot make " + std::to_string(n) + " positive without causing overflow.\n");
+	}
+	return std::abs(n);
+}
+
 /* Default implementation of getGcd: if either parameter is floating point, return 1 */
 template<typename T, typename U, 
 			typename std::enable_if<
@@ -185,7 +197,7 @@ std::tuple<long long, long long, long long>	doubleToRatio(T value, long double a
 		throw std::overflow_error("Whole part of decimal is too large to fit integer type\n"); }
 	
 	int				sign = value >= 0.0 ? 1 : -1;
-	value = std::abs(value);
+	value = safeAbs(value);
 	long long 		int_part = (long long)value;
 	value -= int_part;
 
@@ -221,7 +233,7 @@ of decimal within given precision.");
 		a.push_back(next_a);
 		b.push_back(next_b);
 	}
-	while (std::abs(((long double)a[i] / (long double)b[i]) - value) > accuracy);
+	while (safeAbs(((long double)a[i] / (long double)b[i]) - value) > accuracy);
 
 	if (a[i] == LLONG_MIN && sign == -1){
 		throw std::overflow_error("Could not find rational approximation \
@@ -348,14 +360,4 @@ long long	safeSubtraction(long long n1, long long n2);
 long long	safeMultiplication(long long n1, long long n2);
 long long	safeDivision(long long n1, long long n2);
 
-template<typename T, 
-			typename std::enable_if<
-			std::is_arithmetic<T>{}, bool>::type = true
-		>
-T			safeAbs(T &n) {
-	if (n == std::numeric_limits<T>::min()) {
-		throw std::overflow_error("Cannot make " + std::to_string(n) + " positive without causing overflow.\n");
-	}
-	return (T)std::abs(n);
-}
 #endif

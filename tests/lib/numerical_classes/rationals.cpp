@@ -1,6 +1,8 @@
 #define CATCH_CONFIG_MAIN
 #include <single_include/catch2/catch.hpp>
 #include "Fraction.h"
+#include "Rational.h"
+#include "Numerical.h"
 #include <limits.h>
 
 TEST_CASE("Fractions", "[Fractions]") {
@@ -267,5 +269,14 @@ TEST_CASE("Fractions", "[Fractions]") {
 		n = (long double)Fraction(-1, 2);
 		m = (long double)-0.5;
 		REQUIRE(n == m);
+	}
+	SECTION("Abs\n") {
+		long double g = -117.12346598;
+		Rational r = g;
+
+		REQUIRE(abs(r) == std::abs(g));
+		Numerical n = g;
+
+		REQUIRE(abs(n) == std::abs(g));
 	}
 }
