@@ -112,7 +112,7 @@ TEST_CASE("Conversion doubles to ratios", "[Math]") {
 		CHECK_THROWS(safeMultiplication(LLONG_MIN, -1));
 
 		CHECK_NOTHROW(safeAddition(2, 1234568));
-		CHECK_NOTHROW(safeMultiplication(8, 123897));
+		CHECK_NOTHROW(safeMultiplication((long double)8, (long double)-6));
 		CHECK_NOTHROW(safeDivision(18, 2));
 		CHECK_NOTHROW(safeSubtraction(LLONG_MIN+1, 1));
 	}
