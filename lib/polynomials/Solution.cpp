@@ -215,10 +215,10 @@ Solution::operator std::string() const {
 
 std::ostream    		&operator<<(std::ostream &os, const Solution &x) {
 	if (x._num_print_solutions == 2) {
-		os << "Solutions:\n";
+		os << "The solutions are:\n";
 	}
 	else {
-		os << "Solution:\n";
+		os << "The solution is:\n";
 	}
 	os << (std::string)x;
 	return os;

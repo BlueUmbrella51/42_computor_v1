@@ -51,6 +51,12 @@ TEST_CASE("Polynomial solutions", "[Polynomials]") {
 		REQUIRE((std::string)s == "-1");
 	}
 	SECTION("First degree answers\n") {
+		std::string input = "2x = 15";
+		Equation eq = parse_equation(input);
+		eq.simplify();
+		Solution s = solve_equation(eq);
+
+		REQUIRE((std::string)s == "7(1/2)");
 
 	}
 	SECTION("Second degree answers\n") {

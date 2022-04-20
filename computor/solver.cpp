@@ -20,20 +20,19 @@ Solution		solve_second_degree(Equation &eq) {
 	Rational b = b_token ? b_token.value().getCoeff(): Rational(0);
 	Rational c = c_token ? c_token.value().getCoeff(): Rational(0);
 
-	std::cout << "A: " << a << " B: " << b << " C: " << c << "\n";
+	// std::cout << "A: " << a << " B: " << b << " C: " << c << "\n";
 	
 	// TODO: overflow check and possible cast to floating point?
 	Rational discriminant = (b * b) - (4 * a * c);
-	std::cout << "D: " << discriminant << "\n";
+	// std::cout << "D: " << discriminant << "\n";
 	Rational divisor = (2 * a);
-	std::cout << "After divisor\n";
+	// std::cout << "After divisor\n";
 	Rational left = -b / divisor;
-	std::cout << "After left\n";
+	// std::cout << "After left\n";
 	if (discriminant != 0) {
-		std::cout << "Discriminant isn't 0.\n";
 		SquareRoot right = SquareRoot(discriminant) / divisor;
-		std::cout << "b^2/2a: " << left << "\n";
-		std::cout << "simplified root: " << right << "\n";
+		// std::cout << "b^2/2a: " << left << "\n";
+		// std::cout << "simplified root: " << right << "\n";
 		if (discriminant > 0) {
 			std::cout << "Discriminant is strictly positive.\n";
 		}
@@ -65,7 +64,7 @@ Solution		solve_equation(Equation &eq) {
 		s = solve_second_degree(eq);
 	}
 	else {
-		throw std::invalid_argument("Degree " + std::to_string(eq.getHighestDegree()) + " is strictly greater than two, cannot solve.");
+		throw std::invalid_argument("The polynomial degree is strictly greater than two, cannot solve.");
 	}
 	return s;
 }
