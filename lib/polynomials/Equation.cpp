@@ -108,6 +108,16 @@ Equation				&Equation::operator/=(const Token &t) {
 	return *this;
 }
 
+Equation				&Equation::toFloatingPoint() {
+	for (auto it = _tokensLeft.begin(); it != _tokensLeft.end(); ++it) {
+		(*it).setCoeff((long double)(*it).getCoeff());
+	}
+	for (auto it = _tokensRight.begin(); it != _tokensRight.end(); ++it) {
+		(*it).setCoeff((long double)(*it).getCoeff());
+	}
+	return *this;
+}
+
 std::ostream		&operator<<(std::ostream &os, const Equation &eq) {
 	auto s = std::string(eq);
 	os << s;

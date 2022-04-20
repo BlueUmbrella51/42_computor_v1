@@ -18,7 +18,7 @@ class Token
 		void		setCoeff(Rational coeff);
 
 	private:
-		Rational		_coeff;
+		Rational	_coeff;
 		long		_degree;
 	
 	friend std::ostream	&operator<<(std::ostream &os, const Token &r);

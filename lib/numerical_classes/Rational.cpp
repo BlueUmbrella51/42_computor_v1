@@ -245,6 +245,7 @@ Rational	operator*(const Numerical &lhs, const Fraction &rhs) {
 		return Rational((n * rhs));
 	}, lhs.getVal());
 }
+
 Rational	operator*(const Fraction &lhs, const Numerical &rhs) {
 	return (rhs * lhs);
 }
