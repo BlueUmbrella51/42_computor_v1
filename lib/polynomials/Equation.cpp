@@ -204,9 +204,6 @@ void	Equation::removeZeroCoeff(std::list<Token> &lst) {
 }
 
 void	Equation::factor(std::list<Token> &lst) {
-	// There can never be less than two tokens so this should be safe
-	// TODO: wrap in try/ catch
-	// TODO: make gcd negative if first token is negative
 	std::list<Token>::iterator 	it = lst.begin();
 	Rational					gcd = (*it).getCoeff();
 
@@ -216,8 +213,7 @@ void	Equation::factor(std::list<Token> &lst) {
 		gcd = getGcd(curr, gcd);
 		it++;
 	}
-	/* If first token in sorted equation is negative, factor out that -1 
-	TODO: necessary? (done in simplify) */
+	/* If first token in sorted equation is negative, factor out that -1 */
 	if ((*lst.begin()).getCoeff() < 0) {
 		gcd = -gcd;
 	}
@@ -355,7 +351,7 @@ long int		get_degree(std::string &str) {
 	return degree;
 }
 
-Token		parse_token(ParseToken &pt) {
+Token			parse_token(ParseToken &pt) {
 	ParseToken::coeffTypes		type = pt.getType();
 	std::string					coeff_str = pt.getCoeff();
 	std::optional<std::string>	degree_str = pt.getDegree();

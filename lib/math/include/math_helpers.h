@@ -12,6 +12,11 @@
 #define ACCURACY 0.00000000001
 
 
+long long	safeAddition(long long n1, long long n2);
+long long	safeSubtraction(long long n1, long long n2);
+long long	safeMultiplication(long long n1, long long n2);
+long long	safeDivision(long long n1, long long n2);
+
 template<typename T, 
 			typename std::enable_if<
 			std::is_arithmetic<T>{}, bool>::type = true
@@ -74,8 +79,8 @@ void		factorGcd(T &a, U &b) {
 		if (a < 0 && b < 0) {
 			gcd = -gcd;
 		}
-		a /= gcd;
-		b /= gcd;
+		a = safeDivision(a, gcd);
+		b = safeDivision(b, gcd);
 	}
 }
 
@@ -218,18 +223,8 @@ std::tuple<long long, long long, long long>	doubleToRatio(T value, long double a
 	do {
 		++i;
 		x = 1 / (x - floor(x));
-		if (multiplicationExceedsLimits((long long)x, a[i - 1])
-		|| additionExceedsLimits(a[i - 2], (long long)x * a[i - 1])) {
-			throw std::overflow_error("Could not find rational approximation \
-of decimal within given precision.");
-		}
-		long long next_a = a[i - 2] + floor(x) * a[i - 1];
-		if (multiplicationExceedsLimits((long long)x, b[i - 1])
-		|| additionExceedsLimits(b[i - 2], (long long)x * b[i - 1])) {
-			throw std::overflow_error("Could not find rational approximation \
-of decimal within given precision.");
-		}
-		long long next_b = b[i - 2] + floor(x) * b[i - 1];
+		long long next_a = safeAddition(a[i - 2], safeMultiplication(floor(x), a[i - 1]));
+		long long next_b = safeAddition(b[i - 2], safeMultiplication(floor(x), b[i - 1]));
 		a.push_back(next_a);
 		b.push_back(next_b);
 	}
@@ -337,7 +332,6 @@ std::vector<std::pair<long long, long long>>	getPrimeFactors(T n) {
 			if (std::distance(prime_iter, primes.end()) != 1) {
 				// Means we have a next iterator
 				++prime_iter;
-				// prime = *prime_iter;
 			}
 			else {
 				primes.push_back(findNextPrime(prime));
@@ -354,10 +348,5 @@ std::vector<std::pair<long long, long long>>	getPrimeFactors(T n) {
 	}
 	return factors;
 }
-
-long long	safeAddition(long long n1, long long n2);
-long long	safeSubtraction(long long n1, long long n2);
-long long	safeMultiplication(long long n1, long long n2);
-long long	safeDivision(long long n1, long long n2);
 
 #endif

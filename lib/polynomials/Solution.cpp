@@ -106,8 +106,7 @@ std::ostream    		&operator<<(std::ostream &os, const CompoundSolution &x) {
 
 CompoundSolutions::CompoundSolutions(Rational l, SquareRoot r):
 _plus{CompoundSolution('+', l, r)}, _min{CompoundSolution('-', l, r)} {
-	// _plus = CompoundSolution('+', l, r);
-	// _min = CompoundSolution('-', l, r);
+
 }
 
 std::pair<std::string, std::string> CompoundSolutions::toStrings() const {
@@ -129,7 +128,8 @@ std::pair<std::string, std::string> SimpleSolutions::toStrings() const {
 	return std::make_pair((std::string)_plus, (std::string)_min);
 }
 
-Solution::Solution(Rational l, SquareRoot r, size_t degree) : _degree{degree}, _num_print_solutions{2} {
+Solution::Solution(Rational l, SquareRoot r, size_t degree) : _degree{degree}, _num_print_solutions{2},
+_num_from_root{false} {
 	if (degree < 1 || degree > 2) {
 		std::cout << "Degree of solution has to be 1 or 2. Using default degree of 2.\n";
 		_degree = 2;
@@ -143,19 +143,21 @@ Solution::Solution(Rational l, SquareRoot r, size_t degree) : _degree{degree}, _
 		}
 	}
 	else {
-		// if (r.hasRealNumericSolution()) {
-		// 	_num_print_solutions = 1;
-		// 	std::cout << "Real numerical make abs\n";
-		// 	_sol = abs(r.getNumericalSolution());
-		// }
-		// else {
-		_num_print_solutions = 1;
-		_sol = r;
-		// }
+		if (r.hasRealNumericSolution()) {
+			_num_print_solutions = 1;
+			std::cout << "Real numerical make abs\n";
+			_num_from_root = true;
+			_sol = abs(r.getNumericalSolution());
+		}
+		else {
+			_num_print_solutions = 1;
+			_sol = r;
+		}
 	}
 }
 
-Solution::Solution(Rational sol, size_t degree): _sol{sol}, _degree{degree}, _num_print_solutions{1} {
+Solution::Solution(Rational sol, size_t degree): _sol{sol}, _degree{degree}, _num_print_solutions{1},
+_num_from_root{false} {
 	// In case of first degree solution or discriminant 0, only one s
 	if (degree < 1 || degree > 2) {
 		std::cout << "Degree of solution has to be 1 or 2. Using default degree of 1.\n";
@@ -198,12 +200,15 @@ Solution::operator std::string() const {
 			return res;
 		},
 		[=](Rational arg) {
-			// std::string res = "";
-			// if (_num_print_solutions == 1 && _degree == 2 && arg != 0) {
-			// 	res += "+/-";
-			// }
-			return (std::string)arg;
-			// return res;
+			std::cout << "Rational\n" << "nfr: " << _num_from_root << "\n";
+			std::string res = "";
+			if (arg != 0 && _num_from_root) {
+				/* We only want this if the root part is purely numerical and left part was zero, 
+				not if the b is the answer and the root was insignificant. */
+				res += "+/-";
+			}
+			res += (std::string)arg;
+			return res;
 		}
 	}, _sol);
 }

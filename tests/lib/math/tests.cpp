@@ -83,8 +83,37 @@ TEST_CASE("Conversion doubles to ratios", "[Math]") {
 	SECTION("Primes\n") {
 		// bool is_prime = isPrime(64144081);
 		REQUIRE(isPrime(64144081) == false);
+		REQUIRE(isPrime(1) == false);
+		REQUIRE(isPrime(0) == false);
+		REQUIRE(isPrime(2));
+		REQUIRE(isPrime(3));
+		REQUIRE(isPrime(41));
+		REQUIRE(isPrime(97));
+		REQUIRE(!isPrime(9));
+		REQUIRE(!isPrime(16));
 
 		auto n = findNextPrime(2);
 		REQUIRE(n == 3);
+
+		n = findNextPrime(89);
+		REQUIRE(n == 97);
+
+		n = findNextPrime(60);
+		REQUIRE(n == 61);
+	}
+	SECTION("Safe operations\n") {
+		// long double n = LLONG_MAX;
+		CHECK_THROWS(safeAddition(LLONG_MAX, 1));
+		CHECK_THROWS(safeAddition(1.0f, LLONG_MAX));
+		CHECK_THROWS(safeSubtraction(LLONG_MIN, 1));
+		CHECK_THROWS(safeAddition(-1, LLONG_MIN));
+		CHECK_THROWS(safeDivision(LLONG_MIN, -1));
+		CHECK_THROWS(safeMultiplication(LLONG_MAX, 2));
+		CHECK_THROWS(safeMultiplication(LLONG_MIN, -1));
+
+		CHECK_NOTHROW(safeAddition(2, 1234568));
+		CHECK_NOTHROW(safeMultiplication(8, 123897));
+		CHECK_NOTHROW(safeDivision(18, 2));
+		CHECK_NOTHROW(safeSubtraction(LLONG_MIN+1, 1));
 	}
 }

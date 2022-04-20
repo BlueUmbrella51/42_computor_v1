@@ -75,7 +75,6 @@ class	SquareRoot {
 		long long	whole = 1;
 		long long 	radical = 1;
 
-		std::cout << "Get prime factors " << n << "\n";
 		auto factors = getPrimeFactors(n);
 		for(auto i = factors.begin(); i != factors.end(); ++i) {
 			auto factor = std::get<0>(*i);
@@ -89,12 +88,9 @@ class	SquareRoot {
 				radical *= factor;
 			}
 		}
-		std::cout << "After\n";
 		return std::make_pair(whole, radical);
 	}
 
-	// friend void				simplify_root(SquareRoot &r, Numerical n, int degree);
-	// friend void				simplify_root(SquareRoot &r, Fraction n, int degree);
 	friend void				rationalize(SquareRoot &numer, const SquareRoot &denom);
 	friend SquareRoot				operator/(const SquareRoot &lhs, const Rational &rhs);
 	friend std::ostream    	&operator<<(std::ostream &os, const numerical &x);

@@ -20,12 +20,20 @@ Solution		solve_second_degree(Equation &eq) {
 	Rational b = b_token ? b_token.value().getCoeff(): Rational(0);
 	Rational c = c_token ? c_token.value().getCoeff(): Rational(0);
 
+	std::cout << "A: " << a << " B: " << b << " C: " << c << "\n";
+	
+	// TODO: overflow check and possible cast to floating point?
 	Rational discriminant = (b * b) - (4 * a * c);
+	std::cout << "D: " << discriminant << "\n";
 	Rational divisor = (2 * a);
+	std::cout << "After divisor\n";
 	Rational left = -b / divisor;
-
+	std::cout << "After left\n";
 	if (discriminant != 0) {
+		std::cout << "Discriminant isn't 0.\n";
 		SquareRoot right = SquareRoot(discriminant) / divisor;
+		std::cout << "b^2/2a: " << left << "\n";
+		std::cout << "simplified root: " << right << "\n";
 		if (discriminant > 0) {
 			std::cout << "Discriminant is strictly positive.\n";
 		}

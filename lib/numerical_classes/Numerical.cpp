@@ -140,39 +140,22 @@ bool		operator>=(const Numerical &lhs, const Numerical &rhs) {
 Numerical	operator+(const Numerical &lhs, const Numerical &rhs) {
 	Numerical tmp = lhs;
 	return tmp += rhs;
-	// return std::visit([](auto n1, auto n2) {
-	// 	return Numerical((n1 + n2));
-	// }, lhs.getVal(), rhs.getVal());
 }
 
 Numerical	operator-(const Numerical &lhs, const Numerical &rhs) {
 	Numerical tmp = lhs;
 	return tmp -= rhs;
-	// return std::visit([](auto n1, auto n2) {
-	// 	return Numerical((n1 - n2));
-	// }, lhs.getVal(), rhs.getVal());
 }
 
 Numerical	operator*(const Numerical &lhs, const Numerical &rhs) {
 	Numerical tmp = lhs;
 	return tmp *= rhs;
-	// return std::visit([](auto n1, auto n2) {
-	// 	return Numerical((n1 * n2));
-	// }, lhs.getVal(), rhs.getVal());
 }
 
 Numerical	operator/(const Numerical &lhs, const Numerical &rhs) {
 	Numerical tmp = lhs;
 	return tmp /= rhs;
-	// return std::visit([](auto n1, auto n2) {
-	// 	return Numerical((n1 / n2));
-	// }, lhs.getVal(), rhs.getVal());
 }
-
-
-// Numerical	simplifyRadical(const Numerical &n) {
-
-// }
 
 Numerical	getGcd(const Numerical &lhs, const Numerical &rhs) {
 	return std::visit([](auto n1, auto n2) {

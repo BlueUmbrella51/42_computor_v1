@@ -195,7 +195,7 @@ bool		operator>=(const Fraction &lhs, const Numerical &rhs) {
 }
 
 Rational		operator+(const Rational &a, const Rational &b) {
-	return std::visit([](auto &n1, auto &n2){
+	return std::visit([](auto &n1, auto &n2) {
 		return Rational(n1 + n2);
 	}, a._val, b._val);
 }

@@ -68,6 +68,7 @@ class	Solution {
 		solution 	_sol;
 		size_t		_degree;
 		size_t		_num_print_solutions;
+		bool		_num_from_root;
 		void		getNumericalSolutions();
 	
 	friend std::ostream    		&operator<<(std::ostream &os, const Solution &x);
