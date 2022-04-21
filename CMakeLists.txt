@@ -3,10 +3,8 @@ cmake_minimum_required(VERSION 3.10)
 find_package(Git REQUIRED)
 
 # Configuration options
+
 set(TESTS off CACHE BOOL "Create unit tests or not")
-message("TESTS ON: \n")
-message(${TESTS})
-message(${CMAKE_CXX_FLAGS})
 
 set(catchFolder ${CMAKE_CURRENT_LIST_DIR}/external/catch2)
 set(catchFile ${catchFolder}/CMakeLists.txt)
@@ -15,7 +13,10 @@ set(catchFile ${catchFolder}/CMakeLists.txt)
 if (NOT EXISTS ${catchFile})
   execute_process(COMMAND ${GIT_EXECUTABLE} submodule update --init --recursive -- ${catchFolder}
     WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
-    COMMAND_ERROR_IS_FATAL ANY)
+    RESULT_VARIABLE RES)
+	if (NOT RES EQUAL "0")
+		message("Could not update catch library!\n")
+	endif()
 endif()
 
 set(headerDir include)

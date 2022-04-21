@@ -8,6 +8,8 @@
 #include <vector>
 #include <cmath>
 #include <limits.h>
+#include <cfenv>
+#include <stdexcept>
 
 #define ACCURACY 0.00000000001
 
@@ -23,7 +25,7 @@ template<typename T,
 		>
 T			safeAbs(T n) {
 	if (n == std::numeric_limits<T>::min()) {
-		throw std::overflow_error("Cannot make " + std::to_string(n) + " positive without causing overflow.\n");
+		throw std::overflow_error("Cannot make " + std::to_string(n) + " positive without causing over- or underflow.\n");
 	}
 	return std::abs(n);
 }
@@ -87,7 +89,7 @@ void		factorGcd(T &a, U &b) {
 /* Overflow checks for arithmetic operations */
 template<typename T, 
 			typename std::enable_if<
-            std::is_arithmetic<T>{}, bool>::type = true
+            std::is_integral<T>{}, bool>::type = true
 		>
 bool	additionExceedsLimits(T lhs, T rhs) {
 	/* Check for over- and underflow */
@@ -101,7 +103,23 @@ bool	additionExceedsLimits(T lhs, T rhs) {
 
 template<typename T, 
 			typename std::enable_if<
-            std::is_arithmetic<T>{}, bool>::type = true
+            std::is_floating_point<T>{}, bool>::type = true
+		>
+bool	additionExceedsLimits(T lhs, T rhs) {
+	/* Check for over- and underflow */
+	std::feclearexcept(FE_ALL_EXCEPT);
+	auto n = lhs + rhs;
+	if (std::fetestexcept(FE_OVERFLOW) || std::fetestexcept(FE_UNDERFLOW)) {
+		std::feclearexcept(FE_ALL_EXCEPT);
+		return true;
+	}
+	std::feclearexcept(FE_ALL_EXCEPT);
+	return false;
+}
+
+template<typename T, 
+			typename std::enable_if<
+            std::is_integral<T>{}, bool>::type = true
 		>
 bool	subtractionExceedsLimits(T lhs, T rhs) {
 	/* Check for over- and underflow */
@@ -115,7 +133,23 @@ bool	subtractionExceedsLimits(T lhs, T rhs) {
 
 template<typename T, 
 			typename std::enable_if<
-            std::is_arithmetic<T>{}, bool>::type = true
+            std::is_floating_point<T>{}, bool>::type = true
+		>
+bool	subtractionExceedsLimits(T lhs, T rhs) {
+	/* Check for over- and underflow */
+	std::feclearexcept(FE_ALL_EXCEPT);
+	auto n = lhs - rhs;
+	if (std::fetestexcept(FE_OVERFLOW) || std::fetestexcept(FE_UNDERFLOW)) {
+		std::feclearexcept(FE_ALL_EXCEPT);
+		return true;
+	}
+	std::feclearexcept(FE_ALL_EXCEPT);
+	return false;
+}
+
+template<typename T, 
+			typename std::enable_if<
+            std::is_integral<T>{}, bool>::type = true
 		>
 bool	multiplicationExceedsLimits(T lhs, T rhs) {
 	/* Check for over- and underflow */
@@ -131,10 +165,43 @@ bool	multiplicationExceedsLimits(T lhs, T rhs) {
 
 template<typename T, 
 			typename std::enable_if<
-            std::is_arithmetic<T>{}, bool>::type = true
+            std::is_floating_point<T>{}, bool>::type = true
+		>
+bool	multiplicationExceedsLimits(T lhs, T rhs) {
+	/* Check for over- and underflow */
+	std::feclearexcept(FE_ALL_EXCEPT);
+	long double n = lhs * rhs;
+
+	if (std::fetestexcept(FE_OVERFLOW) || std::fetestexcept(FE_UNDERFLOW)) {
+		std::feclearexcept(FE_ALL_EXCEPT);
+		return true;
+	}
+	std::feclearexcept(FE_ALL_EXCEPT);
+	return false;
+}
+
+template<typename T, 
+			typename std::enable_if<
+            std::is_integral<T>{}, bool>::type = true
 		>
 bool	divisionExceedsLimits(T lhs, T rhs) {
 	return (lhs == std::numeric_limits<T>::min() && rhs == -1);
+}
+
+template<typename T, 
+			typename std::enable_if<
+            std::is_floating_point<T>{}, bool>::type = true
+		>
+bool	divisionExceedsLimits(T lhs, T rhs) {
+	/* Check for over- and underflow */
+	std::feclearexcept(FE_ALL_EXCEPT);
+	auto n = lhs / rhs;
+	if (std::fetestexcept(FE_OVERFLOW) || std::fetestexcept(FE_UNDERFLOW)) {
+		std::feclearexcept(FE_ALL_EXCEPT);
+		return true;
+	}
+	std::feclearexcept(FE_ALL_EXCEPT);
+	return false;
 }
 
 template<typename T, typename U, 

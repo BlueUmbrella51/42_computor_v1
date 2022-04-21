@@ -61,7 +61,6 @@ TEST_CASE("SquareRoots", "[SquareRoots]") {
 		REQUIRE(r.getType() == SquareRoot::Type::imaginary);
 	}
 	SECTION ("Multiplication\n") {
-		std::cout << "Fractions\n";
 		SquareRoot lhs = SquareRoot(4, 2);
 		SquareRoot rhs = SquareRoot(2, 14);
 
@@ -92,7 +91,6 @@ TEST_CASE("SquareRoots", "[SquareRoots]") {
 	SECTION ("To long double") {
 		SquareRoot r = Rational(Fraction(1, 2));
 		long double n = (long double)r;
-		std::cout << n << "\n";
 		REQUIRE(n == (long double)std::sqrt((long double)0.5));
 
 		r = Rational(Fraction(125));

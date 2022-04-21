@@ -272,7 +272,7 @@ std::tuple<long long, long long>		getDenomFactors(long long d_left, long long d_
 void			Fraction::combineWholeNumerator() {
 	// if (multiplicationExceedsLimits(_w, _d) 
 	// || additionExceedsLimits(_w * _d, _n)) {
-	// 	throw (std::overflow_error("Cannot combine numerator and whole part without causing overflow.\n"));
+	// 	throw (std::overflow_error("Cannot combine numerator and whole part without causing over- or underflow.\n"));
 	// }
 	int sign = _w < 0 ? -1 : 1;
 
@@ -283,7 +283,7 @@ void			Fraction::combineWholeNumerator() {
 
 Fraction		abs(const Fraction &rhs) {
 	// if (rhs._n == LLONG_MIN || rhs._w == LLONG_MIN) {
-	// 	throw std::overflow_error("Cannot take absolute value of minimum value of long long without causing overflow\n");
+	// 	throw std::overflow_error("Cannot take absolute value of minimum value of long long without causing over- or underflow\n");
 	// }
 	Fraction tmp = rhs;
 	tmp._n = safeAbs(tmp._n);
@@ -349,7 +349,7 @@ void		Fraction::fixSigns() {
 	if (_d < 0 && _n < 0) {
 		// if both numerator and denominator are negative, factor out negative sign
 		// if (_d == LLONG_MIN || _n == LLONG_MIN) {
-		// 	throw std::overflow_error("Cannot make " + (std::string)*this + " positive without causing overflow.\n");
+		// 	throw std::overflow_error("Cannot make " + (std::string)*this + " positive without causing over- or underflow.\n");
 		// }
 		// _d = llabs(_d);
 		// _n = llabs(_n);
@@ -359,7 +359,7 @@ void		Fraction::fixSigns() {
 	if (_d < 0 && _n >= 0) {
 		// Move negative sign to numerator if appropriate
 		if (_d == LLONG_MIN) {
-			throw std::overflow_error("Cannot make minimum value of long long positive without causing overflow.\n");
+			throw std::overflow_error("Cannot make minimum value of long long positive without causing over- or underflow.\n");
 		}
 		_d = safeAbs(_d);
 		_n *= -1;
