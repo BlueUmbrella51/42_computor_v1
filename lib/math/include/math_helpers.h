@@ -123,6 +123,7 @@ bool	multiplicationExceedsLimits(T lhs, T rhs) {
 	/* We have to separate this case because dividing numerical limit min by -1 
 	will cause overflow in the check */
 	if (rhs == -1 && lhs > 0) return false;
+	std::cout << std::numeric_limits<T>::min();
 	return ((lhs > 0 && rhs > 0 && (lhs > std::numeric_limits<T>::max() / rhs))
 	|| (lhs < 0 && rhs < 0 && (lhs < std::numeric_limits<T>::max() / rhs))
 	|| (rhs > 0 && lhs < 0 && (lhs < std::numeric_limits<T>::min() / rhs))
