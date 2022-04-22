@@ -1,6 +1,6 @@
 #!/bin/bash
 
-FLAGS="-Wall -Werror -Wextra -Wpedantic -Wno-unused-parameter";
+FLAGS="-Wall -Werror -Wextra -Wpedantic -Wno-unused-parameter -Wno-unused-variable";
 TSTS="OFF"
 
 for var in "$@"
@@ -20,4 +20,4 @@ done
 
 mkdir -p build
 cd build
-cmake -DTESTS=$TSTS -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_CXX_FLAGS="$FLAGS" ..
+cmake -DTESTS=$TSTS -DCMAKE_VERBOSE_MAKEFILE=on -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=g++ -DCMAKE_CXX_FLAGS="$FLAGS" ..

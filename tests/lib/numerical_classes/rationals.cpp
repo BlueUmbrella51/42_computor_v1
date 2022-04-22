@@ -7,8 +7,6 @@
 
 TEST_CASE("Fractions", "[Fractions]") {
 	SECTION("Overflow\n") {
-		std::cout << "Testing: Fractions overflow\n";
-
 		long long w = LLONG_MIN;
 		long long n = LLONG_MIN;
 		CHECK_THROWS(Fraction(w, n, 1));
@@ -21,7 +19,6 @@ TEST_CASE("Fractions", "[Fractions]") {
 		CHECK_THROWS(Fraction(w, 1, 1));
 	}
 	SECTION("Normal creation\n") {
-		std::cout << "Testing: Fractions creation\n";
 		long long w = -5;
 		long long n = -7;
 		long long d = 4;
@@ -66,7 +63,6 @@ TEST_CASE("Fractions", "[Fractions]") {
 		REQUIRE(r == Fraction(-8, 3, 4));
 	}
 	SECTION("Equality operators\n") {
-		std::cout << "Testing: Fractions equality checks\n";
 		Fraction n = Fraction(-1, 4, 3);
 		Fraction m = Fraction(1, 4, 3);
 		Fraction o = n;
@@ -85,7 +81,6 @@ TEST_CASE("Fractions", "[Fractions]") {
 		REQUIRE(a == true);
 	}
 	SECTION("Addition\n") {
-		std::cout << "Testing: Fractions addition\n";
 		Fraction r = Fraction(5, 7) + 1;
 		REQUIRE(r == Fraction(1, 5 ,7));
 
@@ -132,7 +127,6 @@ TEST_CASE("Fractions", "[Fractions]") {
 		REQUIRE(r == Fraction(11, 64, 903));
 	}
 	SECTION("Subtraction\n") {
-		std::cout << "Testing: Fractions subtraction\n";
 		Fraction r = 1 - Fraction(1, 1, 3);
 		REQUIRE(r == Fraction(-1, 3));
 
@@ -180,7 +174,6 @@ TEST_CASE("Fractions", "[Fractions]") {
 		REQUIRE(r == Fraction(-2, 3));
 	}
 	SECTION("Division\n") {
-		std::cout << "Testing: Fractions division\n";
 		/* Both negative */
 		Fraction r = Fraction(-1, 2, 3) / Fraction(-4, 1, 7);
 		REQUIRE(r == Fraction(35, 87));
@@ -203,7 +196,6 @@ TEST_CASE("Fractions", "[Fractions]") {
 		CHECK_THROWS(Fraction(2, 3) / 0);
 	}
 	SECTION("Multiplication\n") {
-		std::cout << "Testing: Fractions multiplication\n";
 		Fraction r = Fraction(-1, 4);
 
 		r *= 4;
