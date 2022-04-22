@@ -23,7 +23,7 @@ set(headerDir include)
 set(compSourceDir ${CMAKE_CURRENT_LIST_DIR}/computor/)
 set(computorHeaderDir ${CMAKE_CURRENT_LIST_DIR}/computor/${headerDir})
 set(mathHeaderDir ${CMAKE_CURRENT_LIST_DIR}/lib/math/${headerDir})
-set(polynomialHeaderDir ${CMAKE_CURRENT_LIST_DIR}/lib/polynomial/${headerDir})
+set(polynomialHeaderDir ${CMAKE_CURRENT_LIST_DIR}/lib/polynomials/${headerDir})
 set(numericalHeaderDir ${CMAKE_CURRENT_LIST_DIR}/lib/numerical_classes/${headerDir})
 
 set(mathName math_helpers)

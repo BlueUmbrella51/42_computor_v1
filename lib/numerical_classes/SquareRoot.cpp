@@ -2,6 +2,9 @@
 #include "math_helpers.h"
 #include <iomanip>
 
+#define IMAG "𝑖"
+#define ROOT "√"
+
 void		rationalize(SquareRoot &numer, const SquareRoot &denom) {
 	/* Normalize the "fraction" (move it from denominator to nominator) 
 	by multiplying numerator and denominator by root part of denominator */
@@ -16,9 +19,6 @@ void		rationalize(SquareRoot &numer, const SquareRoot &denom) {
 
 SquareRoot::SquareRoot(Rational n) : _root{1}, _whole{1}, _degree{2}, 
 	_type{SquareRoot::Type::real}, _divisor{1} {
-	if (n == 0) {
-		std::cout << "Warning: root part of square root set to zero.\n";
-	}
 	if (n < 0) {
 		_type = Type::imaginary;
 		n = abs(n);
@@ -95,15 +95,20 @@ bool		sameTypeAndSquareRoot(const SquareRoot &lhs, const SquareRoot &rhs) {
 SquareRoot::operator std::string() const {
 	std::string res = "";
 
-	if (_whole != 1) {
+	if (_whole == 1 && _root == 1) {
 		res += (std::string)_whole;
 	}
-	if (_root != 1) {
-		res += "√";
-		res += (std::string)_root;
+	else {
+		if (_whole != 1) {
+		res += (std::string)_whole;
+		}
+		if (_root != 1) {
+			res += ROOT;
+			res += (std::string)_root;
+		}
 	}
 	if (_type == Type::imaginary) {
-		res += "𝑖";
+		res += IMAG;
 	}
 	return res;
 }
@@ -118,26 +123,40 @@ SquareRoot::operator long double() const {
 	}
 }
 
+bool		SquareRoot::isImaginary() const {
+	return (_type == SquareRoot::Type::imaginary);
+}
+
+bool		SquareRoot::isReal() const {
+	return (_type == SquareRoot::Type::real);
+}
+
+bool		SquareRoot::isPerfect() const {
+	/* Check whether can be expressed as whole number */
+	return (_root == 1 && (_whole.isIntegral() || (long long)_whole == _whole));
+}
+
 bool		SquareRoot::hasRealNumericSolution() const {
 	/* If root is of no influence or any component is 
 	floating point, solution is numeric */
-	return ((_root == 1 || _root.isFloating()) && _type == Type::real);
+	return ((_root <= 1 || _root.isFloating()) && _type == Type::real);
 }
 
 Rational	SquareRoot::getNumericalSolution() const {
+	if (_root == 0) {
+		return 0;
+	}
 	if (_root == 1) {
 		return _whole;
 	}
-	else if (_root.isFloating()) {
+	if (_root.isFloating()) {
 		return std::pow((long double)_root, 1.0f / _degree);
 	}
-	else {
-		// SquareRoot is integral
-		long double res = _whole;
+	// SquareRoot is integral
+	long double res = _whole;
 
-		res *= std::pow((long double)_root, 1.0 / _degree);
-		return res;
-	}
+	res *= std::pow((long double)_root, 1.0 / _degree);
+	return res;
 }
 
 SquareRoot		&SquareRoot::operator+=(const SquareRoot &rhs) {

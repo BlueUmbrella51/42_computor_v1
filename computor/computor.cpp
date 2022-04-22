@@ -1,6 +1,10 @@
 #include "computor.h"
+#include "SquareRoot.h"
+#include "Solution.h"
 
 int main(int argc, char *argv[]) {
+	SquareRoot q = SquareRoot(-28) / Rational(Fraction(-8, 1));
+    CompoundSolutions c = CompoundSolutions(Fraction(4, 1), q);
 	std::string help = "Usage: enter a polynomial of degree smaller than or equal to two.\nFactors can be: integers, \
 decimals or fractions (form: 1/2 or 2(2/3)).\n\nExample: \"2X^2 - X = 2.25\"\n\nAccepts one indeterminate that must be\
  called 'X'.\n\nOptions:\n-n		Numerical output only (default is scientific/precise notation.)\n";

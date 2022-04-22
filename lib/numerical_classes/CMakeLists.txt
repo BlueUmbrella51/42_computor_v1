@@ -7,8 +7,10 @@ add_library(${numerName} STATIC
 			Numerical.cpp
 )
 
-target_compile_features(${mathName} PUBLIC cxx_std_17)
+target_compile_features(${numerName} PUBLIC cxx_std_17)
 
-target_include_directories(${numerName} PUBLIC ${headerDir})
+target_include_directories(${numerName} 
+	PUBLIC ${headerDir}
+	PUBLIC ${mathHeaderDir})
 
 target_link_libraries(${numerName} PRIVATE ${mathName})

@@ -27,6 +27,7 @@ class	SquareRoot {
 		}
 		SquareRoot(Rational n);
 		SquareRoot	&operator=(const SquareRoot &rhs);
+		operator	std::string () const;
 		~SquareRoot() = default;
 
 		void		simplify(Rational &r);
@@ -35,13 +36,15 @@ class	SquareRoot {
 		Numerical	getSquareRoot() const;
 		Rational	getWhole() const;
 		int			getDegree() const;
+		bool		isImaginary() const;
+		bool		isReal() const;
+		bool		isPerfect() const;
 		Type		getType() const;
 		void		setType(Type t);
 		Rational	getDivisor() const;
 		bool		isFloating() const;
 		bool		hasRealNumericSolution() const;
 		Rational	getNumericalSolution() const;
-		operator	std::string () const;
 		operator	long double () const;
 		SquareRoot		&operator+=(const SquareRoot &rhs);
 		SquareRoot		&operator-=(const SquareRoot &rhs);
@@ -62,6 +65,9 @@ class	SquareRoot {
             std::is_floating_point<T>{}, bool>::type = true
 		>
 	std::pair<long long, long double>		simplify_root(T n, int degree) {
+		if ((long long)n == n) {
+			return simplify_root((long long)n, degree);
+		}
 		return std::make_pair(1, n);
 	}
 

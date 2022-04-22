@@ -8,7 +8,8 @@ Solution		solve_first_degree(Equation &eq) {
 	Rational coeffDegrZero = eq.findCoeffOfDegree(eq.getEquationLeft(), 0);
 	Rational coeffDegrOne = eq.findCoeffOfDegree(eq.getEquationLeft(), 1);
 
-	return Solution(-coeffDegrZero / coeffDegrOne, 1);
+	// return Solution(-coeffDegrZero / coeffDegrOne, 1);
+	return Solution();
 }
 
 Solution		solve_second_degree(Equation &eq) {
@@ -28,22 +29,27 @@ Solution		solve_second_degree(Equation &eq) {
 	Rational divisor = (2 * a);
 	// std::cout << "After divisor\n";
 	Rational left = -b / divisor;
+
+	if (left == (long long)left) {
+		left = (long long)left;
+	}
 	// std::cout << "After left\n";
-	if (discriminant != 0) {
-		SquareRoot right = SquareRoot(discriminant) / divisor;
+	// if (discriminant != 0) {
 		// std::cout << "b^2/2a: " << left << "\n";
 		// std::cout << "simplified root: " << right << "\n";
-		if (discriminant > 0) {
-			std::cout << "Discriminant is strictly positive.\n";
-		}
-		else {
-			std::cout << "Discriminant is strictly negative.\n";
-		}
-		return Solution(left, right);
+	if (discriminant > 0) {
+		std::cout << "Discriminant is strictly positive.\n";
 	}
 	else {
-		return Solution(left, 2);
+		std::cout << "Discriminant is strictly negative.\n";
 	}
+	SquareRoot right = SquareRoot(discriminant) / divisor;
+	return Solution(left, right);
+	// }
+	// else {
+	// 	// return Solution(left, 2);
+	// 	return Solution();
+	// }
 }
 
 Solution		solve_equation(Equation &eq) {
