@@ -108,7 +108,7 @@ Equation				&Equation::operator/=(const Token &t) {
 	return *this;
 }
 
-Equation				&Equation::toFloatingPoint() {
+Equation				&Equation::toNumerical() {
 	for (auto it = _tokensLeft.begin(); it != _tokensLeft.end(); ++it) {
 		(*it).setCoeff((long double)(*it).getCoeff());
 	}

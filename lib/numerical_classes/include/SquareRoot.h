@@ -43,9 +43,11 @@ class	SquareRoot {
 		void		setType(Type t);
 		Rational	getDivisor() const;
 		bool		isFloating() const;
+		bool		hasNumericSolution() const;
 		bool		hasRealNumericSolution() const;
 		Rational	getNumericalSolution() const;
 		operator	long double () const;
+		SquareRoot		&toNumerical();
 		SquareRoot		&operator+=(const SquareRoot &rhs);
 		SquareRoot		&operator-=(const SquareRoot &rhs);
 		SquareRoot		&operator*=(const SquareRoot &rhs);

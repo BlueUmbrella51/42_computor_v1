@@ -45,8 +45,8 @@ class Equation {
 		Equation::operationSide	getSide();
 		void					setSide(Equation::operationSide s);
 		void					factor(std::list<Token> &lst);
-		Equation				&toFloatingPoint();
-	
+		Equation				&toNumerical();
+
 	private:
 		std::list<Token>		_tokensLeft;
 		std::list<Token>		_tokensRight;

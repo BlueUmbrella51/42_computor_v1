@@ -28,6 +28,7 @@ class Numerical {
 		bool			isFloating() const;
 		numerical		getVal() const;
 		void			setVal(numerical n);
+
 		template<typename T,
 			typename std::enable_if_t<std::is_arithmetic<T>::value, bool> = true
 		>
@@ -45,6 +46,7 @@ class Numerical {
 	private:
 		numerical _val;
 	
+	friend Numerical			trunc(const Numerical &r);
 	friend std::ostream    		&operator<<(std::ostream &os, const Numerical &x);
 };
 

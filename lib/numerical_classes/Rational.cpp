@@ -25,6 +25,7 @@ bool	Rational::isIntegral() const {
 bool	Rational::isFloating() const {
 	if (std::holds_alternative<Numerical>(_val)) {
 		auto n = std::get<Numerical>(_val);
+		std::cout << n.isFloating();
 		return n.isFloating();
 	}
 	else {
@@ -59,6 +60,13 @@ Rational::operator long long() const {
 		[](Fraction arg) { return (long long)arg; },
 		[](Numerical arg) { return (long long)arg; }
 	}, _val);
+}
+
+Rational		trunc(const Rational &r) {
+	return std::visit(overloaded {
+		[](Fraction arg) { return Rational(Fraction(arg.getWhole())); },
+		[](Numerical arg) { return Rational(trunc(arg)); }
+	}, r._val);
 }
 
 real	Rational::getVal() const {
@@ -263,9 +271,7 @@ Rational	operator/(const Fraction &lhs, const Numerical &rhs) {
 }
 
 std::ostream    	&operator<<(std::ostream &os, const Rational &x) {
-	std::visit([&os](auto &n){
-		os << n;
-	}, x._val);
+	os << (std::string)x;
 	return os;
 }
 

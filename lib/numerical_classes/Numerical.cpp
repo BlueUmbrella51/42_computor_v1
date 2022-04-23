@@ -45,7 +45,12 @@ Numerical::operator		long double() const {
 
 Numerical::operator		std::string() const {
 	return std::visit([](auto n) {
-		return std::to_string(n);
+		if (trunc(n) == n && (long long)n == trunc(n)) {
+			return std::to_string((long long)n);
+		}
+		else {
+			return std::to_string(n);
+		}
 	}, getVal());
 }
 
@@ -100,6 +105,12 @@ Numerical		&Numerical::operator/=(const Numerical &rhs) {
 		return numerical((n1 / n2));
 	}, _val, rhs._val);
 	return *this;
+}
+
+Numerical		trunc(const Numerical &r) {
+	return std::visit([](auto n) {
+		return Numerical(std::trunc(n));
+	}, r.getVal());
 }
 
 std::ostream    		&operator<<(std::ostream &os, const Numerical &x) {

@@ -157,7 +157,6 @@ bool	multiplicationExceedsLimits(T lhs, T rhs) {
 	/* We have to separate this case because dividing numerical limit min by -1 
 	will cause overflow in the check */
 	if (rhs == -1 && lhs > 0) return false;
-	std::cout << std::numeric_limits<T>::min();
 	return ((lhs > 0 && rhs > 0 && (lhs > std::numeric_limits<T>::max() / rhs))
 	|| (lhs < 0 && rhs < 0 && (lhs < std::numeric_limits<T>::max() / rhs))
 	|| (rhs > 0 && lhs < 0 && (lhs < std::numeric_limits<T>::min() / rhs))
@@ -266,7 +265,7 @@ std::tuple<long long, long long, long long>	doubleToRatio(T value, long double a
 		throw std::invalid_argument("Decimal to convert to ratio cannot be nan.");}
 	if (accuracy < 0.0 || accuracy > 1.0) {
 		throw std::invalid_argument("Accuracy for conversion to ratio must be between 0 and 1.");}
-	if (floor(value) < LLONG_MIN || floor(value) > LLONG_MAX) {
+	if (trunc(value) < LLONG_MIN || trunc(value) > LLONG_MAX) {
 		throw std::overflow_error("Whole part of decimal is too large to fit integer type\n"); }
 	
 	int				sign = value >= 0.0 ? 1 : -1;
@@ -290,9 +289,9 @@ std::tuple<long long, long long, long long>	doubleToRatio(T value, long double a
 	size_t				i = 1;
 	do {
 		++i;
-		x = 1 / (x - floor(x));
-		long long next_a = safeAddition(a[i - 2], safeMultiplication(floor(x), a[i - 1]));
-		long long next_b = safeAddition(b[i - 2], safeMultiplication(floor(x), b[i - 1]));
+		x = 1 / (x - trunc(x));
+		long long next_a = safeAddition(a[i - 2], safeMultiplication(trunc(x), a[i - 1]));
+		long long next_b = safeAddition(b[i - 2], safeMultiplication(trunc(x), b[i - 1]));
 		a.push_back(next_a);
 		b.push_back(next_b);
 	}

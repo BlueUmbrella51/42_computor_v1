@@ -271,4 +271,9 @@ TEST_CASE("Fractions", "[Fractions]") {
 
 		REQUIRE(abs(n) == std::abs(g));
 	}
+	SECTION("trunc\n") {
+		REQUIRE(trunc(Rational(-117.12)) == -117);
+		REQUIRE(trunc(Rational(12)) == 12);
+		REQUIRE(trunc(Rational(Fraction(1, 2))) == 0);
+	}
 }

@@ -37,6 +37,7 @@ class Rational {
 		bool		isFloating() const;
 		bool		isFraction() const;
 
+	friend Rational				trunc(const Rational &r);
 	friend Rational				abs(const Rational &r);
 	friend Rational				operator*(const Rational &a, const Rational &b);
 	friend Rational				operator/(const Rational &a, const Rational &b);

@@ -108,14 +108,13 @@ TEST_CASE("Conversion doubles to ratios", "[Math]") {
 	SECTION("Overflow checks\n") {
 		long double n = std::numeric_limits<long double>::max();
 
-		REQUIRE(multiplicationExceedsLimits(n, 1));
+		REQUIRE(!multiplicationExceedsLimits(n, 1));
 		REQUIRE(multiplicationExceedsLimits(n, 10.25));
 		REQUIRE(!multiplicationExceedsLimits(n, 0.5f));
 		REQUIRE(!multiplicationExceedsLimits(-6.0f, 8));
 
 		n = std::numeric_limits<long double>::lowest();
-		REQUIRE(subtractionExceedsLimits(n, 1)); 
-		REQUIRE(subtractionExceedsLimits(n, -1));
+		REQUIRE(!subtractionExceedsLimits(n, -1));
 		REQUIRE(!subtractionExceedsLimits(15.0f, 20.25f)); 
 
 		n = std::numeric_limits<long double>::min();
@@ -123,7 +122,7 @@ TEST_CASE("Conversion doubles to ratios", "[Math]") {
 		REQUIRE(!divisionExceedsLimits(1289718971.8971897, 8971.871));
 
 		n = std::numeric_limits<long double>::max();
-		REQUIRE(additionExceedsLimits(n, 1.0f));
+		REQUIRE(additionExceedsLimits(n, n));
 		REQUIRE(!additionExceedsLimits(123871.8718971, 89718971.858));
 	}
 }

@@ -8,6 +8,7 @@
 TEST_CASE("Solutions", "[visualisation of solutions]") {
     SECTION("Precision mode\n")  {
         SECTION("Compound\n") {
+            /* A cannot be negative so neither can the divisor! */
             SquareRoot q = SquareRoot(-4);
             CompoundSolutions c = CompoundSolutions(Rational(2), q);
             REQUIRE(std::get<0>(c.toStrings()) == "2𝑖(1-𝑖)");
@@ -28,25 +29,10 @@ TEST_CASE("Solutions", "[visualisation of solutions]") {
             REQUIRE(std::get<0>(c.toStrings()) == "1/8(1+√3)");
             REQUIRE(std::get<1>(c.toStrings()) == "1/8(1-√3)");
 
-            q = SquareRoot(-3) / Rational(Fraction(-8, 1));
-            c = CompoundSolutions(Fraction(-1, 8), q);
-            REQUIRE(std::get<0>(c.toStrings()) == "-1/8𝑖(√3-𝑖)");
-            REQUIRE(std::get<1>(c.toStrings()) == "1/8𝑖(𝑖+√3)");
-
-            q = SquareRoot(-3) / Rational(Fraction(-8, 1));
-            c = CompoundSolutions(Fraction(1, 8), q);
-            REQUIRE(std::get<0>(c.toStrings()) == "-1/8𝑖(𝑖+√3)");
-            REQUIRE(std::get<1>(c.toStrings()) == "-1/8𝑖(𝑖-√3)");
-
             q = SquareRoot(28);
             c = CompoundSolutions(Rational(4), q);
             REQUIRE(std::get<0>(c.toStrings()) == "2(2+√7)");
             REQUIRE(std::get<1>(c.toStrings()) == "2(2-√7)");
-
-            q = SquareRoot(-28) / Rational(Fraction(-8, 1));
-            c = CompoundSolutions(Fraction(4), q);
-            REQUIRE(std::get<0>(c.toStrings()) == "-1/4(√7𝑖-16)");
-            REQUIRE(std::get<1>(c.toStrings()) == "1/4(16+√7𝑖)");
 
             /* b == 0 */
             q = SquareRoot(-3);
@@ -83,15 +69,22 @@ TEST_CASE("Solutions", "[visualisation of solutions]") {
             c = SimpleSolutions(0.25671871, Fraction(8, 1, 9));
             REQUIRE(std::get<0>(c.toStrings()) == "8.367830");
             REQUIRE(std::get<1>(c.toStrings()) == "7.854392");
-            std::cout << "\n"<< c;
 
             c = SimpleSolutions(16, Fraction(8, 1, 9));
             REQUIRE(std::get<0>(c.toStrings()) == "24(1/9)");
             REQUIRE(std::get<1>(c.toStrings()) == "7(8/9)");
-            std::cout << "\n"<< c;
 
             /* Square root == 0 */
-            
+            c = SimpleSolutions(12, 0);
+            REQUIRE(std::get<0>(c.toStrings()) == "+/-12");
+
+            c = SimpleSolutions(0, 0);
+            REQUIRE(std::get<0>(c.toStrings()) == "0");
+
+            /* doubles to long long */
+            c = SimpleSolutions(16.0, 4);
+            REQUIRE(std::get<0>(c.toStrings()) == "20");
+            REQUIRE(std::get<1>(c.toStrings()) == "12");
         }
     }
 }

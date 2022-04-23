@@ -95,7 +95,7 @@ bool		sameTypeAndSquareRoot(const SquareRoot &lhs, const SquareRoot &rhs) {
 SquareRoot::operator std::string() const {
 	std::string res = "";
 
-	if (_whole == 1 && _root == 1) {
+	if (_whole == 1 && _root == 1 && _type == Type::real) {
 		res += (std::string)_whole;
 	}
 	else {
@@ -136,10 +136,14 @@ bool		SquareRoot::isPerfect() const {
 	return (_root == 1 && (_whole.isIntegral() || (long long)_whole == _whole));
 }
 
+bool		SquareRoot::hasNumericSolution() const {
+	return (_root <= 1 || _root.isFloating());
+}
+
 bool		SquareRoot::hasRealNumericSolution() const {
 	/* If root is of no influence or any component is 
 	floating point, solution is numeric */
-	return ((_root <= 1 || _root.isFloating()) && _type == Type::real);
+	return (hasNumericSolution() && _type == Type::real);
 }
 
 Rational	SquareRoot::getNumericalSolution() const {
@@ -149,13 +153,10 @@ Rational	SquareRoot::getNumericalSolution() const {
 	if (_root == 1) {
 		return _whole;
 	}
-	if (_root.isFloating()) {
-		return std::pow((long double)_root, 1.0f / _degree);
+	long double res = (long double)_whole * std::pow((long double)_root, 1.0f / _degree);
+	if (res == (long long)res) {
+		return (long long)res;
 	}
-	// SquareRoot is integral
-	long double res = _whole;
-
-	res *= std::pow((long double)_root, 1.0 / _degree);
 	return res;
 }
 
@@ -198,6 +199,12 @@ SquareRoot		&SquareRoot::operator/=(const Rational &rhs) {
 	/* Normalize the "fraction" (move it from denominator to nominator) 
 	by multiplying numerator and denominator by root part of denominator */
 	_whole /= rhs;
+	return *this;
+}
+
+SquareRoot		&SquareRoot::toNumerical() {
+	_whole = getNumericalSolution();
+	_root = 1;
 	return *this;
 }
 
