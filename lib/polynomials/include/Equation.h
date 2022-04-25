@@ -60,7 +60,7 @@ class Equation {
 
 		friend std::ostream		&operator<<(std::ostream &os, const Equation &eq);
 };
-Token			parse_token(ParseToken &pt);
-Equation		parse_equation(std::string &input);
+Token			doParseToken(ParseToken &pt);
+Equation		doParseEquation(std::string &input);
 
 #endif

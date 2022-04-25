@@ -36,10 +36,3 @@ long long	safeDivision(long long n1, long long n2) {
 	}
 	return n1 / n2;
 }
-
-// long long	safeAbs(long long n) {
-// 	if (n == LLONG_MIN) {
-// 		throw std::overflow_error("Cannot make " + std::to_string(n) + " positive without causing over- or underflow.\n");
-// 	}
-// 	return llabs(n);
-// }

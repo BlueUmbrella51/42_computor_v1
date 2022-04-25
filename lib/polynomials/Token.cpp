@@ -8,13 +8,20 @@ _coeff{coeff}, _degree{degree}{
 Token::operator std::string() const {
 	/* Coefficient and degree to string */
 	std::string res = "";
+	auto 		coeff = _coeff;
 
-	res += std::string(_coeff);
+	if (coeff < 0) {
+		res += "-";
+		coeff = abs(coeff);
+	}
+	if (coeff != 1) {
+		res += std::string(coeff);
+	}
 	if (_coeff != 0) {
 		if (_degree != 0) {
 			res += "X";
 			if (_degree == 2) {
-				res += "²";
+				res += PWR_TWO;
 			}
 			else if (_degree != 1) {
 				res += "^" + std::to_string(_degree);

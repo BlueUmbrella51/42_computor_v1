@@ -4,6 +4,6 @@
 #include "Equation.h"
 #include "Solution.h"
 
-Equation	parse_equation(std::string &equation);
+Equation	doParseEquation(std::string &equation);
 Solution	solve_equation(Equation &e);
 #endif

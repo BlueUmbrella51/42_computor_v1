@@ -5,6 +5,9 @@
 #include <iostream>
 #include "Rational.h"
 
+/* Class to represent Roots. Currently for degree 2 only. Not all operations
+take into account the type of the root (real or imaginary), but in the way they are used now
+that does not pose a problem (warning for future use/expansion) */
 class	SquareRoot {
 	public:
 		enum Type {
@@ -51,7 +54,6 @@ class	SquareRoot {
 		SquareRoot		&operator+=(const SquareRoot &rhs);
 		SquareRoot		&operator-=(const SquareRoot &rhs);
 		SquareRoot		&operator*=(const SquareRoot &rhs);
-		// SquareRoot		&operator/=(const SquareRoot &rhs);
 		SquareRoot		&operator/=(const Rational &rhs);
 
 	private:

@@ -15,6 +15,12 @@ TEST_CASE("Conversion doubles to ratios", "[Math]") {
 		REQUIRE(d == 1);
 	}
 
+	SECTION("Get gcd\n") {
+		REQUIRE(getGcd(12, 4) == 4);
+		REQUIRE(getGcd(12.0, 16.0) == 4);
+		REQUIRE(getGcd(12.15, 16.120) == 1);
+	}
+
 	SECTION("Invalid inputs: NaN and INF\n") {
 		auto num = std::numeric_limits<long double>::quiet_NaN();
 		CHECK_THROWS(doubleToRatio(num));

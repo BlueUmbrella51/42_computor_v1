@@ -181,7 +181,6 @@ SquareRoot		&SquareRoot::operator-=(const SquareRoot &rhs) {
 }
 
 SquareRoot		&SquareRoot::operator*=(const SquareRoot &rhs) {
-	// TODO: complex and real?
 	Rational 		nw_whole = getWhole() * rhs.getWhole();
 	SquareRoot 		nw_root = SquareRoot(getSquareRoot() * rhs.getSquareRoot());
 
@@ -195,7 +194,6 @@ SquareRoot		&SquareRoot::operator*=(const SquareRoot &rhs) {
 }
 
 SquareRoot		&SquareRoot::operator/=(const Rational &rhs) {
-	// TODO: COMPLEX
 	/* Normalize the "fraction" (move it from denominator to nominator) 
 	by multiplying numerator and denominator by root part of denominator */
 	_whole /= rhs;

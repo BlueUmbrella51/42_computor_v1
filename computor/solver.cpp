@@ -8,7 +8,6 @@ Solution		solve_first_degree(Equation &eq) {
 	Rational coeffDegrZero = eq.findCoeffOfDegree(eq.getEquationLeft(), 0);
 	Rational coeffDegrOne = eq.findCoeffOfDegree(eq.getEquationLeft(), 1);
 
-	// return Solution(-coeffDegrZero / coeffDegrOne, 1);
 	return Solution(-coeffDegrZero / coeffDegrOne);
 }
 
@@ -21,7 +20,6 @@ Solution		solve_second_degree(Equation &eq) {
 	Rational b = b_token ? b_token.value().getCoeff(): Rational(0);
 	Rational c = c_token ? c_token.value().getCoeff(): Rational(0);
 	
-	// TODO: overflow check and possible cast to floating point?
 	Rational discriminant = (b * b) - (4 * a * c);
 	Rational divisor = (2 * a);
 	Rational left = -b / divisor;

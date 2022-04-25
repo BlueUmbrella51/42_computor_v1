@@ -59,28 +59,6 @@ class	SimpleSolutions {
 	friend std::ostream    		&operator<<(std::ostream &os, const SimpleSolutions &x);
 };
 
-// class	SimpleSolution {
-// 	public:
-// 		SimpleSolution(Rational n);
-// 		operator std::string() const;
-	
-// 	private:
-// 		Rational	_sol;
-	
-// 	friend std::ostream    		&operator<<(std::ostream &os, const SimpleSolutions &x);
-// };
-
-// class	RootOnlySolution {
-// 	public:
-// 		RootOnlySolution(SquareRoot s);
-// 		operator std::string() const;
-	
-// 	private:
-// 		SquareRoot	_sol;
-
-// 	friend std::ostream    		&operator<<(std::ostream &os, const SimpleSolutions &x);
-// };
-
 typedef	std::variant<SimpleSolutions, CompoundSolutions> solution;
 
 class Solution {

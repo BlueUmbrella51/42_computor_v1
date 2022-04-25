@@ -36,7 +36,6 @@ Equation::operator std::string() const {
 		if (it != _tokensLeft.begin()) {
 			if ((*it).getCoeff() < 0) { tmp.erase(0, 1); }
 			if ((*it).getCoeff() < 0) {
-				// add " - " to string
 				res += " - " + tmp;
 			}
 			else {
@@ -301,7 +300,7 @@ Fraction		decimal_string_to_rational(std::string &str) {
 	if (str[0] == '-' && whole == 0) {
 		numerator = -numerator;
 	}
-	denominator = int_pow(10, i - prev);
+	denominator = intPow(10, i - prev);
 	/* Combine whole part and numerator */
 	return Fraction(whole, numerator, denominator);
 }
@@ -361,7 +360,7 @@ long int		get_degree(std::string &str) {
 	return degree;
 }
 
-Token			parse_token(ParseToken &pt) {
+Token			doParseToken(ParseToken &pt) {
 	ParseToken::coeffTypes		type = pt.getType();
 	std::string					coeff_str = pt.getCoeff();
 	std::optional<std::string>	degree_str = pt.getDegree();
@@ -375,15 +374,15 @@ Token			parse_token(ParseToken &pt) {
 	return Token(coeff, degree);
 }
 
-Equation		parse_equation(std::string &input) {
+Equation		doParseEquation(std::string &input) {
 	Equation token_info = Equation();
 	auto [left, right] = getParsingTokens(input);
 	for (std::vector<ParseToken>::iterator it = left.begin(); it != left.end(); ++it) {
-		token_info.add(parse_token(*it));
+		token_info.add(doParseToken(*it));
 	}
 	token_info.setSide(Equation::operationSide::right);
 	for (std::vector<ParseToken>::iterator it = right.begin(); it != right.end(); ++it) {
-		token_info.add(parse_token(*it));
+		token_info.add(doParseToken(*it));
 	}
 	return token_info;
 }

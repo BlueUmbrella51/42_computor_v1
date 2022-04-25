@@ -7,6 +7,8 @@
 #include "math_helpers.h"
 #include <variant>
 
+#define PWR_TWO "²"
+
 class Token
 {
 	public:

@@ -30,14 +30,6 @@ T			safeAbs(T n) {
 	return std::abs(n);
 }
 
-/* Default implementation of getGcd: if either parameter is floating point, return 1 */
-template<typename T, typename U, 
-			typename std::enable_if<
-            std::is_floating_point<T>{} ||
-            std::is_floating_point<U>{}, bool>::type = true
-		>
-long long 	getGcd(T a, U b) { return 1; }
-
 /* getGcd for all combinations of integral types */
 template<typename T, typename U, 
 			typename std::enable_if<
@@ -48,6 +40,23 @@ long long	getGcd(T a, U b) {
 	auto gcd = std::gcd(a, b);
 	return gcd == 0 ? 1: gcd; 
 }
+
+
+/* Default implementation of getGcd: if either parameter is floating point, return 1 */
+template<typename T, typename U, 
+			typename std::enable_if<
+            std::is_floating_point<T>{} ||
+            std::is_floating_point<U>{}, bool>::type = true
+		>
+long long 	getGcd(T a, U b) { 
+	if (std::trunc((long double)a) == a
+	&& (a <= std::numeric_limits<long long>::max() && a >= std::numeric_limits<long long>::min())
+	&& std::trunc((long double)b) == b
+	&& (b <= std::numeric_limits<long long>::max() && b >= std::numeric_limits<long long>::min())) {
+		return (getGcd((long long)a, (long long)b));
+	}
+	return 1;
+ }
 
 template<typename T, typename U, typename V,
 			typename std::enable_if<
@@ -270,16 +279,16 @@ std::tuple<long long, long long, long long>	doubleToRatio(T value, long double a
 	
 	int				sign = value >= 0.0 ? 1 : -1;
 	value = safeAbs(value);
-	long long 		int_part = (long long)value;
-	value -= int_part;
+	long long 		intPart = (long long)value;
+	value -= intPart;
 
 	// check if decimal part is withing permitted error range from 0.0 or equal to 0.0
 	if (value - accuracy < 0.0 || value == 0.0) {
-		return std::make_tuple(sign * int_part, 0, 1);
+		return std::make_tuple(sign * intPart, 0, 1);
 	}
 	// check if decimal part is withing permitted error range from 1.0
 	if (value - accuracy < 0.0) {
-		return std::make_tuple(sign * (int_part + 1), 0, 1);
+		return std::make_tuple(sign * (intPart + 1), 0, 1);
 	}
 
 	std::vector<long long> a = {1, 0};
@@ -301,7 +310,7 @@ std::tuple<long long, long long, long long>	doubleToRatio(T value, long double a
 		throw std::overflow_error("Could not find rational approximation \
 of decimal within given precision.");
 	}
-	long long whole = sign * int_part;
+	long long whole = sign * intPart;
 	long long denominator = b[i];
 	long long numerator = sign * a[i];
 	return	std::make_tuple(whole, numerator, denominator);
@@ -312,7 +321,7 @@ template<typename T, typename U,
             std::is_integral<T>{} &&
             std::is_integral<U>{}, bool>::type = true
 		>
-long long	int_pow(T base, U exp) {
+long long	intPow(T base, U exp) {
 	long long result = 1;
 
 	if (exp < 0) { throw std::invalid_argument("Cannot raise integer to negative power."); }

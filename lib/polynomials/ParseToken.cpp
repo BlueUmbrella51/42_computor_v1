@@ -1,5 +1,6 @@
 #include "ParseToken.h"
 #include <regex>
+#include <sstream>
 
 ParseToken::ParseToken(coeffTypes type, std::string coeff) {
 	_degree = std::nullopt;
@@ -156,12 +157,14 @@ std::vector<ParseToken>	parseHalf(std::string &half) {
 }
 
 std::pair<std::string, std::string>		getParsingHalves(std::string &eq) {
-	std::regex 					match_halves{R"([=]+)"};
+	std::regex 					match_halves{R"([=])"};
 	std::sregex_token_iterator 	it{eq.begin(), eq.end(), match_halves, -1};
 	std::vector<std::string> 	halves{it, {}};
 
-	if (halves.size() != 2) {
-		throw std::invalid_argument("Equation must contain exactly on '=' sign followed by at least one number.");
+	size_t numEquals = std::count(eq.begin(), eq.end(), '=');
+	if (halves.size() != 2 || halves.at(0).empty() || halves.at(1).empty() || numEquals != 1) {
+		throw std::invalid_argument("Equation must contain exactly on '=' sign followed and \
+preceeded by at least one number and/or variable.");
 	}
 	return	std::make_pair(halves.at(0), halves.at(1));
 }

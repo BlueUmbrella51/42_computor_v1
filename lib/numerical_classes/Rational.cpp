@@ -25,7 +25,6 @@ bool	Rational::isIntegral() const {
 bool	Rational::isFloating() const {
 	if (std::holds_alternative<Numerical>(_val)) {
 		auto n = std::get<Numerical>(_val);
-		std::cout << n.isFloating();
 		return n.isFloating();
 	}
 	else {
@@ -43,9 +42,9 @@ Rational::operator long double () const {
 	}, _val);
 }
 
-// helper type for the visitor #4
+// helper type for the visitor
 template<class... Ts> struct overloaded : Ts... { using Ts::operator()...; };
-// explicit deduction guide (not needed as of C++20)
+// Deduction guide
 template<class... Ts> overloaded(Ts...) -> overloaded<Ts...>;
 
 Rational::operator	std::string () const {

@@ -164,7 +164,6 @@ std::pair<std::string, std::optional<std::string>> SimpleSolutions::toStrings() 
 		return make_pair((std::string)_plus, std::nullopt);
 	}
 	if (_plus == _min.value()) {
-		std::cout << "Same answer simple\n";
 		if (_plus == 0) {
 			return std::make_pair("0", std::nullopt);
 		}
@@ -189,25 +188,13 @@ SimpleSolutions::SimpleSolutions(Rational l, Rational r) {
 	_plus = l + r;
 	_min = l - r;
 
-	// if (abs(_plus) - (long long)abs(_plus) == 0) {
-	// 	_plus = (long long)_plus;
-	// }
-	// if (_min && abs(_min.value()) - (long long)abs(_min.value()) == 0) {
-	// 	_min = (long long)_min.value();
-	// }
-	std::cout << "Simple solutions " << (std::string)_plus << "  " << (std::string)_min.value() << "\n";
-
 	if (abs(_plus) == abs(_min.value())) {
 		_plus = abs(_plus);
 		_min = _plus;
 	}
 }
 
-
-
-// helper type for the visitor #4
 template<class... Ts> struct overloaded : Ts... { using Ts::operator()...; };
-// explicit deduction guide (not needed as of C++20)
 template<class... Ts> overloaded(Ts...) -> overloaded<Ts...>;
 
 Solution::operator std::string() const {
@@ -260,19 +247,7 @@ Solution::Solution(Rational sol) {
 }
 
 Solution::Solution(Rational l, SquareRoot r) {
-	// if (l.isFloating() && abs(l) - (long long)abs(l) == 0) {
-	// 	l = (long long)l;
-	// }
-	// std::cout << "SOLUTION: " << (std::string)l << "  " << (std::string)r << "\n";
-	// if (r.getSquareRoot() == 0) {
-	// 	/* Only left matters: unique real solution */
-	// 	std::cout << "Only left matters\n";
-	// 	_sol = CompoundSolutions(l, r);
-	// 	// Only left matters
-	// }
-	// else if (l != 0) {
-	// 	_num_solutions = 2;
-		/* Left side (b^2/2a0 is not zero: we have to distinct solutions */
+	/* Left side (b^2/2a0 is not zero: we have to distinct solutions */
 	if (r.hasRealNumericSolution()) {
 		/* Only for REAL solutions with a numerical solution (no root in in answer) 
 		where -b^2/2a != 0*/
@@ -292,25 +267,4 @@ Solution::Solution(Rational l, SquareRoot r) {
 		*/
 		_sol = CompoundSolutions(l, r);
 	}
-	// }
-	// else {
-	// 	/* We have two distinct solutions that are the same but negative and positive 
-	// 	Only the root matters in this case since left = 0. Can be real/imaginary,
-	// 	contain a root or be numerical;
-	// 	*/
-	// 	_num_solutions = 2;
-	// 	std::cout << "Same solution but + or -\n";
-	// 	// if (r.hasRealNumericSolution()) {
-	// 	// 	/* Root is perfect square OR floating point value */
-	// 	// 	_num_print_solutions = 1;
-	// 	// 	/* We need to indicate that this WAS a root so we know we still deal with two 
-	// 	// 	distinct solutions */
-	// 	// 	_num_from_root = true;
-	// 	// 	_sol = abs(r.getNumericalSolution());
-	// 	// }
-	// 	// else {
-	// 	// 	/* Plus or minus root is answer */
-	// 	// 	_num_print_solutions = 1;
-	// 	// 	_sol = r;
-	// }
 }

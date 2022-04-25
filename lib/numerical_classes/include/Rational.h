@@ -193,7 +193,7 @@ bool	operator>=(const T &n, const Rational &rhs) {
 	return (Rational(n) >= rhs);
 }
 
-// /* Arithmetic operators */
+/* Arithmetic operators */
 template<typename T, 
 			typename std::enable_if<
             std::is_arithmetic<T>{}, bool>::type = true

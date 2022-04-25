@@ -15,7 +15,7 @@ if (NOT EXISTS ${catchFile})
     WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
     RESULT_VARIABLE RES)
 	if (NOT RES EQUAL "0")
-		message("Could not update catch library!\n")
+		message("Could not fetch catch2 library!\n")
 	endif()
 endif()
 
@@ -47,4 +47,3 @@ IF (${TESTS})
 	add_subdirectory(external/catch2)
 	add_subdirectory(tests)
 endif()
-
