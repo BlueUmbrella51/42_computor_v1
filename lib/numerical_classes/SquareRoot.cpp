@@ -2,9 +2,6 @@
 #include "math_helpers.h"
 #include <iomanip>
 
-#define IMAG "𝑖"
-#define ROOT "√"
-
 void		rationalize(SquareRoot &numer, const SquareRoot &denom) {
 	/* Normalize the "fraction" (move it from denominator to nominator) 
 	by multiplying numerator and denominator by root part of denominator */

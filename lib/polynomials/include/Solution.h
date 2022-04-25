@@ -5,8 +5,6 @@
 #include <optional>
 #include <variant>
 
-#define IMAG "𝑖"
-
 class	CompoundSolution {
 	/* Root wasn't expressable as numeric, or part is imaginary */
 	public:

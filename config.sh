@@ -2,6 +2,12 @@
 
 FLAGS="-Wall -Werror -Wextra -Wpedantic -Wno-unused-parameter -Wno-unused-variable";
 TSTS="OFF"
+BUILD_DIR="build"
+
+if [ -d ${BUILD_DIR} ]
+then
+    rm -rf ${BUILD_DIR}
+fi
 
 for var in "$@"
 do
@@ -18,6 +24,6 @@ do
     fi
 done
 
-mkdir -p build
-cd build
+mkdir -p ${BUILD_DIR}
+cd ${BUILD_DIR}
 cmake -DTESTS=$TSTS -DCMAKE_VERBOSE_MAKEFILE=on -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_CXX_FLAGS="$FLAGS" ..
