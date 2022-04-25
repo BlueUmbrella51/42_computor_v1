@@ -1,4 +1,5 @@
 #include "Numerical.h"
+#include <cfenv>
 
 Numerical::Numerical(numerical n): _val{n} {
 }
@@ -56,53 +57,58 @@ Numerical::operator		std::string() const {
 
 Numerical		Numerical::operator-() const {
 	return std::visit([](auto n) {
-		if (multiplicationExceedsLimits(n, -1)) {
+		numerical res = numerical(-n);
+		if (std::fetestexcept(FE_OVERFLOW) || std::fetestexcept(FE_UNDERFLOW)) {
 			throw std::overflow_error("Cannot perform -" + std::to_string(n) + " without causing over- or underflow.\n");
 		}
-		return Numerical(-n);
+		return res;
 	}, getVal());
 }
 
 Numerical		&Numerical::operator+=(const Numerical &rhs) {
 	_val = std::visit([](auto &n1, auto &n2) {
-		if (additionExceedsLimits(n1, n2)) {
+		numerical res = n1 + n2;
+		if (std::fetestexcept(FE_OVERFLOW) || std::fetestexcept(FE_UNDERFLOW)) {
 			throw std::overflow_error("Cannot add " + std::to_string(n1) + 
 			" and " + std::to_string(n2) + " without causing over- or underflow.\n");
 		}
-		return numerical((n1 + n2));
+		return res;
 	}, _val, rhs._val);
 	return *this;
 }
 
 Numerical		&Numerical::operator-=(const Numerical &rhs) {
 	_val = std::visit([](auto &n1, auto &n2) {
-		if (subtractionExceedsLimits(n1, n2)) {
+		numerical res = n1 - n2;
+		if (std::fetestexcept(FE_OVERFLOW) || std::fetestexcept(FE_UNDERFLOW)) {
 			throw std::overflow_error("Cannot subtract " + std::to_string(n1) + 
 			" and " + std::to_string(n2) + " without causing over- or underflow.\n");
 		}
-		return numerical((n1 - n2));
+		return res;
 	}, _val, rhs._val);
 	return *this;
 }
 
 Numerical		&Numerical::operator*=(const Numerical &rhs) {
 	_val = std::visit([](auto &n1, auto &n2) {
-		if (multiplicationExceedsLimits(n1, n2)) {
+		numerical res = n1 * n2;
+		if (std::fetestexcept(FE_OVERFLOW) || std::fetestexcept(FE_UNDERFLOW))  {
 			throw std::overflow_error("Cannot multiply " + std::to_string(n1) + 
 			" and " + std::to_string(n2) + " without causing over- or underflow.\n");
 		}
-		return numerical((n1 * n2));
+		return res;
 	}, _val, rhs._val);
 	return *this;
 }
 
 Numerical		&Numerical::operator/=(const Numerical &rhs) {
 	_val = std::visit([](auto &n1, auto &n2) {
-		if (divisionExceedsLimits(n1, n2)) {
+		numerical res = n1 / n2;
+		if (std::fetestexcept(FE_OVERFLOW) || std::fetestexcept(FE_UNDERFLOW)) {
 			throw std::overflow_error("Cannot divide " + std::to_string(n1) + 
 			" and " + std::to_string(n2) + " without causing over- or underflow.\n");
 		}
-		return numerical((n1 / n2));
+		return res;
 	}, _val, rhs._val);
 	return *this;
 }

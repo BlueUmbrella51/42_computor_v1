@@ -39,7 +39,6 @@ add_subdirectory(lib)
 add_subdirectory(computor)
 
 IF (${TESTS})
-	message("BUILDING TESTS...\n")
 	enable_testing()
 	list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/external/catch2/contrib)
 	set(catchFilePath ${CMAKE_CURRENT_SOURCE_DIR}/external/catch2)

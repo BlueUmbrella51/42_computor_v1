@@ -114,22 +114,6 @@ bool	additionExceedsLimits(T lhs, T rhs) {
 
 template<typename T, 
 			typename std::enable_if<
-            std::is_floating_point<T>{}, bool>::type = true
-		>
-bool	additionExceedsLimits(T lhs, T rhs) {
-	/* Check for over- and underflow */
-	std::feclearexcept(FE_ALL_EXCEPT);
-	(void)(lhs + rhs);
-	if (std::fetestexcept(FE_OVERFLOW) || std::fetestexcept(FE_UNDERFLOW)) {
-		std::feclearexcept(FE_ALL_EXCEPT);
-		return true;
-	}
-	std::feclearexcept(FE_ALL_EXCEPT);
-	return false;
-}
-
-template<typename T, 
-			typename std::enable_if<
             std::is_integral<T>{}, bool>::type = true
 		>
 bool	subtractionExceedsLimits(T lhs, T rhs) {
@@ -140,22 +124,6 @@ bool	subtractionExceedsLimits(T lhs, T rhs) {
 	else {
 		return (lhs < std::numeric_limits<T>::min() + rhs);
 	}
-}
-
-template<typename T, 
-			typename std::enable_if<
-            std::is_floating_point<T>{}, bool>::type = true
-		>
-bool	subtractionExceedsLimits(T lhs, T rhs) {
-	/* Check for over- and underflow */
-	std::feclearexcept(FE_ALL_EXCEPT);
-	(void)(lhs - rhs);
-	if (std::fetestexcept(FE_OVERFLOW) || std::fetestexcept(FE_UNDERFLOW)) {
-		std::feclearexcept(FE_ALL_EXCEPT);
-		return true;
-	}
-	std::feclearexcept(FE_ALL_EXCEPT);
-	return false;
 }
 
 template<typename T, 
@@ -176,43 +144,10 @@ bool	multiplicationExceedsLimits(T lhs, T rhs) {
 
 template<typename T, 
 			typename std::enable_if<
-            std::is_floating_point<T>{}, bool>::type = true
-		>
-bool	multiplicationExceedsLimits(T lhs, T rhs) {
-	/* Check for over- and underflow */
-	std::feclearexcept(FE_ALL_EXCEPT);
-	(void)(lhs * rhs);
-
-	if (std::fetestexcept(FE_OVERFLOW) || std::fetestexcept(FE_UNDERFLOW)) {
-		std::feclearexcept(FE_ALL_EXCEPT);
-		return true;
-	}
-	std::feclearexcept(FE_ALL_EXCEPT);
-	return false;
-}
-
-template<typename T, 
-			typename std::enable_if<
             std::is_integral<T>{}, bool>::type = true
 		>
 bool	divisionExceedsLimits(T lhs, T rhs) {
 	return (lhs == std::numeric_limits<T>::min() && rhs == -1);
-}
-
-template<typename T, 
-			typename std::enable_if<
-            std::is_floating_point<T>{}, bool>::type = true
-		>
-bool	divisionExceedsLimits(T lhs, T rhs) {
-	/* Check for over- and underflow */
-	std::feclearexcept(FE_ALL_EXCEPT);
-	(void)(lhs / rhs);
-	if (std::fetestexcept(FE_OVERFLOW) || std::fetestexcept(FE_UNDERFLOW)) {
-		std::feclearexcept(FE_ALL_EXCEPT);
-		return true;
-	}
-	std::feclearexcept(FE_ALL_EXCEPT);
-	return false;
 }
 
 template<typename T, typename U, 
@@ -238,32 +173,6 @@ bool	subtractionExceedsLimits(T lhs, U rhs) {
 		return subtractionExceedsLimits(lhs, (T)rhs);
 	else {
 		return subtractionExceedsLimits((U)lhs, rhs);
-	}
-}
-
-template<typename T, typename U, 
-			typename std::enable_if<
-            std::is_arithmetic<T>{} &&
-            std::is_arithmetic<U>{}, bool>::type = true
-		>
-bool	multiplicationExceedsLimits(T lhs, U rhs) {
-	if (std::numeric_limits<T>::max() > std::numeric_limits<U>::max())
-		return multiplicationExceedsLimits(lhs, (T)rhs);
-	else {
-		return multiplicationExceedsLimits((U)lhs, rhs);
-	}
-}
-
-template<typename T, typename U, 
-			typename std::enable_if<
-            std::is_arithmetic<T>{} &&
-            std::is_arithmetic<U>{}, bool>::type = true
-		>
-bool	divisionExceedsLimits(T lhs, U rhs) {
-	if (std::numeric_limits<T>::max() > std::numeric_limits<U>::max())
-		return divisionExceedsLimits(lhs, (T)rhs);
-	else {
-		return divisionExceedsLimits((U)lhs, rhs);
 	}
 }
 

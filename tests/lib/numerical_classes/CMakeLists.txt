@@ -34,7 +34,7 @@ target_link_libraries(roots_tests
 )
 
 add_executable(numericals_tests
-	roots.cpp
+	numericals.cpp
 )
 
 target_compile_features(numericals_tests PUBLIC cxx_std_17)
