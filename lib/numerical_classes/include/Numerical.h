@@ -175,7 +175,7 @@ template<typename T,
 Numerical	operator-(const T &lhs, const Numerical &rhs) {
 	return std::visit([=](auto n) {
 		return Numerical((lhs - n));
-	}, lhs.getVal());
+	}, rhs.getVal());
 }
 
 Numerical	operator*(const Numerical &lhs, const Numerical &rhs);

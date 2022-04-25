@@ -1,6 +1,6 @@
 #!/bin/bash
 
-FLAGS="-Wall -Werror -Wextra -Wpedantic -Wno-unused-parameter -Wno-unused-variable";
+FLAGS="-Wall -Werror -Wextra -Wpedantic -Wno-unused-variable";
 TSTS="OFF"
 BUILD_DIR="build"
 
