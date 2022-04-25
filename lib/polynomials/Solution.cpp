@@ -251,8 +251,6 @@ Solution::Solution(Rational l, SquareRoot r) {
 	if (r.hasRealNumericSolution()) {
 		/* Only for REAL solutions with a numerical solution (no root in in answer) 
 		where -b^2/2a != 0*/
-		Rational right = r.getNumericalSolution();
-
 		if (r != 0)
 			_sol = SimpleSolutions(l, r.getNumericalSolution());
 		else {

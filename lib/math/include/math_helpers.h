@@ -119,7 +119,7 @@ template<typename T,
 bool	additionExceedsLimits(T lhs, T rhs) {
 	/* Check for over- and underflow */
 	std::feclearexcept(FE_ALL_EXCEPT);
-	auto n = lhs + rhs;
+	(void)(lhs + rhs);
 	if (std::fetestexcept(FE_OVERFLOW) || std::fetestexcept(FE_UNDERFLOW)) {
 		std::feclearexcept(FE_ALL_EXCEPT);
 		return true;
@@ -149,7 +149,7 @@ template<typename T,
 bool	subtractionExceedsLimits(T lhs, T rhs) {
 	/* Check for over- and underflow */
 	std::feclearexcept(FE_ALL_EXCEPT);
-	auto n = lhs - rhs;
+	(void)(lhs - rhs);
 	if (std::fetestexcept(FE_OVERFLOW) || std::fetestexcept(FE_UNDERFLOW)) {
 		std::feclearexcept(FE_ALL_EXCEPT);
 		return true;
@@ -181,7 +181,7 @@ template<typename T,
 bool	multiplicationExceedsLimits(T lhs, T rhs) {
 	/* Check for over- and underflow */
 	std::feclearexcept(FE_ALL_EXCEPT);
-	long double n = lhs * rhs;
+	(void)(lhs * rhs);
 
 	if (std::fetestexcept(FE_OVERFLOW) || std::fetestexcept(FE_UNDERFLOW)) {
 		std::feclearexcept(FE_ALL_EXCEPT);
@@ -206,7 +206,7 @@ template<typename T,
 bool	divisionExceedsLimits(T lhs, T rhs) {
 	/* Check for over- and underflow */
 	std::feclearexcept(FE_ALL_EXCEPT);
-	auto n = lhs / rhs;
+	(void)(lhs / rhs);
 	if (std::fetestexcept(FE_OVERFLOW) || std::fetestexcept(FE_UNDERFLOW)) {
 		std::feclearexcept(FE_ALL_EXCEPT);
 		return true;
