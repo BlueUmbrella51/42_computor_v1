@@ -1,5 +1,5 @@
 #!/bin/bash
 
-cd build
+cd release
 make
 cd ..

@@ -2,21 +2,10 @@
 
 FLAGS="-Wall -Werror -Wextra -Wpedantic";
 TSTS="OFF"
-BUILD_DIR="build"
-
-if [ -d ${BUILD_DIR} ]
-then
-    rm -rf ${BUILD_DIR}
-fi
+export BUILD_DIR="release"
 
 for var in "$@"
 do
-    if [ $var = "DEBUG" ]
-    then
-        FLAGS="$FLAGS -g -O0"
-        echo "Configuring for debug mode...\n"
-        echo $FLAGS
-    fi
     if [ $var = "TESTS" ]
     then
         TSTS="ON"
