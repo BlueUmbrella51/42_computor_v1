@@ -49,9 +49,8 @@ Equation::operator std::string() const {
 		for (auto it = _tokensRight.begin(); it != _tokensRight.end(); ++it) {
 			std::string tmp = std::string(*it);
 			if (it != _tokensRight.begin()) {
-				if ((*it).getCoeff() < 0) { tmp.erase(0, 1); }
-				if ((*it).getCoeff() < 0) {
-					// add " - " to string
+				if ((*it).getCoeff() < 0) { 
+					tmp.erase(0, 1);
 					res += " - " + tmp;
 				}
 				else {

@@ -52,9 +52,9 @@ template<typename T, typename U,
 		>
 long long 	getGcd(T a, U b) { 
 	if (std::trunc((long double)a) == a
-	&& (a <= std::numeric_limits<long long>::max() && a >= std::numeric_limits<long long>::min())
+	&& (a <= (double)std::numeric_limits<long long>::max() && a >= (double)std::numeric_limits<long long>::min())
 	&& std::trunc((long double)b) == b
-	&& (b <= std::numeric_limits<long long>::max() && b >= std::numeric_limits<long long>::min())) {
+	&& (b <= (double)std::numeric_limits<long long>::max() && b >= (double)std::numeric_limits<long long>::min())) {
 		return (getGcd((long long)a, (long long)b));
 	}
 	return 1;
@@ -185,7 +185,7 @@ std::tuple<long long, long long, long long>	doubleToRatio(T value, long double a
 		throw std::invalid_argument("Decimal to convert to ratio cannot be nan.");}
 	if (accuracy < 0.0 || accuracy > 1.0) {
 		throw std::invalid_argument("Accuracy for conversion to ratio must be between 0 and 1.");}
-	if (trunc(value) < LLONG_MIN || trunc(value) > LLONG_MAX) {
+	if (trunc(value) < (double)LLONG_MIN || trunc(value) > (double)LLONG_MAX) {
 		throw std::overflow_error("Whole part of decimal is too large to fit integer type\n"); }
 	
 	int				sign = value >= 0.0 ? 1 : -1;
@@ -193,12 +193,12 @@ std::tuple<long long, long long, long long>	doubleToRatio(T value, long double a
 	long long 		intPart = (long long)value;
 	value -= intPart;
 
-	// check if decimal part is withing permitted error range from 0.0 or equal to 0.0
-	if (value - accuracy < 0.0 || value == 0.0) {
+	/* Check whether number is within error margin from zero */
+	if (-accuracy < value && accuracy > value) {
 		return std::make_tuple(sign * intPart, 0, 1);
 	}
-	// check if decimal part is withing permitted error range from 1.0
-	if (value - accuracy < 0.0) {
+	/* Check whether number is withing error margin from 1 */
+	if ((1.0 - accuracy) < value && (1.0 + accuracy) > value) {
 		return std::make_tuple(sign * (intPart + 1), 0, 1);
 	}
 

@@ -201,7 +201,7 @@ Solution::operator std::string() const {
 	return std::visit(overloaded {
 		[=](CompoundSolutions arg){ 
 			auto [ left, right ] = arg.toStrings();
-			std::string result = left;//std::get<0>(res) + "\n" + std::get<1>(res);
+			std::string result = left;
 			if (right) {
 				result += "\n" + right.value();
 			}
@@ -209,7 +209,7 @@ Solution::operator std::string() const {
 		},
 		[](SimpleSolutions arg) {
 			auto [ left, right ] = arg.toStrings();
-			std::string result = left;//std::get<0>(res) + "\n" + std::get<1>(res);
+			std::string result = left;
 			if (right) {
 				result += "\n" + right.value();
 			}

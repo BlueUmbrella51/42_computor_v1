@@ -14,7 +14,8 @@ Token::operator std::string() const {
 		res += "-";
 		coeff = abs(coeff);
 	}
-	if (coeff != 1) {
+	if (coeff != 1 || (coeff == 1 && _degree == 0)) {
+		/* Do not print a 1 if an 'X' is going to follow it directly */
 		res += std::string(coeff);
 	}
 	if (_coeff != 0) {

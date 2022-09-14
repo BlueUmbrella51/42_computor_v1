@@ -159,7 +159,7 @@ Rational	SquareRoot::getNumericalSolution() const {
 
 SquareRoot		&SquareRoot::operator+=(const SquareRoot &rhs) {
 	if (!sameTypeAndSquareRoot(*this, rhs)) {
-		std::cout << "Cannot add roots of different types or roots, not performing operation\n";
+		std::cerr << "Cannot add roots of different types or roots, not performing operation\n";
 	}
 	else {
 		_whole += rhs.getWhole();
@@ -169,7 +169,7 @@ SquareRoot		&SquareRoot::operator+=(const SquareRoot &rhs) {
 
 SquareRoot		&SquareRoot::operator-=(const SquareRoot &rhs) {
 	if (!sameTypeAndSquareRoot(*this, rhs)) {
-		std::cout << "Cannot subtract roots of different types or roots, not performing operation\n";
+		std::cerr << "Cannot subtract roots of different types or roots, not performing operation\n";
 	}
 	else {
 		_whole -= rhs.getWhole();

@@ -1,1 +1,1 @@
-cd release && ctest --output-on-failure && cd ..
+cd release && ctest --verbose --output-on-failure && cd ..

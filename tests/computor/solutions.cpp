@@ -3,6 +3,19 @@
 #include "computor.h"
 
 TEST_CASE("Polynomial solutions", "[Polynomials]") {
+	SECTION("Reduced form\n") {
+		/* Make sure the reducing function works as expected. */
+		std::string input = "4X - 3 = -2";
+		Equation eq = doParseEquation(input);
+		eq.simplify();
+
+		REQUIRE((std::string)eq == "4X - 1 = 0");
+		input = "4X - 3 = -4";
+		eq = doParseEquation(input);
+		eq.simplify();
+
+		REQUIRE((std::string)eq == "4X + 1 = 0");
+	}
 	SECTION("No solutions\n") {
 		/* No meaningful solution to be found, degree too high etc */
 		std::string input = GENERATE("x = x", "7+10-8+3=9", "x^3 + 4x^2 +2x =5");

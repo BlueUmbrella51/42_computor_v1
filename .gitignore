@@ -50,3 +50,5 @@ external/
 
 numbers/
 lib2/
+release/
+debug/

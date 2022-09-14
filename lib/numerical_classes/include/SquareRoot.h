@@ -20,7 +20,7 @@ class	SquareRoot {
 		SquareRoot(long long w, T r) : _root{r}, _whole{w}, _degree{2}, 
 		_type{SquareRoot::Type::real}, _divisor{1} {
 			if (_root == 0) {
-				std::cout << "Root cannot be zero, setting it to 1.\n";
+				std::cerr << "Root cannot be zero, setting it to 1.\n";
 				_root = 1;
 			}
 			if (_root < 0) {

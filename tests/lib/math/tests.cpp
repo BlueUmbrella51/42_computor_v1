@@ -15,6 +15,34 @@ TEST_CASE("Conversion doubles to ratios", "[Math]") {
 		REQUIRE(d == 1);
 	}
 
+	SECTION("Check whether numbers inside of set accuray from 0 or 1 return zero or 1.\n"){
+		double acc = 0.25;
+
+		double n1 = 1.24;
+		double n2 = 0.76;
+		auto [ whole_1_n1, n_1_n1, d_1_n1 ] = doubleToRatio(n1, acc);
+		auto [ whole_1_n2, n_1_n2, d_1_n2 ] = doubleToRatio(n2, acc);
+		REQUIRE(whole_1_n1 == 1);
+		REQUIRE(n_1_n1 == 0);
+		REQUIRE(d_1_n1 == 1);
+
+		REQUIRE(whole_1_n2 == 1);
+		REQUIRE(n_1_n2 == 0);
+		REQUIRE(d_1_n2 == 1);
+
+		n1 = 0.24;
+		n2 = -0.24;
+		auto [ whole_2_n1, n_2_n1, d_2_n1 ] = doubleToRatio(n1, acc);
+		auto [ whole_2_n2, n_2_n2, d_2_n2 ] = doubleToRatio(n2, acc);
+		REQUIRE(whole_2_n1 == 0);
+		REQUIRE(n_2_n1 == 0);
+		REQUIRE(d_2_n1 == 1);
+
+		REQUIRE(whole_2_n2 == 0);
+		REQUIRE(n_2_n2 == 0);
+		REQUIRE(d_2_n2 == 1);
+	}
+
 	SECTION("Get gcd\n") {
 		REQUIRE(getGcd(12, 4) == 4);
 		REQUIRE(getGcd(12.0, 16.0) == 4);
@@ -57,6 +85,14 @@ TEST_CASE("Conversion doubles to ratios", "[Math]") {
 		REQUIRE(w == 0);
 		REQUIRE(n == n_in);
 		REQUIRE(d == d_in);
+
+		n_in = 7;
+		d_in = 15;
+		input = (long double)n_in/(long double)d_in;
+		auto [_w, _n, _d] = doubleToRatio(input);
+		REQUIRE(_w == 0);
+		REQUIRE(_n == n_in);
+		REQUIRE(_d == d_in);
 	}
 	SECTION("Negative numbers with whole and fractional\n") {
 		auto input = -5.5;

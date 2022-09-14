@@ -33,6 +33,9 @@ Solution		solve_second_degree(Equation &eq) {
 	else if (discriminant < 0) {
 		std::cout << "Discriminant is strictly negative.\n";
 	}
+	else {
+		std::cout << "Discriminant is zero.\n";
+	}
 	SquareRoot right = SquareRoot(discriminant) / divisor;
 	return Solution(left, right);
 }
@@ -42,11 +45,11 @@ Solution		solve_equation(Equation &eq) {
 	Solution s;
 
 	if (eq.getEquationLeft().empty()) {
-		throw std::invalid_argument("Equation given when simplified comes down to \"0 = 0\", cannot solve.");
+		throw std::invalid_argument("Equation given when simplified comes down to \"X = X\", all legal values of X are a solution.");
 	}
 	if (highest_degree == 0) {
 		/* Only a constant is given, this is not an equation */
-		throw std::invalid_argument("Invalid equation, no variable to solve for.");
+		throw std::invalid_argument("Invalid equation: no variable to solve for.");
 	}
 	else if (highest_degree == 1) {
 		s = solve_first_degree(eq);

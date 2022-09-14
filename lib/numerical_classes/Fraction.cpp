@@ -17,7 +17,7 @@ _w{whole}, _n{0}, _d{1} {
 Fraction::Fraction(long long n, long long d):
  _w{0}, _n{n}, _d{d} {
 	if (d == 0) {
-		std::cout << "Warning: denominator can't be 0, setting rational to 0.\n";
+		std::cerr << "Warning: denominator can't be 0, setting rational to 0.\n";
 		_n = 0;
 		_d = 1;
 	}
@@ -28,7 +28,7 @@ Fraction::Fraction(long long n, long long d):
 Fraction::Fraction(long long w, long long n, long long d) :
 _w{w}, _n{n}, _d{d} {
 	if (d == 0) {
-		std::cout << "Warning: denominator can't be 0, setting rational to 0.\n";
+		std::cerr << "Warning: denominator can't be 0, setting rational to 0.\n";
 		_w = 0;
 		_n = 0;
 		_d = 1;
