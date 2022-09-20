@@ -46,7 +46,6 @@ _deps
 [Bb][Uu][Ii][Ll][Dd]/
 
 .vscode/
-external/
 
 numbers/
 lib2/
