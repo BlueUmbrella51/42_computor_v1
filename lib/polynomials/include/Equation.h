@@ -39,6 +39,7 @@ class Equation {
 		std::list<Token>		&getEquationRight();
 		void					add(Token token);
 		void					simplify();
+		void					reduce();
 		int						getHighestDegree();
 		std::optional<Token>	findTokenOfDegree(std::list<Token> &tokens, int degree);
 		Rational				findCoeffOfDegree(std::list<Token> &tokens, int degree);
@@ -54,10 +55,9 @@ class Equation {
 		Equation::operationSide	_side;
 		void					findHighestDegreeLeft();
 		void					moveTokensLeft();
-		void					sortTokens(std::list<Token> &lst);
+		void					sortTokens(std::list<Token> &lst, int direction = 1);
 		void					combineTokensByDegree(std::list<Token> &lst);
 		void					removeZeroCoeff(std::list<Token> &lst);
-
 		friend std::ostream		&operator<<(std::ostream &os, const Equation &eq);
 };
 Token			doParseToken(ParseToken &pt);

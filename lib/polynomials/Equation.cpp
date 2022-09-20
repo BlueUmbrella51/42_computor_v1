@@ -154,10 +154,20 @@ void	Equation::add(Token token) {
 	}
 }
 
-void	Equation::sortTokens(std::list<Token> &lst) {
-	lst.sort([](const Token & t1, const Token & t2) {
-		return (t1.getDegree() > t2.getDegree());
-	});
+void	Equation::sortTokens(std::list<Token> &lst, int direction) {
+	if (direction == 1) {
+		lst.sort([](const Token & t1, const Token & t2) {
+			return (t1.getDegree() > t2.getDegree());
+		});
+	}
+	else if (direction == -1) {
+		lst.sort([](const Token & t1, const Token & t2) {
+			return (t1.getDegree() < t2.getDegree());
+		});
+	}
+	else {
+		std::cerr << "Invalid sorting directino provided, cannot sort tokens.\n";
+	}
 }
 
 void	Equation::combineTokensByDegree(std::list<Token> &lst) {
@@ -228,6 +238,18 @@ void	Equation::factor(std::list<Token> &lst) {
 	it = lst.begin();
 	for (std::list<Token>::iterator i = lst.begin(); i != lst.end(); ++i) {
 		(*i).setCoeff((*i).getCoeff() / gcd);
+	}
+}
+
+void	Equation::reduce() {
+	combineTokensByDegree(_tokensRight);
+	moveTokensLeft();
+	sortTokens(_tokensLeft, -1);
+	combineTokensByDegree(_tokensLeft);
+	removeZeroCoeff(_tokensLeft);
+	findHighestDegreeLeft();
+	if (!_tokensLeft.empty() && (*_tokensLeft.begin()).getCoeff() < 0) {
+		*this /= -1;
 	}
 }
 

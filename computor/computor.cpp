@@ -38,8 +38,9 @@ decimals or fractions (form: 1/2 or 2(2/3)).\n\nExample: \"2X^2 - X = 2.25\"\n\n
 			eq.toNumerical();
 		}
 		std::cout << "Original equation:\n" << eq << "\n";
-		eq.simplify();
+		eq.reduce();
 		std::cout << "Reduced form:\n" << eq << "\n";
+		eq.simplify();
 		std::cout << "Polynomial degree: " << eq.getHighestDegree() << "\n";
 		Solution s = solve_equation(eq);
 		std::cout << s << "\n";
