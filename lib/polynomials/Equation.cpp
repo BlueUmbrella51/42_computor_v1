@@ -143,7 +143,7 @@ Rational					Equation::findCoeffOfDegree(std::list<Token> &tokens, int degree) {
 }
 
 void	Equation::add(Token token) {
-	if (token.getDegree() > _highest_degree) {
+	if ((token.getDegree() > _highest_degree) && token.getCoeff() != 0) {
 		_highest_degree = token.getDegree();
 	}
 	if (_side == operationSide::left) {
@@ -404,6 +404,9 @@ Equation		doParseEquation(std::string &input) {
 	token_info.setSide(Equation::operationSide::right);
 	for (std::vector<ParseToken>::iterator it = right.begin(); it != right.end(); ++it) {
 		token_info.add(doParseToken(*it));
+	}
+	if (token_info.getHighestDegree() == 0) {
+		throw std::invalid_argument("No variable found in equation or variable coefficient is always no. Polynomial cannot consist of only constants.");
 	}
 	return token_info;
 }

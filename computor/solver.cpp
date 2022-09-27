@@ -47,10 +47,6 @@ Solution		solve_equation(Equation &eq) {
 	if (eq.getEquationLeft().empty()) {
 		throw std::invalid_argument("Equation given when simplified comes down to \"X = X\", all legal values of X are a solution.");
 	}
-	if (highest_degree == 0) {
-		/* Only a constant is given, this is not an equation */
-		throw std::invalid_argument("Invalid equation: no variable to solve for.");
-	}
 	else if (highest_degree == 1) {
 		s = solve_first_degree(eq);
 	}

@@ -54,6 +54,14 @@ TEST_CASE("Parsing", "[Parsing]") {
 		CHECK_THROWS(doParseEquation(input));
 
 		errno = 0;
+		input= "7+10-8+3=9";
+		CHECK_THROWS(doParseEquation(input));
+
+		errno = 0;
+		input= "7+10-8+3=9+0x+0x^2+0x^3";
+		CHECK_THROWS(doParseEquation(input));
+
+		errno = 0;
 		input = "-2(1/2)=X^2=-5";
 		CHECK_THROWS(doParseEquation(input));
 

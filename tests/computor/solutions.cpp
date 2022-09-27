@@ -18,7 +18,7 @@ TEST_CASE("Polynomial solutions", "[Polynomials]") {
 	}
 	SECTION("No solutions\n") {
 		/* No meaningful solution to be found, degree too high etc */
-		std::string input = GENERATE("x = x", "7+10-8+3=9", "x^3 + 4x^2 +2x =5");
+		std::string input = GENERATE("x = x", "x^3 + 4x^2 +2x =5");
 		Equation eq = doParseEquation(input);
 		eq.simplify();
 
