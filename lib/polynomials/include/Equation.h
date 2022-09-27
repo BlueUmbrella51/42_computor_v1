@@ -11,7 +11,7 @@
 #include "Rational.h"
 #include "ParseToken.h"
 
-class Equation {	
+class Equation {
 	public:
 		enum operationSide {
 			left,

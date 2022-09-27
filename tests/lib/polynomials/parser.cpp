@@ -8,41 +8,41 @@ TEST_CASE("Parsing", "[Parsing]") {
 		ParseToken pt = getParsingToken(s, true);
 		Token t = doParseToken(pt);
 		Fraction r = Fraction(1, 1, 3);
-		REQUIRE(t == Token(r, 0));
+		REQUIRE(t == Token(r, 0, true));
 
 		s = "-1(-1/-3)";
 		pt = getParsingToken(s, true);
 		t = doParseToken(pt);
 		r = Fraction(-1, 1, 3);
-		REQUIRE(t == Token(r, 0));
+		REQUIRE(t == Token(r, 0, true));
 
 		s = "-1(-1/3)";
 		pt = getParsingToken(s, true);
 		t = doParseToken(pt);
 		r = Fraction(-1, 1, 3);
-		REQUIRE(t == Token(r, 0));
+		REQUIRE(t == Token(r, 0, true));
 
 		s = "-11/3";
 		pt = getParsingToken(s, true);
 		t = doParseToken(pt);
 		r = Fraction(-3, 2, 3);
-		REQUIRE(t == Token(r, 0));
+		REQUIRE(t == Token(r, 0, true));
 	}
 	SECTION("Decimals\n") {
 		std::string s = "1.12";
 		ParseToken pt = getParsingToken(s, true);
 		Token t = doParseToken(pt);
-		REQUIRE(t == Token(Fraction(1, 3, 25), 0));
+		REQUIRE(t == Token(Fraction(1, 3, 25), 0, true));
 
 		s = "-131.415";
 		pt = getParsingToken(s, true);
 		t = doParseToken(pt);
-		REQUIRE(t == Token(Fraction(-131, 83, 200), 0));
+		REQUIRE(t == Token(Fraction(-131, 83, 200), 0, true));
 
 		s = "-0.5";
 		pt = getParsingToken(s, false);
 		t = doParseToken(pt);
-		REQUIRE(t == Token(Fraction(-1, 2)));
+		REQUIRE(t == Token(Fraction(-1, 2), 0, true));
 	}
 	// No equals
 	SECTION("Full inputs") {
@@ -55,10 +55,6 @@ TEST_CASE("Parsing", "[Parsing]") {
 
 		errno = 0;
 		input= "7+10-8+3=9";
-		CHECK_THROWS(doParseEquation(input));
-
-		errno = 0;
-		input= "7+10-8+3=9+0x+0x^2+0x^3";
 		CHECK_THROWS(doParseEquation(input));
 
 		errno = 0;
@@ -139,6 +135,7 @@ TEST_CASE("Parsing", "[Parsing]") {
 		eq.simplify();
 		REQUIRE((std::string)eq == "3X² + 6X - 5 = 0");
 
+		errno = 0;
 		input = "3X^2 + 2X^4 + 3X^17 + 56 - 8X = 18X - 2X^2 + 3X^17 + 2X^4";
 		eq = doParseEquation(input);
 		eq.simplify();

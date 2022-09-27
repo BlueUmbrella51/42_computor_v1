@@ -23,6 +23,12 @@ TEST_CASE("Polynomial solutions", "[Polynomials]") {
 		eq.simplify();
 
 		CHECK_THROWS(solve_equation(eq));
+
+		errno = 0;
+		input= "7+10-8+3=9+0x+0x^2+0x^3";
+		eq = doParseEquation(input);
+		eq.simplify();
+		CHECK_THROWS(solve_equation(eq));
 	}
 	SECTION("Precision mode\n") {
 		SECTION("B is zero\n") {

@@ -34,6 +34,7 @@ decimals or fractions (form: 1/2 or 2(2/3)).\n\nExample: \"2X^2 - X = 2.25\"\n\n
 	}
 	try {
 		Equation eq = doParseEquation(input);
+		std::cout << "After parsing " << eq << "\n";
 		if (numerical_mode) {
 			eq.toNumerical();
 		}

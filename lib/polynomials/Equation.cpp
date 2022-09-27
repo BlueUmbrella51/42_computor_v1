@@ -143,7 +143,7 @@ Rational					Equation::findCoeffOfDegree(std::list<Token> &tokens, int degree) {
 }
 
 void	Equation::add(Token token) {
-	if ((token.getDegree() > _highest_degree) && token.getCoeff() != 0) {
+	if (token.getDegree() > _highest_degree) {
 		_highest_degree = token.getDegree();
 	}
 	if (_side == operationSide::left) {
@@ -157,16 +157,20 @@ void	Equation::add(Token token) {
 void	Equation::sortTokens(std::list<Token> &lst, int direction) {
 	if (direction == 1) {
 		lst.sort([](const Token & t1, const Token & t2) {
-			return (t1.getDegree() > t2.getDegree());
+			/* Sort by degree, if same degree, constants comes first */
+			return ((t1.getDegree() > t2.getDegree()) ||
+			((t1.getDegree() == t2.getDegree()) && (t1.isConstant() == true)));
 		});
 	}
 	else if (direction == -1) {
 		lst.sort([](const Token & t1, const Token & t2) {
-			return (t1.getDegree() < t2.getDegree());
+			/* Sort by degree, if same degree, constants comes after */
+			return ((t1.getDegree() < t2.getDegree())
+			|| ((t1.getDegree() == t2.getDegree()) && (t1.isConstant() == false)));
 		});
 	}
 	else {
-		std::cerr << "Invalid sorting directino provided, cannot sort tokens.\n";
+		std::cerr << "Invalid sorting direction provided, cannot sort tokens.\n";
 	}
 }
 
@@ -242,6 +246,7 @@ void	Equation::factor(std::list<Token> &lst) {
 }
 
 void	Equation::reduce() {
+	/* Sort first?? */
 	combineTokensByDegree(_tokensRight);
 	moveTokensLeft();
 	sortTokens(_tokensLeft, -1);
@@ -388,25 +393,23 @@ Token			doParseToken(ParseToken &pt) {
 	Rational			 		coeff = get_coefficient(coeff_str, type);
 	/* If no discriminant was given we assume one with power 0, which
 	comes down to coefficient * 1. */
-	long int					degree = 0;
+	bool	isConstant = (degree_str == std::nullopt) ? true: false;
+	long	degree = 0;
 	if (degree_str) {
 		degree = get_degree(degree_str.value());
 	}
-	return Token(coeff, degree);
+	return Token(coeff, degree, isConstant);
 }
 
 Equation		doParseEquation(std::string &input) {
 	Equation token_info = Equation();
-	auto [left, right] = getParsingTokens(input);
+	auto [left, right] = getParsingTokens(input); 
 	for (std::vector<ParseToken>::iterator it = left.begin(); it != left.end(); ++it) {
 		token_info.add(doParseToken(*it));
 	}
 	token_info.setSide(Equation::operationSide::right);
 	for (std::vector<ParseToken>::iterator it = right.begin(); it != right.end(); ++it) {
 		token_info.add(doParseToken(*it));
-	}
-	if (token_info.getHighestDegree() == 0) {
-		throw std::invalid_argument("No variable found in equation or variable coefficient is always no. Polynomial cannot consist of only constants.");
 	}
 	return token_info;
 }
