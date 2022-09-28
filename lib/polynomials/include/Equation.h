@@ -17,6 +17,9 @@ class Equation {
 			left,
 			right
 		};
+		enum ConstantType {
+			constant, zero_degree
+		};
 		Equation();
 		~Equation() = default;
 		operator				std::string() const;
@@ -37,18 +40,22 @@ class Equation {
 		}
 		std::list<Token>		&getEquationLeft();
 		std::list<Token>		&getEquationRight();
+		void					setConstType(ConstantType t);
 		void					add(Token token);
 		void					simplify();
 		void					reduce();
-		int						getHighestDegree();
-		std::optional<Token>	findTokenOfDegree(std::list<Token> &tokens, int degree);
-		Rational				findCoeffOfDegree(std::list<Token> &tokens, int degree);
-		Equation::operationSide	getSide();
+		int						getHighestDegree() const;
+		bool					hasZeroDegreeTokens() const;
+		std::optional<Token>	findTokenOfDegree(std::list<Token> &tokens, int degree) const;
+		Rational				findCoeffOfDegree(std::list<Token> &tokens, int degree) const;
+		Equation::operationSide	getSide() const;
 		void					setSide(Equation::operationSide s);
 		void					factor(std::list<Token> &lst);
 		Equation				&toNumerical();
+		friend std::ostream		&operator<<(std::ostream &os, const Equation &eq);
 
 	private:
+		ConstantType			_constType;
 		std::list<Token>		_tokensLeft;
 		std::list<Token>		_tokensRight;
 		int						_highest_degree;
@@ -58,9 +65,9 @@ class Equation {
 		void					sortTokens(std::list<Token> &lst, int direction = 1);
 		void					combineTokensByDegree(std::list<Token> &lst);
 		void					removeZeroCoeff(std::list<Token> &lst);
-		friend std::ostream		&operator<<(std::ostream &os, const Equation &eq);
 };
-Token			doParseToken(ParseToken &pt);
+
 Equation		doParseEquation(std::string &input);
+Token			doParseToken(ParseToken &pt);
 
 #endif

@@ -21,6 +21,7 @@ Solution		solve_second_degree(Equation &eq) {
 	Rational c = c_token ? c_token.value().getCoeff(): Rational(0);
 	
 	Rational discriminant = (b * b) - (4 * a * c);
+	std::cout << "Discriminant: " << discriminant << "\n";
 	Rational divisor = (2 * a);
 	Rational left = -b / divisor;
 
@@ -44,8 +45,8 @@ Solution		solve_equation(Equation &eq) {
 	int		highest_degree = eq.getHighestDegree();
 	Solution s;
 
-	if (eq.getEquationLeft().empty()) {
-		throw std::invalid_argument("Equation given when simplified comes down to \"X = X\" all legal values of X are a solution.");
+	if (eq.getEquationLeft().empty() && eq.hasZeroDegreeTokens()) {
+		throw std::invalid_argument("Equation given when simplified comes down to \"0 = 0\", which is always true. Therefor all legal values of X are a solution.");
 	}
 	if (eq.getHighestDegree() == 0) {
 		throw std::invalid_argument("Equation comes down to comparison of two constants, no solutions exist.");

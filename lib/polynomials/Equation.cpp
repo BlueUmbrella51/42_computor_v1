@@ -1,6 +1,6 @@
 #include "Equation.h"
 
-Equation::Equation() : _side(Equation::operationSide::left) {
+Equation::Equation() : _constType(ConstantType::constant), _side(Equation::operationSide::left) {
 	_highest_degree = -1;
 	_tokensLeft = {};
 	_tokensRight = {};
@@ -14,7 +14,7 @@ std::list<Token>	&Equation::getEquationRight() {
 	return _tokensRight;
 }
 
-Equation::operationSide	Equation::getSide() {
+Equation::operationSide	Equation::getSide() const {
 	return _side;
 }
 
@@ -22,8 +22,16 @@ void	Equation::setSide(Equation::operationSide s) {
 	_side = s;
 }
 
-int		Equation::getHighestDegree() {
+void	Equation::setConstType(Equation::ConstantType t) {
+	_constType = t;
+}
+
+int		Equation::getHighestDegree() const {
 	return _highest_degree;
+}
+
+bool	Equation::hasZeroDegreeTokens() const { 
+	return _constType == ConstantType::zero_degree; 
 }
 
 Equation::operator std::string() const {
@@ -75,8 +83,8 @@ Equation				&Equation::operator-=(const Token &t) {
 	sortTokens(_tokensLeft);
 	sortTokens(_tokensRight);
 	combineTokensByDegree(_tokensLeft);
-	combineTokensByDegree(_tokensRight);
 	removeZeroCoeff(_tokensLeft);
+	combineTokensByDegree(_tokensRight);
 	removeZeroCoeff(_tokensRight);
 	return *this;
 }
@@ -90,8 +98,8 @@ Equation				&Equation::operator+=(const Token &t) {
 	sortTokens(_tokensLeft);
 	sortTokens(_tokensRight);
 	combineTokensByDegree(_tokensLeft);
-	combineTokensByDegree(_tokensRight);
 	removeZeroCoeff(_tokensLeft);
+	combineTokensByDegree(_tokensRight);
 	removeZeroCoeff(_tokensRight);
 	return *this;
 }
@@ -122,7 +130,7 @@ std::ostream		&operator<<(std::ostream &os, const Equation &eq) {
 	return os;
 }
 
-std::optional<Token>		Equation::findTokenOfDegree(std::list<Token> &tokens, int degree) {
+std::optional<Token>		Equation::findTokenOfDegree(std::list<Token> &tokens, int degree) const {
 	auto it = tokens.begin();
 	while (it != tokens.end()) {
 		if ((*it).getDegree() == degree) {
@@ -133,7 +141,7 @@ std::optional<Token>		Equation::findTokenOfDegree(std::list<Token> &tokens, int 
 	return std::nullopt;
 }
 
-Rational					Equation::findCoeffOfDegree(std::list<Token> &tokens, int degree) {
+Rational					Equation::findCoeffOfDegree(std::list<Token> &tokens, int degree) const {
 	auto token = findTokenOfDegree(tokens, degree);
 
 	if (token) {
@@ -246,7 +254,7 @@ void	Equation::factor(std::list<Token> &lst) {
 }
 
 void	Equation::reduce() {
-	/* Sort first?? */
+	sortTokens(_tokensRight, -1);
 	combineTokensByDegree(_tokensRight);
 	moveTokensLeft();
 	sortTokens(_tokensLeft, -1);
@@ -262,6 +270,7 @@ void	Equation::simplify() {
 	/* 	Moves all tokens to left of equation
 		Combines any tokens of same degree
 	 */
+	sortTokens(_tokensRight);
 	combineTokensByDegree(_tokensRight);
 	moveTokensLeft();
 	sortTokens(_tokensLeft);
@@ -403,13 +412,35 @@ Token			doParseToken(ParseToken &pt) {
 
 Equation		doParseEquation(std::string &input) {
 	Equation token_info = Equation();
-	auto [left, right] = getParsingTokens(input); 
+	auto [left, right] = getParsingTokens(input);
+	bool	constType = false;
+	bool	zeroDegreeType = false;
+	Token	tmp;
 	for (std::vector<ParseToken>::iterator it = left.begin(); it != left.end(); ++it) {
-		token_info.add(doParseToken(*it));
+		tmp = doParseToken(*it);
+		if (tmp.getDegree() == 0) {
+			if (tmp.isConstant()) { constType = true; }
+			else { zeroDegreeType = true; }
+		}
+		token_info.add(tmp);
 	}
 	token_info.setSide(Equation::operationSide::right);
 	for (std::vector<ParseToken>::iterator it = right.begin(); it != right.end(); ++it) {
-		token_info.add(doParseToken(*it));
+		tmp = doParseToken(*it);
+		if (tmp.getDegree() == 0) {
+			if (tmp.isConstant()) { constType = true; }
+			else { zeroDegreeType = true; }
+		}
+		token_info.add(tmp);
+	}
+	if (constType) {
+		token_info.setConstType(Equation::ConstantType::constant);
+	}
+	else {
+		token_info.setConstType(Equation::ConstantType::zero_degree);
+	}
+	if (constType && zeroDegreeType) {
+		throw std::invalid_argument("Cannot mix constants (aka '7') with variable with degree zero type (aka '7 * x^0' / '7x^0).");
 	}
 	return token_info;
 }

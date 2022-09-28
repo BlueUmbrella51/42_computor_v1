@@ -29,6 +29,18 @@ TEST_CASE("Polynomial solutions", "[Polynomials]") {
 		eq = doParseEquation(input);
 		eq.simplify();
 		CHECK_THROWS(solve_equation(eq));
+
+		errno = 0;
+		input= "4x^0=4x^0";
+		eq = doParseEquation(input);
+		eq.simplify();
+		CHECK_THROWS(solve_equation(eq));
+
+		errno = 0;
+		input= "0x^0=0x^0";
+		eq = doParseEquation(input);
+		eq.simplify();
+		CHECK_THROWS(solve_equation(eq));
 	}
 	SECTION("Precision mode\n") {
 		SECTION("B is zero\n") {

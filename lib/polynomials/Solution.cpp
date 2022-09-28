@@ -247,7 +247,7 @@ Solution::Solution(Rational sol) {
 }
 
 Solution::Solution(Rational l, SquareRoot r) {
-	/* Left side (b^2/2a0 is not zero: we have to distinct solutions */
+	/* Left side (b^2/2a is not zero: we have to distinct solutions */
 	if (r.hasRealNumericSolution()) {
 		/* Only for REAL solutions with a numerical solution (no root in in answer) 
 		where -b^2/2a != 0*/

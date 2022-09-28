@@ -5,12 +5,12 @@
 #include "Fraction.h"
 #include "Rational.h"
 #include "math_helpers.h"
-#include <variant>
 
 class Token
 {
 	public:
 		Token(Rational coeff, long degree, bool isConst = false);
+		Token();
 		~Token() = default;
 		operator	std::string() const;
 		long		getDegree() const;
