@@ -11,8 +11,8 @@ TEST_CASE("Solutions", "[visualisation of solutions]") {
             /* A cannot be negative so neither can the divisor! */
             SquareRoot q = SquareRoot(-4);
             CompoundSolutions c = CompoundSolutions(Rational(2), q);
-            REQUIRE(std::get<0>(c.toStrings()) == "2𝑖(1-𝑖)");
-            REQUIRE(std::get<1>(c.toStrings()) == "-2𝑖(𝑖+1)");
+            REQUIRE(std::get<0>(c.toStrings()) == "2i(1-i)");
+            REQUIRE(std::get<1>(c.toStrings()) == "-2i(i+1)");
 
             q = SquareRoot(3);
             c = CompoundSolutions(Rational(2), q);
@@ -21,8 +21,8 @@ TEST_CASE("Solutions", "[visualisation of solutions]") {
 
             q = SquareRoot(-3);
             c = CompoundSolutions(Rational(2), q);
-            REQUIRE(std::get<0>(c.toStrings()) == "2+√3𝑖");
-            REQUIRE(std::get<1>(c.toStrings()) == "2-√3𝑖");
+            REQUIRE(std::get<0>(c.toStrings()) == "2+√3i");
+            REQUIRE(std::get<1>(c.toStrings()) == "2-√3i");
 
             q = SquareRoot(3) / Rational(Fraction(8, 1));
             c = CompoundSolutions(Fraction(1, 8), q);
@@ -37,7 +37,7 @@ TEST_CASE("Solutions", "[visualisation of solutions]") {
             /* b == 0 */
             q = SquareRoot(-3);
             c = CompoundSolutions(Rational(0), q);
-            REQUIRE(std::get<0>(c.toStrings()) == "+/-√3𝑖");
+            REQUIRE(std::get<0>(c.toStrings()) == "+/-√3i");
 
             q = SquareRoot(3);
             c = CompoundSolutions(Rational(0), q);
@@ -49,7 +49,7 @@ TEST_CASE("Solutions", "[visualisation of solutions]") {
 
             q = SquareRoot(-16);
             c = CompoundSolutions(Rational(0), q);
-            REQUIRE(std::get<0>(c.toStrings()) == "+/-4𝑖");
+            REQUIRE(std::get<0>(c.toStrings()) == "+/-4i");
         }
         SECTION("Simple\n") {
             /* Two purely numerical real solutions */

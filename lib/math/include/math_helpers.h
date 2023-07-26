@@ -12,9 +12,9 @@
 #include <stdexcept>
 
 #define ACCURACY 0.00000000001
-#define IMAG "𝑖"
+#define IMAG "i"
 #define ROOT "√"
-#define PWR_TWO "²"
+// #define PWR_TWO "²"
 
 long long	safeAddition(long long n1, long long n2);
 long long	safeSubtraction(long long n1, long long n2);

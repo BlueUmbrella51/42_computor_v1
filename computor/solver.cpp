@@ -45,11 +45,11 @@ Solution		solve_equation(Equation &eq) {
 	int		highest_degree = eq.getHighestDegree();
 	Solution s;
 
-	if (eq.getEquationLeft().empty() && eq.hasZeroDegreeTokens()) {
+	if (eq.getEquationLeft().empty()) {
 		throw std::invalid_argument("Equation given when simplified comes down to \"0 = 0\", which is always true. Therefor all legal values of X are a solution.");
 	}
 	if (eq.getHighestDegree() == 0) {
-		throw std::invalid_argument("Equation comes down to comparison of two constants, no solutions exist.");
+		throw std::invalid_argument("Equation comes down to comparison of two non-equal constants, no solutions exist.");
 	}
 	else if (highest_degree == 1) {
 		s = solve_first_degree(eq);

@@ -50,14 +50,14 @@ TEST_CASE("Polynomial solutions", "[Polynomials]") {
 			eq.simplify();
 			Solution s = solve_equation(eq);
 
-			REQUIRE((std::string)s == "+/-1/2√14𝑖");
+			REQUIRE((std::string)s == "+/-1/2√14i");
 
 			input = "2x^2+2=0";
 			eq = doParseEquation(input);
 			eq.simplify();
 			s = solve_equation(eq);
 
-			REQUIRE((std::string)s == "+/-𝑖");
+			REQUIRE((std::string)s == "+/-i");
 
 			input = "3x^2 = 8";
 			eq = doParseEquation(input);
@@ -143,14 +143,14 @@ TEST_CASE("Polynomial solutions", "[Polynomials]") {
 			eq.simplify();
 			s = solve_equation(eq);
 
-			REQUIRE((std::string)s == "1/8𝑖(√191-𝑖)\n-1/8𝑖(𝑖+√191)");
+			REQUIRE((std::string)s == "1/8i(√191-i)\n-1/8i(i+√191)");
 
 			input = "3X^2 -0.5X + 1.5 = 0";
 			eq = doParseEquation(input);
 			eq.simplify();
 			s = solve_equation(eq);
 
-			REQUIRE((std::string)s == "1/12𝑖(√71-𝑖)\n-1/12𝑖(𝑖+√71)");
+			REQUIRE((std::string)s == "1/12i(√71-i)\n-1/12i(i+√71)");
 
 			input = "2x^2 + 3x + 1 = 0";
 			eq = doParseEquation(input);
@@ -163,19 +163,19 @@ TEST_CASE("Polynomial solutions", "[Polynomials]") {
 			eq = doParseEquation(input);
 			eq.simplify();
 			s = solve_equation(eq);
-			REQUIRE((std::string)s == "1/67890(125+2√7614886430𝑖)\n1/67890(125-2√7614886430𝑖)");
+			REQUIRE((std::string)s == "1/67890(125+2√7614886430i)\n1/67890(125-2√7614886430i)");
 		
 			input = "0.75X^2 - 0.5X + 16.2 = 0";
 			eq = doParseEquation(input);
 			eq.simplify();
 			s = solve_equation(eq);
-			REQUIRE((std::string)s == "1/15(5+√4835𝑖)\n1/15(5-√4835𝑖)");
+			REQUIRE((std::string)s == "1/15(5+√4835i)\n1/15(5-√4835i)");
 
 			input = "-2(1/2)X^2=5";
 			eq = doParseEquation(input);
 			eq.simplify();
 			s = solve_equation(eq);
-			REQUIRE((std::string)s == "+/-√2𝑖");
+			REQUIRE((std::string)s == "+/-√2i");
 
 			input = "-2(1/2)X^2=-5";
 			eq = doParseEquation(input);
@@ -191,21 +191,21 @@ TEST_CASE("Polynomial solutions", "[Polynomials]") {
 			eq.toNumerical();
 			eq.simplify();
 			Solution s = solve_equation(eq);
-			REQUIRE((std::string)s == "0.001841+2.570727𝑖\n0.001841-2.570727𝑖");
+			REQUIRE((std::string)s == "0.001841+2.570727i\n0.001841-2.570727i");
 
 			input = "0.75X^2 - 0.5X + 16.2 = 0";
 			eq = doParseEquation(input);
 			eq.toNumerical();
 			eq.simplify();
 			s = solve_equation(eq);
-			REQUIRE((std::string)s == "0.333333+4.635611𝑖\n0.333333-4.635611𝑖");
+			REQUIRE((std::string)s == "0.333333+4.635611i\n0.333333-4.635611i");
 		
 			input = "135.78X^2 + 0.5X + 897.321 = 0";
 			eq = doParseEquation(input);
 			eq.toNumerical();
 			eq.simplify();
 			s = solve_equation(eq);
-			REQUIRE((std::string)s == "2.570727𝑖-0.001841\n-0.001841-2.570727𝑖");
+			REQUIRE((std::string)s == "2.570727i-0.001841\n-0.001841-2.570727i");
 
 			input = "2X^2 + 2X = 6";
 			eq = doParseEquation(input);
@@ -233,7 +233,7 @@ TEST_CASE("Polynomial solutions", "[Polynomials]") {
 			eq.toNumerical();
 			eq.simplify();
 			s = solve_equation(eq);
-			REQUIRE((std::string)s == "+/-1.414214𝑖");
+			REQUIRE((std::string)s == "+/-1.414214i");
 
 			input = "-2(1/2)X^2=-5";
 			eq = doParseEquation(input);

@@ -17,9 +17,9 @@ class Equation {
 			left,
 			right
 		};
-		enum ConstantType {
-			constant, zero_degree
-		};
+		// enum ConstantType {
+		// 	constant, zero_degree
+		// };
 		Equation();
 		~Equation() = default;
 		operator				std::string() const;
@@ -40,7 +40,7 @@ class Equation {
 		}
 		std::list<Token>		&getEquationLeft();
 		std::list<Token>		&getEquationRight();
-		void					setConstType(ConstantType t);
+		// void					setConstType(ConstantType t);
 		void					add(Token token);
 		void					simplify();
 		void					reduce();
@@ -55,7 +55,7 @@ class Equation {
 		friend std::ostream		&operator<<(std::ostream &os, const Equation &eq);
 
 	private:
-		ConstantType			_constType;
+		// ConstantType			_constType;
 		std::list<Token>		_tokensLeft;
 		std::list<Token>		_tokensRight;
 		int						_highest_degree;

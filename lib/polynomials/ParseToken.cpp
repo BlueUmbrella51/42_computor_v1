@@ -3,7 +3,7 @@
 #include <sstream>
 
 ParseToken::ParseToken(coeffTypes type, std::string coeff) {
-	_degree = std::nullopt;
+	_degree = "0";
 	_coeff = coeff;
 	_type = type;
 }
@@ -21,8 +21,7 @@ ParseToken::~ParseToken() {
 bool		operator==(const ParseToken &lhs, const ParseToken &rhs) {
 		return (lhs.getType() == rhs.getType()
 		&& lhs.getCoeff() == rhs.getCoeff()
-		&& ((!lhs.getDegree() && !rhs.getDegree()) ||
-		lhs.getDegree().value() == rhs.getDegree().value()));
+		&& lhs.getDegree() == rhs.getDegree());
 }
 
 void		ParseToken::setDegree(std::string degree) {
@@ -37,7 +36,7 @@ std::string					ParseToken::getCoeff() const {
 	return (_coeff);
 }
 
-std::optional<std::string> 	ParseToken::getDegree() const {
+std::string				 	ParseToken::getDegree() const {
 	return (_degree);
 }
 
@@ -52,12 +51,8 @@ void		ParseToken::print() {
 	else if (_type == ParseToken::coeffTypes::rational) {
 		std::cout << "Fraction\n";
 	}
-	if (_degree) {
-		std::cout << "Degree: " << _degree.value() << "\n\n";
-	}
-	else {
-		std::cout << "\n";
-	}
+	std::cout << "Coeff:" << _coeff << "\n";
+	std::cout << "Degree: " << _degree << "\n\n";
 }
 
 std::pair<ParseToken::coeffTypes, std::string> getParseCoeffAndTypeInner(std::string &str,
@@ -78,6 +73,7 @@ std::regex dec, std::regex rat, std::regex integ) {
 	}
 	else if (std::regex_search(str, m, integ)) {
 		type = ParseToken::coeffTypes::integer;
+		coeff = m[0];
 		std::smatch tmp;
 		if (std::regex_search(str, tmp, only_x)) {
 			/* if only optional +/- and then X or x, we just replace the x with 1.
@@ -107,7 +103,7 @@ std::pair<ParseToken::coeffTypes, std::string>	getParseCoeffAndType(std::string 
 
 	std::regex					non_first_match_decimal{R"(^[+-]{1}\d+\.{1}\d+)"};
 	std::regex					non_first_match_rational{R"(^[+-]{1}\d+(\/{1}[+-]?\d+|\([+-]?\d+\/{1}[+-]?\d+\)))"};
-	std::regex					non_first_match_int{R"(^[+-](\d+|[Xx]{1}))"};
+	std::regex					non_first_match_int{R"(^[+-]{1}(\d+|[Xx]{1}))"};
 
 	if (first) {
 		return getParseCoeffAndTypeInner(str, first_match_decimal, 
@@ -119,30 +115,26 @@ std::pair<ParseToken::coeffTypes, std::string>	getParseCoeffAndType(std::string 
 	}
 }
 
-std::optional<std::string>		getParseDegree(std::string &str) {
+std::string					getParseDegree(std::string &str) {
 	std::regex					degree_regex{R"(^\*?[Xx]{1}(\^\+?\d+)?)"};
 
+	// std::cout << "Parse degree: " << str << "\n\n";
 	std::smatch m;
 	std::string degree;
 	if (std::regex_search(str, m, degree_regex)) {
 		degree = m[0];
 		str.erase(0, m.length());
-		return degree;
 	}
 	else {
-		return std::nullopt;
+		return "0";
 	}
+	return degree;
 }
 
 ParseToken				getParsingToken(std::string &input, bool first) {
 	auto [ type, token ] = getParseCoeffAndType(input, first);
 	auto degree = getParseDegree(input);
-	if (degree) {
-		return ParseToken(type, token, degree.value());
-	}
-	else {
-		return ParseToken(type, token);
-	}
+	return ParseToken(type, token, degree);
 }
 
 std::vector<ParseToken>	parseHalf(std::string &half) {
@@ -166,6 +158,7 @@ std::pair<std::string, std::string>		getParsingHalves(std::string &eq) {
 		throw std::invalid_argument("Equation must contain exactly on '=' sign followed and \
 preceeded by at least one number and/or variable.");
 	}
+	// std::cout << "Half left: " << halves.at(0) << "\nHalf right: " << halves.at(1) <<"\n\n";
 	return	std::make_pair(halves.at(0), halves.at(1));
 }
 

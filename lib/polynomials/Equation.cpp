@@ -1,7 +1,7 @@
 #include "Equation.h"
 
-Equation::Equation() : _constType(ConstantType::constant), _side(Equation::operationSide::left) {
-	_highest_degree = -1;
+Equation::Equation() : _side(Equation::operationSide::left) {
+	_highest_degree = -1; //_constType(ConstantType::constant), 
 	_tokensLeft = {};
 	_tokensRight = {};
 }
@@ -22,21 +22,22 @@ void	Equation::setSide(Equation::operationSide s) {
 	_side = s;
 }
 
-void	Equation::setConstType(Equation::ConstantType t) {
-	_constType = t;
-}
+// void	Equation::setConstType(Equation::ConstantType t) {
+// 	_constType = t;
+// }
 
 int		Equation::getHighestDegree() const {
 	return _highest_degree;
 }
 
-bool	Equation::hasZeroDegreeTokens() const { 
-	return _constType == ConstantType::zero_degree; 
-}
+// bool	Equation::hasZeroDegreeTokens() const { 
+// 	return _constType == ConstantType::zero_degree; 
+// }
 
 Equation::operator std::string() const {
 	std::string res = "";
 	if (_tokensLeft.empty()) {
+		// std::cout << "Left empty\n";
 		res += "0";
 	}
 	for (auto it = _tokensLeft.begin(); it != _tokensLeft.end(); ++it) {
@@ -69,6 +70,7 @@ Equation::operator std::string() const {
 		}
 	}
 	else {
+		// std::cout << "Right empty\n";
 		res += "0";
 	}
 	return res;
@@ -165,16 +167,14 @@ void	Equation::add(Token token) {
 void	Equation::sortTokens(std::list<Token> &lst, int direction) {
 	if (direction == 1) {
 		lst.sort([](const Token & t1, const Token & t2) {
-			/* Sort by degree, if same degree, constants comes first */
 			return ((t1.getDegree() > t2.getDegree()) ||
-			((t1.getDegree() == t2.getDegree()) && (t1.isConstant() == true)));
+			((t1.getDegree() == t2.getDegree())));
 		});
 	}
 	else if (direction == -1) {
 		lst.sort([](const Token & t1, const Token & t2) {
-			/* Sort by degree, if same degree, constants comes after */
 			return ((t1.getDegree() < t2.getDegree())
-			|| ((t1.getDegree() == t2.getDegree()) && (t1.isConstant() == false)));
+			|| ((t1.getDegree() == t2.getDegree())));
 		});
 	}
 	else {
@@ -398,49 +398,45 @@ long int		get_degree(std::string &str) {
 Token			doParseToken(ParseToken &pt) {
 	ParseToken::coeffTypes		type = pt.getType();
 	std::string					coeff_str = pt.getCoeff();
-	std::optional<std::string>	degree_str = pt.getDegree();
+	std::string					degree_str = pt.getDegree();
 	Rational			 		coeff = get_coefficient(coeff_str, type);
 	/* If no discriminant was given we assume one with power 0, which
 	comes down to coefficient * 1. */
-	bool	isConstant = (degree_str == std::nullopt) ? true: false;
+	// bool	isConstant = (degree_str == "0") ? true: false;
 	long	degree = 0;
-	if (degree_str) {
-		degree = get_degree(degree_str.value());
+	if (degree_str != "0") {
+		degree = get_degree(degree_str);
 	}
-	return Token(coeff, degree, isConstant);
+	return Token(coeff, degree);
 }
 
 Equation		doParseEquation(std::string &input) {
 	Equation token_info = Equation();
 	auto [left, right] = getParsingTokens(input);
-	bool	constType = false;
-	bool	zeroDegreeType = false;
+
 	Token	tmp;
 	for (std::vector<ParseToken>::iterator it = left.begin(); it != left.end(); ++it) {
+		// (*it).print();
 		tmp = doParseToken(*it);
-		if (tmp.getDegree() == 0) {
-			if (tmp.isConstant()) { constType = true; }
-			else { zeroDegreeType = true; }
-		}
+		// std::cout << "\nParsed token: \n" << tmp << "\n\n\n";
 		token_info.add(tmp);
 	}
 	token_info.setSide(Equation::operationSide::right);
 	for (std::vector<ParseToken>::iterator it = right.begin(); it != right.end(); ++it) {
+		// (*it).print();
 		tmp = doParseToken(*it);
-		if (tmp.getDegree() == 0) {
-			if (tmp.isConstant()) { constType = true; }
-			else { zeroDegreeType = true; }
-		}
+		// std::cout << "\nParsed token: \n" << tmp << "\n\n\n";
 		token_info.add(tmp);
 	}
-	if (constType) {
-		token_info.setConstType(Equation::ConstantType::constant);
-	}
-	else {
-		token_info.setConstType(Equation::ConstantType::zero_degree);
-	}
-	if (constType && zeroDegreeType) {
-		throw std::invalid_argument("Cannot mix constants (aka '7') with variable with degree zero type (aka '7 * x^0' / '7x^0).");
-	}
+
+	// if (constType) {
+	// 	token_info.setConstType(Equation::ConstantType::constant);
+	// }
+	// else {
+	// 	token_info.setConstType(Equation::ConstantType::zero_degree);
+	// }
+	// if (constType && zeroDegreeType) {
+	// 	throw std::invalid_argument("Cannot mix constants (aka '7') with variable with degree zero type (aka '7 * x^0' / '7x^0).");
+	// }
 	return token_info;
 }
